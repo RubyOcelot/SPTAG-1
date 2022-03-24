@@ -49,6 +49,27 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     target_compile_options(SPTAGLibStatic PRIVATE -fPIC)
 endif()
 
+file(GLOB_RECURSE IVF_HDR_FILES ${AnnService}/inc/IVF/*.h  ${AnnService}/inc/IVF/*/*.h)
+file(GLOB_RECURSE IVF_SRC_FILES ${AnnService}/src/IVF/*.cpp ${AnnService}/src/IVF/*/*.cpp)
+
+list(REMOVE_ITEM IVF_SRC_FILES
+        ${AnnService}/src/IVF/test.cpp
+        )
+
+#find_package(Protobuf REQUIRED)
+#protobuf_generate_cpp(IVF_PROTO_SRCS IVF_PROTO_HDRS inc/IVF/protofiles/postingItem.proto)
+#message(STATUS "${Protobuf_VERSION} ${IVF_PROTO_HDRS} ${Protobuf_LIBRARIES} ${Protobuf_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR}")
+#
+#add_library(IVF ${IVF_PROTO_SRCS} ${IVF_PROTO_HDRS} ${IVF_HDR_FILES} ${IVF_SRC_FILES})
+add_library(IVF ${IVF_HDR_FILES} ${IVF_SRC_FILES})
+
+#target_include_directories(IVF PUBLIC ${Protobuf_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+#target_link_libraries(IVF INTERFACE ${Protobuf_LIBRARIES} RocksDB::rocksdb SPTAGLib)
+target_link_libraries(IVF INTERFACE RocksDB::rocksdb SPTAGLib)
+
+add_executable(IVFTest src/IVF/test.cpp)
+target_link_libraries(IVFTest IVF)
+
 install(TARGETS SPTAGLib SPTAGLibStatic
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION lib
@@ -121,3 +142,4 @@ install(TARGETS ssdservingLib ssdserving
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
+

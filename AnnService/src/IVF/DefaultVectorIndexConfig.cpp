@@ -9,7 +9,7 @@
 #include "inc/SSDServing/Utils.h"
 #include "inc/SSDServing/SSDIndex.h"
 
-#include "inc/IVF/SSDServingWrapper.h"
+#include "inc/IVF/SPTAGSSDServingWrapper.h"
 #include "inc/IVF/VectorIndexWrapper.h"
 using namespace SPTAG;
 
@@ -17,12 +17,13 @@ using namespace SPTAG::SSDServing;
 
 namespace IVF {
     template<typename T>
-    void DefaultVectorIndexConfig<T>::init(std::string dir) {
+    void DefaultVectorIndexConfig<T>::init(const std::string &dir) {
 
-        std::string configFilePath="/home/v-liweiluo/runSPTAG/kvsearch.ini";
+        //TODO
+        std::string SPTAGConfigFilePath=dir;
 
         std::map<std::string, std::map<std::string, std::string>> my_map;
-        auto vecIndex= IVF::SetupIndex(false, &my_map, configFilePath.c_str());
+        auto vecIndex= IVF::SetupSPTAGIndex(false, &my_map, SPTAGConfigFilePath.c_str());
 
 
         auto SPANNIndex=new VectorIndexWrapper<T>(vecIndex);

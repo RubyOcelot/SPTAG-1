@@ -20,13 +20,13 @@ using namespace SPTAG;
 
 namespace IVF {
 
-    std::shared_ptr<VectorIndex> SetupIndex(bool forANNIndexTestTool,
-                    std::map<std::string, std::map<std::string, std::string>>* config_map,
-                    const char* configurationPath = nullptr,
-                    SPTAG::VectorValueType valueType = SPTAG::VectorValueType::Undefined,
-                    SPTAG::DistCalcMethod distCalcMethod = SPTAG::DistCalcMethod::Undefined,
-                    const char* dataFilePath = nullptr,
-                    const char* indexFilePath = nullptr);
+    std::shared_ptr<VectorIndex> SetupSPTAGIndex(bool forANNIndexTestTool,
+                                                 std::map<std::string, std::map<std::string, std::string>>* config_map,
+                                                 const char* configurationPath = nullptr,
+                                                 SPTAG::VectorValueType valueType = SPTAG::VectorValueType::Undefined,
+                                                 SPTAG::DistCalcMethod distCalcMethod = SPTAG::DistCalcMethod::Undefined,
+                                                 const char* dataFilePath = nullptr,
+                                                 const char* indexFilePath = nullptr);
 
     const std::string SEC_BASE = "Base";
     const std::string SEC_SELECT_HEAD = "SelectHead";
@@ -34,13 +34,13 @@ namespace IVF {
     const std::string SEC_BUILD_SSD_INDEX = "BuildSSDIndex";
     const std::string SEC_SEARCH_SSD_INDEX = "SearchSSDIndex";
 
-    std::shared_ptr<VectorIndex> SetupIndex(bool forANNIndexTestTool,
-                    std::map<std::string, std::map<std::string, std::string>> *config_map,
-                    const char *configurationPath,
-                    VectorValueType valueType,
-                    DistCalcMethod distCalcMethod,
-                    const char *dataFilePath,
-                    const char *indexFilePath) {
+    std::shared_ptr<VectorIndex> SetupSPTAGIndex(bool forANNIndexTestTool,
+                                                 std::map<std::string, std::map<std::string, std::string>> *config_map,
+                                                 const char *configurationPath,
+                                                 VectorValueType valueType,
+                                                 DistCalcMethod distCalcMethod,
+                                                 const char *dataFilePath,
+                                                 const char *indexFilePath) {
 
         bool searchSSD = false;
         if (forANNIndexTestTool) {

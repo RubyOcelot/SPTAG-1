@@ -15,7 +15,7 @@ namespace IVF {
 
         void getCollectionStatistics(ScoreScheme *scoreScheme);
 
-        explicit IndexSearcher(std::string dir);
+        explicit IndexSearcher(const std::string &path);
     };
 }
 

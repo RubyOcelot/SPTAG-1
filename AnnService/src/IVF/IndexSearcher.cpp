@@ -31,12 +31,12 @@ namespace IVF {
         scoreScheme->collectionStatisticsLoader("");
     }
 
-    IndexSearcher::IndexSearcher(std::string dir) {
+    IndexSearcher::IndexSearcher(const std::string &path) {
 
         //TODO read indexconfig from file
         //TODO template type
         auto indexConfig = DefaultVectorIndexConfig<int8_t>();
-        indexConfig.init(dir);
+        indexConfig.init(path);
 
         //TODO init SPTAG
 

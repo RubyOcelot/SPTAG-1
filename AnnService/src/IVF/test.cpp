@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include "inc/IVF/api.h"
+#include <memory>
 //#include "postingItem.pb.h"
 
 using namespace IVF;
@@ -46,7 +47,7 @@ void test_float(){
 }
 
 void test_int8(){
-    std::string test_dir="/tmp/dbtestint8";
+    std::string test_dir="/home/v-liweiluo/runSPTAG/kvsearch.ini";
 //    test_in(test_dir);
     IndexSearcher searcher=IndexSearcher(test_dir);
     std::vector<int8_t> temp_v;

@@ -10,13 +10,13 @@ namespace IVF {
     template<class T>
     class DefaultVectorScoreScheme : public VectorScoreScheme<T> {
     public:
-
+        //copy constructor
+        DefaultVectorScoreScheme(const DefaultVectorScoreScheme& d);
         void setQueryVector(std::shared_ptr<std::vector<T>> qVector) override;
 
         VectorScoreScheme<T> *clone() override;
 
 //    ScoreScheme* clone() override;
-
         explicit DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction<T>> distFunc=std::make_unique<L2DistanceFunction<T>>(), std::shared_ptr<std::vector<T>> queryVector=nullptr, DocId docId=-1, std::shared_ptr<std::vector<T>> docVector=nullptr,  int vecLen=-1);
 
         bool postingStatisticsLoader(std::istream *rawStream) override;

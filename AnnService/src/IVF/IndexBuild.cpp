@@ -4,7 +4,7 @@
 // Licensed under the MIT License.
 
 #include "inc/SSDServing/main.h"
-#include "inc/IVF/SSDServingWrapper.h"
+#include "inc/IVF/SPTAGSSDServingWrapper.h"
 using namespace SPTAG;
 
 //TODO vectortype float, type
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::map<std::string, std::map<std::string, std::string>> my_map;
-    auto ret = IVF::SetupIndex(false, &my_map, argv[1]);
+    auto ret = IVF::SetupSPTAGIndex(false, &my_map, argv[1]);
     return 0;
 }
 

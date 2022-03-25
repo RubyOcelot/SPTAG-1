@@ -11,6 +11,14 @@ namespace IVF {
     }
 
     template<class T>
+    DefaultVectorScoreScheme<T>::DefaultVectorScoreScheme(const DefaultVectorScoreScheme& d):
+            distFunc(d.distFunc),
+            queryVector(d.queryVector),
+            docId(d.docId),
+            docVector(d.docVector),
+            vecLen(d.vecLen){}
+
+    template<class T>
     DocId DefaultVectorScoreScheme<T>::getDocId() {
         return docId;
     }
@@ -111,6 +119,7 @@ namespace IVF {
     int DefaultVectorScoreScheme<T>::getVecLen() {
         return vecLen;
     }
+
 
     template class DefaultVectorScoreScheme<float>;
     template class DefaultVectorScoreScheme<int8_t>;

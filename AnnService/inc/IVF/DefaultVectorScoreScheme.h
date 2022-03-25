@@ -7,6 +7,7 @@
 
 
 namespace IVF {
+
     template<class T>
     class DefaultVectorScoreScheme : public VectorScoreScheme<T> {
     public:
@@ -45,6 +46,9 @@ namespace IVF {
         //int docNum;
 
     };
+
+    template class VectorScoreSchemeFactory<DefaultVectorScoreScheme<float>,float>;
+    template class VectorScoreSchemeFactory<DefaultVectorScoreScheme<int8_t>,int8_t>;
 }
 
 #endif //IVF_DEFAULTVECTORSCORESCHEME_H

@@ -11,14 +11,16 @@
 
 namespace IVF {
 
+//    template<class T>
+//    VectorScoreScheme<T> *KeyVector<T>::collectionStatHolder;
     template<class T>
-    VectorScoreScheme<T> *KeyVector<T>::collectionStatHolder;
+    VectorScoreSchemeFactoryBase<T> *KeyVector<T>::scoreSchemeFactory;
     template<class T>
     VectorIndexWrapper<T> *KeyVector<T>::vectorIndexWrapper;
 
     template<class T>
     std::unique_ptr<Scorer> KeyVector<T>::getScorer() {
-        auto defaultScoreScheme = KeyVector::getCollectionStatHolder();
+        auto defaultScoreScheme = KeyVector::scoreSchemeFactory->produce();
         if (defaultScoreScheme == nullptr) {
             //TODO error;
         }
@@ -68,19 +70,19 @@ namespace IVF {
 
     }
 
-    template<class T>
-    void KeyVector<T>::setCollectionStatHolder(VectorScoreScheme<T> *collectionStat) {
-        collectionStatHolder = collectionStat;
-    }
-
-    template<class T>
-    VectorScoreScheme<T> *KeyVector<T>::getCollectionStatHolder() {
-        if (collectionStatHolder != nullptr) {
-            return collectionStatHolder->clone();
-        } else {
-            return nullptr;
-        }
-    }
+//    template<class T>
+//    void KeyVector<T>::setCollectionStatHolder(VectorScoreScheme<T> *collectionStat) {
+//        collectionStatHolder = collectionStat;
+//    }
+//
+//    template<class T>
+//    VectorScoreScheme<T> *KeyVector<T>::getCollectionStatHolder() {
+//        if (collectionStatHolder != nullptr) {
+//            return collectionStatHolder->clone();
+//        } else {
+//            return nullptr;
+//        }
+//    }
 
 
     template<class T>

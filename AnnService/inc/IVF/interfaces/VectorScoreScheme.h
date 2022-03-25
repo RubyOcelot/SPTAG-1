@@ -4,7 +4,7 @@
 #include "ScoreScheme.h"
 
 namespace IVF {
-    template<class T>
+    template<typename T>
     class VectorScoreScheme : public ScoreScheme {
     public:
 

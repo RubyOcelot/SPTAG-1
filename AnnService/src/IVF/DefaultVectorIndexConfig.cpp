@@ -45,7 +45,8 @@ namespace IVF {
         //TODO load cstat
         int dim=SPANNIndex->getVecLen();
         collectionStatHolder->collectionStatisticsLoader(std::to_string(dim));
-        KeyVector<T>::setCollectionStatHolder(collectionStatHolder);
+        KeyVector<T>::scoreSchemeFactory=new VectorScoreSchemeFactory<DefaultVectorScoreScheme<T>,T>(std::make_unique<DefaultVectorScoreScheme<T>>(*collectionStatHolder));
+//        KeyVector<T>::setCollectionStatHolder(collectionStatHolder);
     }
 
     template<typename T>

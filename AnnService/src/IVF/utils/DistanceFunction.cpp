@@ -1,6 +1,11 @@
 #include "inc/IVF/utils/DistanceFunction.h"
+#include <cstdint>
 
 namespace IVF {
+
+    template class L2DistanceFunction<float>;
+    template class L2DistanceFunction<int8_t>;
+    
     template<class T>
     float L2DistanceFunction<T>::square(float a) {
         return a * a;
@@ -46,6 +51,4 @@ namespace IVF {
         return result + 2;
     }
 
-    template class L2DistanceFunction<float>;
-    template class L2DistanceFunction<int8_t>;
 }

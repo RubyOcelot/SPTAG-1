@@ -1,7 +1,7 @@
 #ifndef IVF_INDEXCONFIG_H
 #define IVF_INDEXCONFIG_H
 
-#include<string>
+#include <string>
 
 namespace IVF {
 

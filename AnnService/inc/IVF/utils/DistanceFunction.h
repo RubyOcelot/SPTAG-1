@@ -13,6 +13,7 @@ namespace IVF {
 
     template<class T>
     class L2DistanceFunction : public DistanceFunction<T> {
+    public:
         static inline float square(float a);
 
         float calc(const std::vector<T> &a, const std::vector<T> &b) override;
@@ -21,6 +22,7 @@ namespace IVF {
 
     template<class T>
     class CosDistanceFunction : public DistanceFunction<T> {
+    public:
         static inline float square(float a);
 
         float calc(const std::vector<T> &a, const std::vector<T> &b) override;

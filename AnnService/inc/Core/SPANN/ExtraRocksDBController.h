@@ -364,16 +364,21 @@ namespace SPTAG::SPANN
 #pragma omp parallel for schedule(dynamic)
             for (int i = 0; i < postingListSize.size(); ++i)
             {
-                if (postingListSize[i] <= postingSizeLimit) continue;
-
                 std::size_t selectIdx = std::lower_bound(selections.m_selections.begin(), selections.m_selections.end(), i, Selection::g_edgeComparer) - selections.m_selections.begin();
 
+
+
+                if (postingListSize[i] <= postingSizeLimit) {
+                    std::sort(selections.m_selections.begin() + selectIdx, selections.m_selections.begin() + postingListSize[i], <your new edgeComparer>);
+                    continue;
+                }
                 for (size_t dropID = postingSizeLimit; dropID < postingListSize[i]; ++dropID)
                 {
                     int tonode = selections.m_selections[selectIdx + dropID].tonode;
                     --replicaCount[tonode];
                 }
                 postingListSize[i] = postingSizeLimit;
+                std::sort(selections.m_selections.begin() + selectIdx, selections.m_selections.begin() + postingListSize[i], <your new edgeComparer>);
             }
 
             if (p_opt.m_outputEmptyReplicaID)

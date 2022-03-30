@@ -84,7 +84,7 @@ namespace IVF {
             downLeft = downRight;
         }
         while (downLeft <= size && lessThan(heap[downLeft], node)) {
-            heap[downLeft] = heap[cur];
+            heap[cur] = heap[downLeft];
             cur = downLeft;
             downLeft = cur << 1;
             downRight = downLeft + 1;
@@ -114,6 +114,7 @@ namespace IVF {
             heap[1] = heap[size];
             //clear it
             heap[size] = DocWithScore();
+            updateTop();
             size--;
             return result;
         } else {
@@ -132,7 +133,7 @@ namespace IVF {
     }
 
     bool DocPriorityQueue::remove(const DocWithScore &element) {
-        for (int i = 1; i < size; i++) {
+        for (int i = 1; i <= size; i++) {
             if (heap[i] == element) {
                 heap[i] = heap[size];
                 //clear it
@@ -147,5 +148,13 @@ namespace IVF {
             }
         }
         return false;
+    }
+
+    void DocPriorityQueue::debug_print() {
+
+        for (int i = 1; i <= size; i++) {
+            heap[i].print();
+        }
+        std::cout<<std::endl;
     }
 }

@@ -30,6 +30,8 @@ namespace IVF {
 
         ~DocPriorityQueue();
 
+        void debug_print();
+
     private:
         int maxSize;
         DocWithScore *heap;

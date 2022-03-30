@@ -3,6 +3,7 @@
 #include "inc/IVF/api.h"
 #include <memory>
 //#include "postingItem.pb.h"
+#include "inc/IVF/DefaultVectorScoreScheme.h"
 
 using namespace IVF;
 
@@ -46,24 +47,30 @@ void test_float(){
     topDocs.print();
 }
 
-void test_int8(){
-    std::string test_dir="/home/v-liweiluo/runSPTAG/kvsearch.ini";
+void test_int8(std::string test_dir){
 //    test_in(test_dir);
     IndexSearcher searcher=IndexSearcher(test_dir);
     std::vector<int8_t> temp_v;
     for(int i=0;i<100;i++){
-        temp_v.push_back(1);
+        temp_v.push_back(10);
     }
 //    auto vecValue=std::make_shared<std::vector<int8_t>>(std::vector<int8_t>({4,5,6}));
     auto vecValue=std::make_shared<std::vector<int8_t>>(temp_v);
     KeyVector<int8_t> kv=KeyVector<int8_t>(vecValue);
     ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<L2DistanceFunction<int8_t>>(L2DistanceFunction<int8_t>()));
     KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
-    TopDocs topDocs=searcher.search(kwQuery,3);
+    TopDocs topDocs=searcher.search(kwQuery,10);
     topDocs.print();
 }
-int main() {
+int main(int argc, char* argv[]) {
 //    test_float();
-    test_int8();
+    if (argc < 2)
+    {
+        LOG(Helper::LogLevel::LL_Error,
+            "configFilePath\n");
+        exit(-1);
+    }
+    std::string test_dir=std::string(argv[1]);
+    test_int8(test_dir);
     return 0;
 }

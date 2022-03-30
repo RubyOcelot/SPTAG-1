@@ -23,7 +23,7 @@ namespace IVF {
         std::string SPTAGConfigFilePath=dir;
 
         std::map<std::string, std::map<std::string, std::string>> my_map;
-        auto vecIndex= IVF::SetupSPTAGIndex(false, &my_map, SPTAGConfigFilePath.c_str());
+        auto vecIndex= IVF::SetupSPTAGIndex( &my_map, SPTAGConfigFilePath.c_str());
 
 
         auto SPANNIndex=new VectorIndexWrapper<T>(vecIndex);

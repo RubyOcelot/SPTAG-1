@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::map<std::string, std::map<std::string, std::string>> my_map;
-    auto ret = IVF::SetupSPTAGIndex(false, &my_map, argv[1]);
+    auto ret = IVF::SetupSPTAGIndex(&my_map, argv[1]);
     return 0;
 }
 

@@ -18,6 +18,10 @@ namespace IVF {
 
         //return docs in pq
         TopDocs topDocs();
+
+        void debug_print(){
+            pq.debug_print();
+        }
     };
 }
 

@@ -21,11 +21,11 @@ namespace IVF {
         for (int i = 0; i < a.size(); i++) {
             dist += square((float)a[i] - (float)b[i]);
         }
-        dist = std::sqrt(dist);
+//        dist = std::sqrt(dist);
 //    std::cout<<dist<<std::endl;
 
         //TODO not sure
-        return std::exp(-1 * dist);
+        return dist;
     }
 
     template<class T>
@@ -48,7 +48,7 @@ namespace IVF {
         }
         result = (sum_ab) / (std::sqrt(sum_a2 * sum_b2));
         //TODO not sure
-        return result + 2;
+        return 1 - result;
     }
 
 }

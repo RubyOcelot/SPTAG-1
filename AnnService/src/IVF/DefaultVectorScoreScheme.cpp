@@ -5,6 +5,9 @@
 
 
 namespace IVF {
+    template class DefaultVectorScoreScheme<float>;
+    template class DefaultVectorScoreScheme<int8_t>;
+
     template<class T>
     VectorScoreScheme<T> *DefaultVectorScoreScheme<T>::clone() {
         return new DefaultVectorScoreScheme( distFunc, queryVector, docId, docVector, vecLen);
@@ -33,15 +36,17 @@ namespace IVF {
     template<class T>
     float DefaultVectorScoreScheme<T>::score() {
         //calc vector distance
-        return distFunc->calc((*docVector), *(queryVector));
+        //TODO not sure about score and distance
+        return (-1)*distFunc->calc((*docVector), *(queryVector));
     }
 
     DocId ByteToDocId(const unsigned char* Bytes){
-        auto a = (DocId)(((unsigned char)(Bytes[0]) << 24 |
+        auto a =  (uint32_t)(((unsigned char)(Bytes[0]) << 24 |
                     (unsigned char)(Bytes[1]) << 16 |
                     (unsigned char)(Bytes[2]) << 8 |
                     (unsigned char)(Bytes[3])));
-        return a;
+
+        return DocId(uint64_t(a));
     }
 
     template<class T>
@@ -63,17 +68,18 @@ namespace IVF {
 //        } else {
 //            return false;
 //        }
-
+        docVector=std::make_shared<std::vector<T>>();
         if(*rawStream){
             auto* buffer=new unsigned char[vecLen*sizeof(T)];
             //TODO vector dim size
-            rawStream->get((char*)(buffer), 4);
+            //TODO async
+            rawStream->read((char*)(buffer), 4);
             if(rawStream->gcount()!=4)return false;
             docId= ByteToDocId(buffer);
             for(int i=0;i<vecLen;i++){
                 if(!*rawStream) return false;
                 T* value;
-                rawStream->get((char*)(buffer), sizeof(T));
+                rawStream->read((char*)(buffer), sizeof(T));
                 if(rawStream->gcount()!=sizeof(T))return false;
                 value=(T*)buffer;
                 docVector->push_back(*value);
@@ -121,8 +127,6 @@ namespace IVF {
     }
 
 
-    template class DefaultVectorScoreScheme<float>;
-    template class DefaultVectorScoreScheme<int8_t>;
 }
 
 

@@ -23,6 +23,11 @@
 
 namespace SPTAG::SPANN
 {
+    inline bool sort_docid_cmp(const Edge& a, const Edge& b)
+    {
+        return a.tonode < b.tonode;
+    }
+
     class RocksDBIO : public Helper::KeyValueIO
     {
     public:
@@ -235,6 +240,9 @@ namespace SPTAG::SPANN
             }
         }
 
+
+
+
         bool BuildIndex(std::shared_ptr<Helper::VectorSetReader>& p_reader, std::shared_ptr<VectorIndex> p_headIndex, Options& p_opt) override {
             std::string outputFile = p_opt.m_indexDirectory + FolderSep + p_opt.m_ssdIndex;
             if (outputFile.empty())
@@ -369,7 +377,7 @@ namespace SPTAG::SPANN
 
 
                 if (postingListSize[i] <= postingSizeLimit) {
-                    std::sort(selections.m_selections.begin() + selectIdx, selections.m_selections.begin() + postingListSize[i], <your new edgeComparer>);
+                    std::sort(selections.m_selections.begin() + selectIdx, selections.m_selections.begin() + selectIdx + postingListSize[i], sort_docid_cmp);
                     continue;
                 }
                 for (size_t dropID = postingSizeLimit; dropID < postingListSize[i]; ++dropID)
@@ -378,7 +386,7 @@ namespace SPTAG::SPANN
                     --replicaCount[tonode];
                 }
                 postingListSize[i] = postingSizeLimit;
-                std::sort(selections.m_selections.begin() + selectIdx, selections.m_selections.begin() + postingListSize[i], <your new edgeComparer>);
+                std::sort(selections.m_selections.begin() + selectIdx, selections.m_selections.begin() + selectIdx + postingListSize[i], sort_docid_cmp);
             }
 
             if (p_opt.m_outputEmptyReplicaID)

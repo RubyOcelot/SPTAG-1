@@ -16,7 +16,6 @@ namespace IVF {
         auto *collector = new Collector(n);
         Bits liveDocs = getLiveDocs();
         bulkScorer.scoreAll(collector, liveDocs);
-        collector->debug_print();
         TopDocs td = collector->topDocs();
         delete collector;
         return td;

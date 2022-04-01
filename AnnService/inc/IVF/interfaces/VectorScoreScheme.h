@@ -4,11 +4,10 @@
 #include "ScoreScheme.h"
 
 namespace IVF {
-    template<class T>
     class VectorScoreScheme : public ScoreScheme {
     public:
 
-        virtual void setQueryVector(std::shared_ptr<std::vector<T>> queryVector) = 0;
+        virtual void setQueryVector(void* queryVector) = 0;
 
         virtual VectorScoreScheme *clone() = 0;
 

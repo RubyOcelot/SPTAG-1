@@ -11,24 +11,24 @@ namespace IVF {
     template<class T>
     class KeyVector : public Keyword {
     public:
-        explicit KeyVector(std::shared_ptr<std::vector<T>> vecValue);
+        explicit KeyVector(void* vecValue);
 
         std::unique_ptr<Scorer> getScorer() override;
 
-        std::unique_ptr<Scorer> getScorer(VectorScoreScheme<T> *scoreScheme);
+        std::unique_ptr<Scorer> getScorer(VectorScoreScheme *scoreScheme);
 
         //default: DefaultVectorScoreScheme
-        static void setCollectionStatHolder(VectorScoreScheme<T> *collectionStat);
+        static void setCollectionStatHolder(VectorScoreScheme *collectionStat);
 
-        static VectorScoreScheme<T> *getCollectionStatHolder();
+        static VectorScoreScheme *getCollectionStatHolder();
 
-        std::shared_ptr<std::vector<T>> getQueryVector();
+        void* getQueryVector();
 
-        static VectorScoreScheme<T> *collectionStatHolder;
+        static VectorScoreScheme *collectionStatHolder;
 
         static VectorIndexWrapper<T>* vectorIndexWrapper;
     private:
-        std::shared_ptr<std::vector<T>> queryVector;
+        void* queryVector;
     };
 
 

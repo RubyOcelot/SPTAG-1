@@ -41,7 +41,7 @@ void test_float(){
 //    auto vecValue=std::make_shared<std::vector<float>>(std::vector<float>({4,5,6}));
     auto vecValue=std::make_shared<std::vector<float>>(temp_v);
     KeyVector<float> kv=KeyVector<float>(vecValue);
-    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<float>( std::make_shared<L2DistanceFunction<float>>(L2DistanceFunction<float>()));
+    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<float>( std::make_shared<DistanceUtilsWrap<float>>(DistanceUtilsWrap<float>()));
     KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
     TopDocs topDocs=searcher.search(kwQuery,3);
     topDocs.print();
@@ -57,7 +57,7 @@ void test_int8(std::string test_dir){
 //    auto vecValue=std::make_shared<std::vector<int8_t>>(std::vector<int8_t>({4,5,6}));
     auto vecValue=std::make_shared<std::vector<int8_t>>(temp_v);
     KeyVector<int8_t> kv=KeyVector<int8_t>(vecValue);
-    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<L2DistanceFunction<int8_t>>(L2DistanceFunction<int8_t>()));
+    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<DistanceUtilsWrap<int8_t>>(DistanceUtilsWrap<int8_t>()));
     KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
     TopDocs topDocs=searcher.search(kwQuery,10);
     topDocs.print();

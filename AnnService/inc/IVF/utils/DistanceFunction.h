@@ -4,35 +4,29 @@
 #include <cmath>
 #include <vector>
 
+#include "inc/Core/Common.h"
+#include "inc/Core/Common/DistanceUtils.h"
+
 namespace IVF {
-    template<class T>
+    template <typename T>
+    using DistanceCalcReturn = float(*)(const T*, const T*, SPTAG::DimensionType);
+
     class DistanceFunction {
     public:
-        virtual float calc(const std::vector<T> &, const std::vector<T> &) = 0;
+        virtual float calc(const void*,const void*,DimensionType) = 0;
     };
 
     template<class T>
-    class L2DistanceFunction : public DistanceFunction<T> {
+    class DistanceUtilsWrap : public DistanceFunction {
     public:
-        static inline float square(float a);
+        DistanceCalcReturn<T> distFunc;
+        explicit DistanceUtilsWrap(SPTAG::DistCalcMethod p_method);
+        float calc(const void* a, const void* b,SPTAG::DimensionType) override;
 
-        float calc(const std::vector<T> &a, const std::vector<T> &b) override;
     };
 
+//TODO InnerProductFunction
 
-    template<class T>
-    class CosDistanceFunction : public DistanceFunction<T> {
-    public:
-        static inline float square(float a);
-
-        float calc(const std::vector<T> &a, const std::vector<T> &b) override;
-    };
-
-//TODO
-//class InnerProductFunction: public DistanceFunction {
-//
-//    float calc(const VectorValueType& a,const VectorValueType& b) override;
-//};
 }
 
 #endif //IVF_DISTANCEFUNCTION_H

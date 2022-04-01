@@ -27,12 +27,6 @@ namespace IVF {
 
     class TopDocs;
 
-    template<class T>
-    class DistanceFunction;
-
-    template<class T>
-    class L2DistanceFunction;
-
     class SubScorerSet;
 
     enum LogicOperator {

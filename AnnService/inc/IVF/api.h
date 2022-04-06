@@ -12,5 +12,8 @@
 #include "DefaultVectorScoreScheme.h"
 #include "interfaces/IndexConfig.h"
 #include "DefaultVectorIndexConfig.h"
+#include "utils/GetSPTAGOptions.h"
+#include "utils/LoadQuerys.h"
+#include "utils/LoadTruth.h"
 
 #endif //IVF_API_H

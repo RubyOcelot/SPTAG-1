@@ -3,6 +3,7 @@
 
 #include "ForwardDefine.h"
 #include "utils/DocWithScore.h"
+#include "utils/LoadTruth.h"
 
 namespace IVF {
     class TopDocs {
@@ -12,12 +13,14 @@ namespace IVF {
 
         void print();
 
+        void print_id_sort();
+
+        int compare(TruthWrap& truth);
+
         void add(const DocWithScore &element);
 
         void finish();
 
-    private:
-        //TODO replace list
         std::list<DocWithScore> value;
     };
 }

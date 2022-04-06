@@ -12,7 +12,7 @@
 namespace IVF {
 
     template<class T>
-    VectorScoreScheme<T> *KeyVector<T>::collectionStatHolder;
+    VectorScoreScheme *KeyVector<T>::collectionStatHolder;
     template<class T>
     VectorIndexWrapper<T> *KeyVector<T>::vectorIndexWrapper;
 
@@ -27,17 +27,13 @@ namespace IVF {
 
 //consume the pointer
     template<class T>
-    std::unique_ptr<Scorer> KeyVector<T>::getScorer(VectorScoreScheme<T> *vScoreScheme) {
+    std::unique_ptr<Scorer> KeyVector<T>::getScorer(VectorScoreScheme *vScoreScheme) {
         if (vScoreScheme == nullptr) {
             //TODO error;
         } else {
             vScoreScheme->setQueryVector(queryVector);
         }
 
-
-        if(queryVector->size()!=vScoreScheme->getVecLen()){
-            //TODO error;
-        }
 
         std::vector<int> headIDs;
         vectorIndexWrapper->getHeadIDs(headIDs, getQueryVector());
@@ -64,17 +60,17 @@ namespace IVF {
     }
 
     template<class T>
-    KeyVector<T>::KeyVector(std::shared_ptr<std::vector<T>> vecValue) : queryVector(std::move(vecValue)) {
+    KeyVector<T>::KeyVector(void* vecValue) : queryVector(vecValue) {
 
     }
 
     template<class T>
-    void KeyVector<T>::setCollectionStatHolder(VectorScoreScheme<T> *collectionStat) {
+    void KeyVector<T>::setCollectionStatHolder(VectorScoreScheme *collectionStat) {
         collectionStatHolder = collectionStat;
     }
 
     template<class T>
-    VectorScoreScheme<T> *KeyVector<T>::getCollectionStatHolder() {
+    VectorScoreScheme *KeyVector<T>::getCollectionStatHolder() {
         if (collectionStatHolder != nullptr) {
             return collectionStatHolder->clone();
         } else {
@@ -84,7 +80,7 @@ namespace IVF {
 
 
     template<class T>
-    std::shared_ptr<std::vector<T>> KeyVector<T>::getQueryVector() {
+    void* KeyVector<T>::getQueryVector() {
         return queryVector;
     }
 

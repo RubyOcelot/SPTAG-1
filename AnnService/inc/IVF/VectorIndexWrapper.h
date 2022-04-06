@@ -15,7 +15,7 @@ namespace IVF{
     class VectorIndexWrapper{
     public:
         VectorIndexWrapper( const std::shared_ptr<SPTAG::VectorIndex>& vecIndex);
-        void getHeadIDs(std::vector<int> & headIDs,std::shared_ptr<std::vector<T>> query_vector){
+        void getHeadIDs(std::vector<int> & headIDs,void* query_vector){
 
             auto SPANNIndex=(SPTAG::SPANN::Index<T>*)(vecIndex.get());
             SPANN::Options& p_opts = *(SPANNIndex->GetOptions());
@@ -23,11 +23,7 @@ namespace IVF{
 
             QueryResult p_query=QueryResult(nullptr, max(p_opts.m_resultNum, p_opts.m_searchInternalResultNum), false);
 
-            T* target_vec=new T[query_vector->size()];
-            for(int i=0;i<query_vector->size();i++){
-                target_vec[i]=query_vector->at(i);
-            }
-            p_query.SetTarget(target_vec);
+            p_query.SetTarget(query_vector);
             p_query.Reset();
 
             auto memory_index= (SPANNIndex->GetMemoryIndex().get());

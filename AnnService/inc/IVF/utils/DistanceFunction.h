@@ -13,7 +13,7 @@ namespace IVF {
 
     class DistanceFunction {
     public:
-        virtual float calc(const void*,const void*,DimensionType) = 0;
+        virtual float calc(const void*,const void*,SPTAG::DimensionType) = 0;
     };
 
     template<class T>

@@ -4,6 +4,7 @@
 #include <memory>
 //#include "postingItem.pb.h"
 #include "inc/IVF/DefaultVectorScoreScheme.h"
+#include <new>
 
 using namespace IVF;
 
@@ -34,14 +35,12 @@ void test_float(){
     std::string test_dir="/tmp/dbtestfloat";
 //    test_in(test_dir);
     IndexSearcher searcher=IndexSearcher(test_dir);
-    std::vector<float> temp_v;
+    auto temp_v=new float[100];
     for(int i=0;i<100;i++){
-        temp_v.push_back(1.0);
+        *(temp_v+i)=10;
     }
-//    auto vecValue=std::make_shared<std::vector<float>>(std::vector<float>({4,5,6}));
-    auto vecValue=std::make_shared<std::vector<float>>(temp_v);
-    KeyVector<float> kv=KeyVector<float>(vecValue);
-    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<float>( std::make_shared<DistanceUtilsWrap<float>>(DistanceUtilsWrap<float>()));
+    auto kv=KeyVector<int8_t>(temp_v);
+    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<float>( std::make_shared<DistanceUtilsWrap<float>>(SPTAG::DistCalcMethod::L2));
     KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
     TopDocs topDocs=searcher.search(kwQuery,3);
     topDocs.print();
@@ -50,14 +49,12 @@ void test_float(){
 void test_int8(std::string test_dir){
 //    test_in(test_dir);
     IndexSearcher searcher=IndexSearcher(test_dir);
-    std::vector<int8_t> temp_v;
+    auto temp_v=new int8_t[100];
     for(int i=0;i<100;i++){
-        temp_v.push_back(10);
+        *(temp_v+i)=10;
     }
-//    auto vecValue=std::make_shared<std::vector<int8_t>>(std::vector<int8_t>({4,5,6}));
-    auto vecValue=std::make_shared<std::vector<int8_t>>(temp_v);
-    KeyVector<int8_t> kv=KeyVector<int8_t>(vecValue);
-    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<DistanceUtilsWrap<int8_t>>(DistanceUtilsWrap<int8_t>()));
+    auto kv=KeyVector<int8_t>(temp_v);
+    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
     KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
     TopDocs topDocs=searcher.search(kwQuery,10);
     topDocs.print();

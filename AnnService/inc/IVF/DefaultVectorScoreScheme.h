@@ -14,10 +14,10 @@ namespace IVF {
         DefaultVectorScoreScheme(const DefaultVectorScoreScheme& d);
         void setQueryVector(void* qVector) override;
 
-        VectorScoreScheme<T> *clone() override;
+        VectorScoreScheme *clone() override;
 
 //    ScoreScheme* clone() override;
-        explicit DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction<T>> distFunc=std::make_unique<DistanceUtilsWrap<T>>(), void* queryVector=nullptr, DocId docId=-1, void* docVector=nullptr, int vecLen=-1);
+        explicit DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction> distFunc=std::make_unique<DistanceUtilsWrap<T>>(SPTAG::DistCalcMethod::L2), void* queryVector=nullptr, DocId docId=-1, void* docVector=nullptr, int vecLen=-1);
 
         bool postingStatisticsLoader(std::istream *rawStream) override;
 
@@ -40,7 +40,7 @@ namespace IVF {
         void* docVector;
         void* queryVector;
         //default DistanceUtilsWrap
-        std::shared_ptr<DistanceFunction<T>> distFunc;
+        std::shared_ptr<DistanceFunction> distFunc;
         int vecLen=-1;
         //int docNum;
 

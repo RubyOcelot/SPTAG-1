@@ -9,7 +9,7 @@ namespace IVF {
     template class DefaultVectorScoreScheme<int8_t>;
 
     template<class T>
-    VectorScoreScheme<T> *DefaultVectorScoreScheme<T>::clone() {
+    VectorScoreScheme *DefaultVectorScoreScheme<T>::clone() {
         return new DefaultVectorScoreScheme( distFunc, queryVector, docId, docVector, vecLen);
     }
 
@@ -27,17 +27,16 @@ namespace IVF {
     }
 
     template<class T>
-    DefaultVectorScoreScheme<T>::DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction<T>> distFunc, std::shared_ptr<std::vector<T>> queryVector, DocId docId, std::shared_ptr<std::vector<T>> docVector,  int vecLen)
-            : docId(docId), docVector(docVector), queryVector(std::move(queryVector)), distFunc(std::move(distFunc)), vecLen(vecLen) {
+    DefaultVectorScoreScheme<T>::DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction> distFunc, void* queryVector, DocId docId, void* docVector,  int vecLen)
+            : docId(docId), docVector(docVector), queryVector(queryVector), distFunc(std::move(distFunc)), vecLen(vecLen) {
 
     }
-
 
     template<class T>
     float DefaultVectorScoreScheme<T>::score() {
         //calc vector distance
         //TODO not sure about score and distance
-        return (-1)*distFunc->calc((*docVector), *(queryVector));
+        return (-1)*distFunc->calc(docVector, queryVector, vecLen);
     }
 
     DocId ByteToDocId(const unsigned char* Bytes){
@@ -67,9 +66,9 @@ namespace IVF {
 
 
 
-        docVector=std::make_shared<std::vector<T>>();
+        docVector=new T[vecLen];
         if(*rawStream){
-            auto* buffer=new unsigned char[vecLen*sizeof(T)];
+            auto* buffer=new unsigned char[sizeof(SPTAG::SizeType)];
             //TODO vector dim size
             //TODO async
             rawStream->read((char*)(buffer), 4);
@@ -77,16 +76,12 @@ namespace IVF {
                 return false;
             }
 
-            docId= ByteToDocId(buffer);
-            for(int i=0;i<vecLen;i++){
-                if(!*rawStream) return false;
-                T* value;
-                rawStream->read((char*)(buffer), sizeof(T));
-                if(rawStream->gcount()!=sizeof(T))
-                    return false;
-                value=(T*)buffer;
-                docVector->push_back(*value);
-            }
+            docId = ByteToDocId(buffer);
+
+            rawStream->read((char*)(docVector), vecLen*sizeof(T));
+            if(rawStream->gcount()!=vecLen*sizeof(T))
+                return false;
+
             delete[] buffer;
             return true;
         }
@@ -109,7 +104,7 @@ namespace IVF {
 
 
     template<class T>
-    void DefaultVectorScoreScheme<T>::setQueryVector(std::shared_ptr<std::vector<T>> qVector) {
+    void DefaultVectorScoreScheme<T>::setQueryVector(void* qVector) {
         this->queryVector = qVector;
 
     }
@@ -129,6 +124,7 @@ namespace IVF {
     int DefaultVectorScoreScheme<T>::getVecLen() {
         return vecLen;
     }
+
 
 
 }

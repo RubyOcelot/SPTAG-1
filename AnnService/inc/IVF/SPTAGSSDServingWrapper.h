@@ -35,7 +35,6 @@ namespace IVF {
         VectorValueType valueType;
         DistCalcMethod distCalcMethod;
 
-        bool searchSSD = false;
         Helper::IniReader iniReader;
         iniReader.LoadIniFile(configurationPath);
         (*config_map)["Base"] = iniReader.GetParameters("Base");
@@ -46,7 +45,6 @@ namespace IVF {
         valueType = iniReader.GetParameter("Base", "ValueType", valueType);
         distCalcMethod = iniReader.GetParameter("Base", "DistCalcMethod", distCalcMethod);
         bool buildSSD = iniReader.GetParameter("BuildSSDIndex", "isExecute", false);
-        searchSSD = iniReader.GetParameter("SearchSSDIndex", "isExecute", false);
 
         for (auto& KV : iniReader.GetParameters("SearchSSDIndex")) {
             std::string param = KV.first, value = KV.second;
@@ -124,17 +122,6 @@ namespace IVF {
 
             LOG(Helper::LogLevel::LL_Info, "End generating truth.\n");
         }
-
-//            if (searchSSD) {
-//#define DefineVectorValueType(Name, Type) \
-//	if (opts->m_valueType == VectorValueType::Name) { \
-//        SSDIndex::Search((SPANN::Index<Type>*)(index.get())); \
-//	} \
-//
-//#include "inc/Core/DefinitionList.h"
-//#undef DefineVectorValueType
-//            }
-
 
         return index;
     }

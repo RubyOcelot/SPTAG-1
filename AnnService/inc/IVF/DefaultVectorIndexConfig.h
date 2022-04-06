@@ -5,7 +5,6 @@
 
 
 namespace IVF {
-    template<typename T>
     class DefaultVectorIndexConfig : public IndexConfig {
     public:
         void init(const std::string &dir) override;

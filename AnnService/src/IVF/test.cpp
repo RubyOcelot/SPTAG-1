@@ -39,7 +39,7 @@ void test_float(){
     for(int i=0;i<100;i++){
         *(temp_v+i)=10;
     }
-    auto kv=KeyVector<int8_t>(temp_v);
+    auto kv=KeyVector(temp_v);
     ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<float>( std::make_shared<DistanceUtilsWrap<float>>(SPTAG::DistCalcMethod::L2));
     KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
     TopDocs topDocs=searcher.search(kwQuery,3);
@@ -53,7 +53,7 @@ void test_int8(std::string test_dir){
     for(int i=0;i<100;i++){
         *(temp_v+i)=10;
     }
-    auto kv=KeyVector<int8_t>(temp_v);
+    auto kv=KeyVector(temp_v);
     ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
     KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
     TopDocs topDocs=searcher.search(kwQuery,10);

@@ -35,7 +35,7 @@ namespace IVF {
 
         //TODO read indexconfig from file
         //TODO template type
-        auto indexConfig = DefaultVectorIndexConfig<int8_t>();
+        auto indexConfig = DefaultVectorIndexConfig();
         indexConfig.init(path);
 
         //TODO init SPTAG

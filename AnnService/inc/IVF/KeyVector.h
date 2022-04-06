@@ -8,7 +8,6 @@
 
 namespace IVF {
 
-    template<class T>
     class KeyVector : public Keyword {
     public:
         explicit KeyVector(void* vecValue);
@@ -26,7 +25,7 @@ namespace IVF {
 
         static VectorScoreScheme *collectionStatHolder;
 
-        static VectorIndexWrapper<T>* vectorIndexWrapper;
+        static VectorIndexWrapper* vectorIndexWrapper;
     private:
         void* queryVector;
     };

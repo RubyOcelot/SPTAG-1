@@ -41,7 +41,6 @@ namespace IVF {
 
     class Keyword;
 
-template<class T>
     class KeyVector;
 
     class Query;

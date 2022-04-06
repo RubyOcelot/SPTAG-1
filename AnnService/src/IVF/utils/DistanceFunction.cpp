@@ -4,10 +4,6 @@
 
 namespace IVF {
 
-    template class DistanceUtilsWrap<float>;
-    template class DistanceUtilsWrap<int8_t>;
-
-
     template<class T>
     DistanceUtilsWrap<T>::DistanceUtilsWrap(SPTAG::DistCalcMethod p_method) {
         distFunc=SPTAG::COMMON::DistanceCalcSelector<T>(p_method);
@@ -19,3 +15,9 @@ namespace IVF {
     }
 
 }
+
+#define DefineVectorValueType(Name, Type) \
+template class IVF::DistanceUtilsWrap<Type>; \
+
+#include "inc/Core/DefinitionList.h"
+#undef DefineVectorValueType

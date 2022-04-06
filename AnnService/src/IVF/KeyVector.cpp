@@ -11,13 +11,11 @@
 
 namespace IVF {
 
-    template<class T>
-    VectorScoreScheme *KeyVector<T>::collectionStatHolder;
-    template<class T>
-    VectorIndexWrapper<T> *KeyVector<T>::vectorIndexWrapper;
+    VectorScoreScheme *KeyVector::collectionStatHolder;
 
-    template<class T>
-    std::unique_ptr<Scorer> KeyVector<T>::getScorer() {
+    VectorIndexWrapper *KeyVector::vectorIndexWrapper;
+
+    std::unique_ptr<Scorer> KeyVector::getScorer() {
         auto defaultScoreScheme = KeyVector::getCollectionStatHolder();
         if (defaultScoreScheme == nullptr) {
             //TODO error;
@@ -26,8 +24,7 @@ namespace IVF {
     }
 
 //consume the pointer
-    template<class T>
-    std::unique_ptr<Scorer> KeyVector<T>::getScorer(VectorScoreScheme *vScoreScheme) {
+    std::unique_ptr<Scorer> KeyVector::getScorer(VectorScoreScheme *vScoreScheme) {
         if (vScoreScheme == nullptr) {
             //TODO error;
         } else {
@@ -59,18 +56,15 @@ namespace IVF {
         return retScorer;
     }
 
-    template<class T>
-    KeyVector<T>::KeyVector(void* vecValue) : queryVector(vecValue) {
+    KeyVector::KeyVector(void* vecValue) : queryVector(vecValue) {
 
     }
 
-    template<class T>
-    void KeyVector<T>::setCollectionStatHolder(VectorScoreScheme *collectionStat) {
+    void KeyVector::setCollectionStatHolder(VectorScoreScheme *collectionStat) {
         collectionStatHolder = collectionStat;
     }
 
-    template<class T>
-    VectorScoreScheme *KeyVector<T>::getCollectionStatHolder() {
+    VectorScoreScheme *KeyVector::getCollectionStatHolder() {
         if (collectionStatHolder != nullptr) {
             return collectionStatHolder->clone();
         } else {
@@ -79,11 +73,8 @@ namespace IVF {
     }
 
 
-    template<class T>
-    void* KeyVector<T>::getQueryVector() {
+    void* KeyVector::getQueryVector() {
         return queryVector;
     }
 
-    template class KeyVector<float>;
-    template class KeyVector<int8_t>;
 }

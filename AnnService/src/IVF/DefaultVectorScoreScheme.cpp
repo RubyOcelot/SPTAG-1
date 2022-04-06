@@ -5,8 +5,6 @@
 #include <inc/Core/Common.h>
 
 namespace IVF {
-    template class DefaultVectorScoreScheme<float>;
-    template class DefaultVectorScoreScheme<int8_t>;
 
     template<class T>
     VectorScoreScheme *DefaultVectorScoreScheme<T>::clone() {
@@ -129,4 +127,9 @@ namespace IVF {
 
 }
 
+#define DefineVectorValueType(Name, Type) \
+template class IVF::DefaultVectorScoreScheme<Type>; \
+
+#include "inc/Core/DefinitionList.h"
+#undef DefineVectorValueType
 

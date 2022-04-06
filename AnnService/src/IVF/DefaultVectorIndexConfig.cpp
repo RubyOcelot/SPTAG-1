@@ -16,8 +16,7 @@ using namespace SPTAG;
 using namespace SPTAG::SSDServing;
 
 namespace IVF {
-    template<typename T>
-    void DefaultVectorIndexConfig<T>::init(const std::string &dir) {
+    void DefaultVectorIndexConfig::init(const std::string &dir) {
 
         //TODO
         std::string SPTAGConfigFilePath=dir;
@@ -25,9 +24,7 @@ namespace IVF {
         std::map<std::string, std::map<std::string, std::string>> my_map;
         auto vecIndex= IVF::SetupSPTAGIndex( &my_map, SPTAGConfigFilePath.c_str());
 
-
-        auto SPANNIndex=new VectorIndexWrapper<T>(vecIndex);
-        KeyVector<T>::vectorIndexWrapper=SPANNIndex;
+        KeyVector::vectorIndexWrapper=new VectorIndexWrapper(vecIndex);
 
 //        //
 //        std::string rocksdb_dir = dir + "//rocksdb";
@@ -40,19 +37,22 @@ namespace IVF {
 //            std::cout << rocksdb_dir << std::endl;
 //        }
 
+        int dim=KeyVector::vectorIndexWrapper->getVecLen();
+#define DefineVectorValueType(Name, Type) \
+                if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
+                    auto collectionStatHolder = new DefaultVectorScoreScheme<Type>();\
+                    collectionStatHolder->collectionStatisticsLoader(std::to_string(dim));\
+                    KeyVector::setCollectionStatHolder(collectionStatHolder);\
+                } \
 
-        auto collectionStatHolder = new DefaultVectorScoreScheme<T>();
-        //TODO load cstat
-        int dim=SPANNIndex->getVecLen();
-        collectionStatHolder->collectionStatisticsLoader(std::to_string(dim));
-        KeyVector<T>::setCollectionStatHolder(collectionStatHolder);
+
+#include "inc/Core/DefinitionList.h"
+
+#undef DefineVectorValueType
     }
 
-    template<typename T>
-    void DefaultVectorIndexConfig<T>::close() {
-        KeyVector<T>::vectorIndexWrapper->~VectorIndexWrapper();
+    void DefaultVectorIndexConfig::close() {
+        KeyVector::vectorIndexWrapper->~VectorIndexWrapper();
     }
 
-    template class DefaultVectorIndexConfig<float>;
-    template class DefaultVectorIndexConfig<int8_t>;
 }

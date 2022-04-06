@@ -11,6 +11,7 @@
 
 #include "inc/IVF/SPTAGSSDServingWrapper.h"
 #include "inc/IVF/VectorIndexWrapper.h"
+#include "inc/IVF/utils/VectorScoreSchemeFactory.h"
 using namespace SPTAG;
 
 using namespace SPTAG::SSDServing;
@@ -37,13 +38,13 @@ namespace IVF {
 //            std::cout << rocksdb_dir << std::endl;
 //        }
 
-        int dim=KeyVector::vectorIndexWrapper->getVecLen();
+        SPTAG::DimensionType dim=KeyVector::vectorIndexWrapper->getVecLen();
 #define DefineVectorValueType(Name, Type) \
-                if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
-                    auto collectionStatHolder = new DefaultVectorScoreScheme<Type>();\
-                    collectionStatHolder->collectionStatisticsLoader(std::to_string(dim));\
-                    KeyVector::setCollectionStatHolder(collectionStatHolder);\
-                } \
+            if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
+                auto collectionStatHolder = std::make_unique<DefaultVectorScoreScheme<Type>>();\
+                collectionStatHolder->collectionStatisticsLoader(std::to_string(dim));         \
+                KeyVector::withCollectionStat=std::make_unique<ScoreSchemeFactory<DefaultVectorScoreScheme<Type>>>(std::move(collectionStatHolder));  \
+            } \
 
 
 #include "inc/Core/DefinitionList.h"

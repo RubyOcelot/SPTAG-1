@@ -3,6 +3,7 @@
 
 namespace IVF {
     ScoreScheme *PostingItemIter::getNext() {
+//        auto newItem=
         ScoreScheme *newItem = (modelItem->clone());
 
         if (newItem->postingStatisticsLoader(rawValue)) {

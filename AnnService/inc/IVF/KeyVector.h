@@ -5,6 +5,7 @@
 #include "interfaces/Keyword.h"
 #include "interfaces/VectorScoreScheme.h"
 #include "VectorIndexWrapper.h"
+#include "inc/IVF/utils/VectorScoreSchemeFactory.h"
 
 namespace IVF {
 
@@ -14,7 +15,7 @@ namespace IVF {
 
         std::unique_ptr<Scorer> getScorer() override;
 
-        std::unique_ptr<Scorer> getScorer(VectorScoreScheme *scoreScheme);
+        std::unique_ptr<Scorer> getScorer(const std::shared_ptr<VectorScoreScheme>& p_vScoreScheme);
 
         //default: DefaultVectorScoreScheme
         static void setCollectionStatHolder(VectorScoreScheme *collectionStat);
@@ -24,6 +25,7 @@ namespace IVF {
         void* getQueryVector();
 
         static VectorScoreScheme *collectionStatHolder;
+        static std::unique_ptr<VectorScoreSchemeFactoryBase> withCollectionStat;
 
         static VectorIndexWrapper* vectorIndexWrapper;
     private:

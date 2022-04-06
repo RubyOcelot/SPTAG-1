@@ -15,22 +15,22 @@ namespace IVF {
 
     VectorIndexWrapper *KeyVector::vectorIndexWrapper;
 
+    std::unique_ptr<VectorScoreSchemeFactoryBase> KeyVector::withCollectionStat;
+
     std::unique_ptr<Scorer> KeyVector::getScorer() {
-        auto defaultScoreScheme = KeyVector::getCollectionStatHolder();
-        if (defaultScoreScheme == nullptr) {
+        if (KeyVector::withCollectionStat == nullptr) {
             //TODO error;
         }
-        return getScorer(defaultScoreScheme);
+        return getScorer();
     }
 
 //consume the pointer
-    std::unique_ptr<Scorer> KeyVector::getScorer(VectorScoreScheme *vScoreScheme) {
-        if (vScoreScheme == nullptr) {
+    std::unique_ptr<Scorer> KeyVector::getScorer(std::unique_ptr<VectorScoreSchemeFactoryBase> p_vFactory) {
+        if (p_vScoreScheme == nullptr) {
             //TODO error;
         } else {
-            vScoreScheme->setQueryVector(queryVector);
+            p_vScoreScheme->setQueryVector(queryVector);
         }
-
 
         std::vector<int> headIDs;
         vectorIndexWrapper->getHeadIDs(headIDs, getQueryVector());
@@ -39,7 +39,7 @@ namespace IVF {
         auto subScorers = std::make_unique<SubScorerSet>();
         for (auto headID: headIDs) {
             //TODO load kwStat
-            auto kwStatHolder = vScoreScheme->clone();
+            auto kwStatHolder = p_vScoreScheme->clone();
             auto *postingItemStream=new std::istringstream;
             vectorIndexWrapper->getPostingList(headID, postingItemStream);
             //consume pointer
@@ -51,7 +51,7 @@ namespace IVF {
 
 
         //consume input pointer
-        delete vScoreScheme;
+        delete p_vScoreScheme;
         std::unique_ptr<Scorer> retScorer = std::make_unique<BooleanScorer>(LogicOperator::OR, std::move(subScorers));
         return retScorer;
     }

@@ -4,6 +4,7 @@
 #include "interfaces/ScoreScheme.h"
 #include "utils/DistanceFunction.h"
 #include "interfaces/VectorScoreScheme.h"
+#include "inc/Core/Common.h"
 
 
 namespace IVF {
@@ -36,12 +37,12 @@ namespace IVF {
 
     private:
 
-        DocId docId = -1;
+        DocId docId;
         void* docVector;
         void* queryVector;
         //default DistanceUtilsWrap
         std::shared_ptr<DistanceFunction> distFunc;
-        int vecLen=-1;
+        SPTAG::DimensionType vecLen;
         //int docNum;
 
     };

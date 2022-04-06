@@ -16,20 +16,16 @@ namespace IVF {
         value.push_front(element);
     }
 
-    void TopDocs::finish() {
-//may need reverse if not list
-    }
-
     void TopDocs::print_id_sort() {
         std::vector<DocId> id_list;
         for (auto iter: value) {
             id_list.push_back(iter.docId);
         }
-        std::sort(id_list.begin(),id_list.end());
-        for(auto iter:id_list){
-            std::cout<<iter<<" ";
+        std::sort(id_list.begin(), id_list.end());
+        for (auto iter: id_list) {
+            std::cout << iter << " ";
         }
-        std::cout<<std::endl;
+        std::cout << std::endl;
     }
 
 }

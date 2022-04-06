@@ -3,7 +3,6 @@
 
 namespace IVF {
     void BulkScorer::scoreAll(Collector *collector, const Bits &liveDocs) {
-        //collector.setScorer(scorer);
         DocId docId = scorer->getCurrentId();
         while (docId != -1) {
             if (liveDocs.get(docId)) {

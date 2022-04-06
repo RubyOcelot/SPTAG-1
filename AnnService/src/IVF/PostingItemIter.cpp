@@ -18,10 +18,6 @@ namespace IVF {
         return getNext();
     }
 
-//PostingItemIter::PostingItemIter(ScoreScheme* modelItem):modelItem(modelItem) {
-//
-//}
-
     ScoreScheme *PostingItemIter::skipTo(DocId docId) {
         //TODO optimize
         auto newItem = getNext();

@@ -4,8 +4,6 @@
 #include "inc/IVF//utils/Bits.h"
 #include "inc/IVF//BulkScorer.h"
 #include "inc/IVF/DefaultVectorIndexConfig.h"
-#include "inc/IVF/RocksDbKeyValueIO.h"
-#include "inc/IVF/KeyVector.h"
 
 namespace IVF {
 

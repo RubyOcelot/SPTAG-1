@@ -1,7 +1,6 @@
 #include "inc/IVF/DefaultVectorScoreScheme.h"
 
 #include <utility>
-//#include "postingItem.pb.h"
 #include <inc/Core/Common.h>
 
 namespace IVF {
@@ -44,25 +43,6 @@ namespace IVF {
 
     template<class T>
     bool DefaultVectorScoreScheme<T>::postingStatisticsLoader(std::istream *rawStream) {
-//         not using protobuf currently
-//        //TODO TESTC
-//        pb::postingItem p1;
-//        //TODO fix consume entire input
-//        p1.ParseFromIstream(rawStream);
-//        //TODO check vector len
-//        if (p1.has_docid() && p1.vecval_size() > 0) {
-//            docId = p1.docid();
-//
-//            docVector = std::vector<T>();
-//            for (int i = 0; i < p1.vecval_size(); i++) {
-//                docVector.push_back(p1.vecval(i));
-//            }
-//            return true;
-//        } else {
-//            return false;
-//        }
-
-
 
         docVector=new T[vecLen];
         if(*rawStream){

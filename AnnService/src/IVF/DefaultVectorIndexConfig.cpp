@@ -1,7 +1,6 @@
 #include "inc/IVF/DefaultVectorIndexConfig.h"
 #include "inc/IVF/KeyVector.h"
 #include "inc/IVF/DefaultVectorScoreScheme.h"
-#include "inc/IVF/RocksDbKeyValueIO.h"
 #include "inc/Core/VectorIndex.h"
 
 #include "inc/Helper/CommonHelper.h"
@@ -25,17 +24,6 @@ namespace IVF {
         auto vecIndex= IVF::SetupSPTAGIndex( &my_map, SPTAGConfigFilePath.c_str());
 
         KeyVector::vectorIndexWrapper=new VectorIndexWrapper(vecIndex);
-
-//        //
-//        std::string rocksdb_dir = dir + "//rocksdb";
-//        auto kvIO = new RocksDbKeyValueIO();
-//        if (kvIO->init(rocksdb_dir)) {
-//            KeyVector<T>::keyValueIO = kvIO;
-//        } else {
-//            //TODO ERROR
-//            std::cout << "db init error" << std::endl;
-//            std::cout << rocksdb_dir << std::endl;
-//        }
 
         int dim=KeyVector::vectorIndexWrapper->getVecLen();
 #define DefineVectorValueType(Name, Type) \

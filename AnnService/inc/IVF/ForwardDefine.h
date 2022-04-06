@@ -49,22 +49,11 @@ namespace IVF {
 
     class BooleanQuery;
 
-//TODO useless
-//class PostingItem;
-//class vectorPostingStatistics;
-//class KeywordStatistics;
-//class CollectionStatistics;
     class ScoreScheme;
-
 
     typedef ScoreScheme PostingItem;
 
-    class PostingStatistics;
-
-//
     class Collector;
-
-    class DocVectorItem;
 
     class IndexConfig;
 }

@@ -8,7 +8,6 @@ namespace IVF {
     }
 
     SimpleScorer::SimpleScorer(PostingItemIter &pIter) : pIter(pIter) {
-        //TODO TESTC
         currentItem = pIter.getFirst();
     }
 
@@ -25,10 +24,5 @@ namespace IVF {
             return -1;
         else return currentItem->getDocId();
     }
-
-////TODO
-//std::unique_ptr<Scorer> SimpleScorer::clone() const {
-//    return std::unique_ptr<Scorer>();
-//}
 
 }

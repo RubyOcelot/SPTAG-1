@@ -19,8 +19,6 @@ namespace IVF {
 
         void add(const DocWithScore &element);
 
-        void finish();
-
         std::list<DocWithScore> value;
     };
 }

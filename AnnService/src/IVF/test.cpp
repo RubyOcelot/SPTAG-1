@@ -7,32 +7,8 @@
 
 using namespace IVF;
 
-//void test_in(std::string dir){
-//    std::string rocksdb_dir=dir+"//rocksdb";
-//    auto kvIO=new RocksDbKeyValueIO();
-//    std::cout<<kvIO->init(rocksdb_dir)<<std::endl;
-//    auto key_list=std::vector<std::string>({"0","1","2"});
-//    auto value_list=std::vector<std::string>(3);
-//    pb::postingItem x[3];
-//    x[0].set_docid(2);
-//    x[1].set_docid(4);
-//    x[2].set_docid(8);
-//    for(int i=0;i<3;i++){
-//        for(int j=0;j<3;j++){
-//            x[i].add_vecval(j+i*3+1);
-//        }
-//        x[i].SerializeToString(&value_list[i]);
-//    }
-//
-//    for(int i=0;i<3;i++){
-//        kvIO->set(key_list[i],value_list[i]);
-//    }
-//    kvIO->shutdown();
-//}
-
 //void test_float(){
 //    std::string test_dir="/tmp/dbtestfloat";
-////    test_in(test_dir);
 //    IndexSearcher searcher=IndexSearcher(test_dir);
 //    auto temp_v=new float[100];
 //    for(int i=0;i<100;i++){

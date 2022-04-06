@@ -5,7 +5,6 @@
 #include "inc/IVF/DefaultVectorScoreScheme.h"
 #include "inc/IVF/utils/SubScorerSet.h"
 #include "inc/IVF/BooleanScorer.h"
-#include "inc/IVF/SPTAGWarpper.h"
 #include "inc/IVF/VectorIndexWrapper.h"
 
 

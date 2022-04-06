@@ -38,6 +38,7 @@ namespace IVF{
                 }
 
             }
+            return 0;
         }
         int print_truth_by_id(SizeType p_vectorID){
 
@@ -46,6 +47,7 @@ namespace IVF{
                 std::cout<<it<<" ";
             }
             std::cout<<std::endl;
+            return 0;
         }
     };
 }

@@ -27,6 +27,7 @@ namespace IVF {
 #undef DefineVectorValueType
         }
         std::cout<<std::endl;
+        return 0;
     }
 
     class QuerysWrap {
@@ -48,6 +49,7 @@ namespace IVF {
             }
             querySet = queryReader->GetVectorSet();
             numQueries = querySet->Count();
+            return 0;
         }
 
         int print_vector_by_id(SizeType p_vectorID){
@@ -57,6 +59,7 @@ namespace IVF {
                 return -1;
             }
             print_vector(vec,querySet->Dimension(),querySet->GetValueType());
+            return 0;
         }
     };
 

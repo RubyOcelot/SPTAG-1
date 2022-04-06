@@ -14,9 +14,7 @@ namespace IVF{
     SPANN::Options* getSPTAGOptions(const char* configurationPath) {
         auto config_map=new std::map<std::string, std::map<std::string, std::string>>;
         VectorValueType valueType;
-        DistCalcMethod distCalcMethod;
-    
-        bool searchSSD = false;
+
         Helper::IniReader iniReader;
         iniReader.LoadIniFile(configurationPath);
         (*config_map)["Base"] = iniReader.GetParameters("Base");

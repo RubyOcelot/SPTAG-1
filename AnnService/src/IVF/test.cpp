@@ -63,7 +63,7 @@ void test_int8(const std::string& test_dir){
     std::cout<<"miss rate: "<<miss_rate/(e-s)<<std::endl;
 }
 
-int utils_test(const std::string& test_dir){
+void utils_test(const std::string& test_dir){
     auto opts=getSPTAGOptions(test_dir.c_str());
     auto querys=new QuerysWrap;
     querys->loadData(opts);

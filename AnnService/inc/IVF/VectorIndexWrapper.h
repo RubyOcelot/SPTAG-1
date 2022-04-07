@@ -23,6 +23,10 @@ namespace IVF {
 
         int getVecLen();
 
+        int addVector(const void *p_data, SizeType p_vectorNum);
+
+        void deleteVector(void *target_vector);
+
     private:
         std::shared_ptr<SPTAG::VectorIndex> vecIndex;
     };

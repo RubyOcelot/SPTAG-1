@@ -3,6 +3,7 @@
 
 #include <string>
 #include "interfaces/ScoreScheme.h"
+#include "interfaces/Keyword.h"
 
 namespace IVF {
     class IndexSearcher {
@@ -10,6 +11,8 @@ namespace IVF {
         //use BulkScorer with query
     public:
         TopDocs search(Query &query, int n);
+
+        int addKeyword(Keyword &kw);
 
         Bits getLiveDocs();
 

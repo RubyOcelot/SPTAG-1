@@ -40,4 +40,10 @@ namespace IVF {
 
 
     }
+
+    int IndexSearcher::addKeyword(Keyword &kw) {
+        //TODO error
+        kw.addToIndex();
+        return 0;
+    }
 }

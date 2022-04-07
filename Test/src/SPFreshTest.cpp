@@ -270,7 +270,7 @@ namespace SPTAG {
 
                 std::vector<std::thread> threads;
 
-                LOG(Helper::LogLevel::LL_Info, "Searching: numThread: %d, numQueries: %d.\n", p_numThreads, numQueries);
+                LOG(Helper::LogLevel::LL_Info, "Searching: numThread: %d, numVectors: %d.\n", p_numThreads, numQueries);
 
                 StopWSPFresh sw;
 

@@ -30,12 +30,12 @@ namespace IVF {
         return 0;
     }
 
-    class QuerysWrap {
+    class VectorReaderWrap {
     public:
-        int numQueries;
-        std::shared_ptr<VectorSet> querySet;
+        int numVectors;
+        std::shared_ptr<VectorSet> p_vectorSet;
 
-        int loadData(SPANN::Options *p_opts) {
+        int loadQueryData(SPANN::Options *p_opts) {
             LOG(Helper::LogLevel::LL_Info, "Start loading QuerySet...\n");
             std::shared_ptr<Helper::ReaderOptions> queryOptions(
                     new Helper::ReaderOptions(p_opts->m_valueType, p_opts->m_dim, p_opts->m_queryType,
@@ -47,18 +47,38 @@ namespace IVF {
                 LOG(Helper::LogLevel::LL_Error, "Failed to read query file.\n");
                 exit(1);
             }
-            querySet = queryReader->GetVectorSet();
-            numQueries = querySet->Count();
+            p_vectorSet = queryReader->GetVectorSet();
+            numVectors = p_vectorSet->Count();
+            return 0;
+        }
+
+        int loadVectorData(SPANN::Options *p_opts){
+            std::shared_ptr<Helper::ReaderOptions> vectorOptions(new Helper::ReaderOptions(p_opts->m_valueType, p_opts->m_dim, p_opts->m_vectorType, p_opts->m_vectorDelimiter, false));
+            auto vectorReader = Helper::VectorSetReader::CreateInstance(vectorOptions);
+            if (p_opts->m_vectorPath.empty())
+            {
+                LOG(Helper::LogLevel::LL_Info, "Vector file is empty. Skipping loading.\n");
+            }
+            else {
+                if (ErrorCode::Success != vectorReader->LoadFile(p_opts->m_vectorPath))
+                {
+                    LOG(Helper::LogLevel::LL_Error, "Failed to read vector file.\n");
+//                    return ErrorCode::Fail;
+                    return -1;
+                }
+                p_vectorSet=vectorReader->GetVectorSet();
+                numVectors = p_vectorSet->Count();
+            }
             return 0;
         }
 
         int print_vector_by_id(SizeType p_vectorID){
-            void* vec=querySet->GetVector(p_vectorID);
+            void* vec=p_vectorSet->GetVector(p_vectorID);
             if(vec==nullptr){
                 //TODO error
                 return -1;
             }
-            print_vector(vec,querySet->Dimension(),querySet->GetValueType());
+            print_vector(vec, p_vectorSet->Dimension(), p_vectorSet->GetValueType());
             return 0;
         }
     };

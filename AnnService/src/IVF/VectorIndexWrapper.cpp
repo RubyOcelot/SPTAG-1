@@ -80,4 +80,18 @@ namespace IVF{
         return -1;
     }
 
+    int VectorIndexWrapper::addVector(const void *p_data, SizeType p_vectorNum) {
+#define DefineVectorValueType(Name, Type) \
+                if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
+                     ((SPANN::Index<Type>*)vecIndex.get())->AddIndex(p_data, p_vectorNum, vecIndex->GetFeatureDim(), nullptr); \
+                     return 0;  \
+                } \
+
+
+#include "inc/Core/DefinitionList.h"
+
+#undef DefineVectorValueType
+        return 0;
+    }
+
 }

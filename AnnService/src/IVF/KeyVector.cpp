@@ -27,7 +27,7 @@ namespace IVF {
         if (vScoreScheme == nullptr) {
             //TODO error;
         } else {
-            vScoreScheme->setQueryVector(queryVector);
+            vScoreScheme->setQueryVector(vectorValue);
         }
 
 
@@ -55,7 +55,7 @@ namespace IVF {
         return retScorer;
     }
 
-    KeyVector::KeyVector(void* vecValue) : queryVector(vecValue) {
+    KeyVector::KeyVector(void* vecValue) : vectorValue(vecValue) {
 
     }
 
@@ -73,7 +73,12 @@ namespace IVF {
 
 
     void* KeyVector::getQueryVector() {
-        return queryVector;
+        return vectorValue;
+    }
+
+    int KeyVector::addToIndex() {
+        vectorIndexWrapper->addVector(vectorValue, 1);
+        return 0;
     }
 
 }

@@ -33,11 +33,11 @@ int compare_result(TopDocs& td,std::set<SizeType> truth){
 
 void test_int8(const std::string& test_dir){
     auto opts=getSPTAGOptions(test_dir.c_str());
-    auto querys=new QuerysWrap;
-    querys->loadData(opts);
+    auto querys=new VectorReaderWrap;
+    querys->loadQueryData(opts);
 
     auto truth=new TruthWrap;
-    truth->loadData(opts,querys->numQueries);
+    truth->loadData(opts,querys->numVectors);
 
     auto searcher=IndexSearcher(test_dir);
     ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
@@ -47,7 +47,7 @@ void test_int8(const std::string& test_dir){
     int s=0;
     int e=10000;
     for(int j=s;j<e;j++){
-        auto kv=KeyVector(querys->querySet->GetVector(j));
+        auto kv=KeyVector(querys->p_vectorSet->GetVector(j));
         KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
         TopDocs topDocs=searcher.search(kwQuery,truth->truthK);
 //        truth->print_truth_by_id(j);
@@ -65,13 +65,16 @@ void test_int8(const std::string& test_dir){
 
 void utils_test(const std::string& test_dir){
     auto opts=getSPTAGOptions(test_dir.c_str());
-    auto querys=new QuerysWrap;
-    querys->loadData(opts);
+    auto baseVectors= new VectorReaderWrap;
+    baseVectors->loadVectorData(opts);
+    auto querys=new VectorReaderWrap;
+    querys->loadQueryData(opts);
     auto truth=new TruthWrap;
-    truth->loadData(opts,querys->numQueries);
-    std::cout<<"numQuerys:"<<querys->numQueries<<std::endl;
+    truth->loadData(opts,querys->numVectors);
+    std::cout << "numBaseVectors:" << baseVectors->numVectors << std::endl;
+    std::cout << "numQuerys:" << querys->numVectors << std::endl;
     querys->print_vector_by_id(0);
-    truth->print_truth_by_id(0);
+//    truth->print_truth_by_id(0);
 }
 
 int main(int argc, char* argv[]) {

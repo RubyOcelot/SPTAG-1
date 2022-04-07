@@ -14,6 +14,8 @@ namespace IVF {
 
         std::unique_ptr<Scorer> getScorer() override;
 
+        int addToIndex() override;
+
         std::unique_ptr<Scorer> getScorer(VectorScoreScheme *scoreScheme);
 
         //default: DefaultVectorScoreScheme
@@ -26,8 +28,9 @@ namespace IVF {
         static VectorScoreScheme *collectionStatHolder;
 
         static VectorIndexWrapper* vectorIndexWrapper;
+
     private:
-        void* queryVector;
+        void* vectorValue;
     };
 
 

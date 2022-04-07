@@ -8,6 +8,7 @@ namespace IVF {
     class Keyword {
     public:
         virtual std::unique_ptr<Scorer> getScorer() = 0;
+        virtual int addToIndex() = 0;
 //    virtual std::unique_ptr<Scorer> getScorer(ScoreScheme* scoreScheme)=0;
     };
 }

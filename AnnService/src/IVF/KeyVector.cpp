@@ -12,7 +12,7 @@ namespace IVF {
 
     VectorScoreScheme *KeyVector::collectionStatHolder;
 
-    VectorIndexWrapper *KeyVector::vectorIndexWrapper;
+    std::shared_ptr<VectorIndexWrapper>KeyVector::vectorIndexWrapper;
 
     std::unique_ptr<Scorer> KeyVector::getScorer() {
         auto defaultScoreScheme = KeyVector::getCollectionStatHolder();

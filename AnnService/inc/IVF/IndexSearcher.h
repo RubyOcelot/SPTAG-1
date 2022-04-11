@@ -4,6 +4,7 @@
 #include <string>
 #include "interfaces/ScoreScheme.h"
 #include "interfaces/Keyword.h"
+#include "interfaces/KeywordIndexWrapper.h"
 
 namespace IVF {
     class IndexSearcher {
@@ -19,6 +20,10 @@ namespace IVF {
         void getCollectionStatistics(ScoreScheme *scoreScheme);
 
         explicit IndexSearcher(const std::string &path);
+
+        bool updateAllFinished();
+
+        std::vector<std::shared_ptr<KeywordIndexWrapper>> indexCollection;
     };
 }
 

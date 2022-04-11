@@ -34,7 +34,7 @@ namespace IVF {
         //TODO read indexconfig from file
         //TODO template type
         auto indexConfig = DefaultVectorIndexConfig();
-        indexConfig.init(path);
+        indexConfig.init(path, *this);
 
         //TODO init SPTAG
 
@@ -45,5 +45,13 @@ namespace IVF {
         //TODO error
         kw.addToIndex();
         return 0;
+    }
+
+    bool IndexSearcher::updateAllFinished() {
+        for(auto iter:indexCollection){
+            if(!iter->updateAllFinished())
+                return false;
+        }
+        return true;
     }
 }

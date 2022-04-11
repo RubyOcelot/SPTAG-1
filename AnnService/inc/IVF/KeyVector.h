@@ -27,7 +27,7 @@ namespace IVF {
 
         static VectorScoreScheme *collectionStatHolder;
 
-        static VectorIndexWrapper* vectorIndexWrapper;
+        static std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper;
 
     private:
         void* vectorValue;

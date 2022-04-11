@@ -15,7 +15,7 @@ using namespace SPTAG;
 using namespace SPTAG::SSDServing;
 
 namespace IVF {
-    void DefaultVectorIndexConfig::init(const std::string &dir) {
+    void DefaultVectorIndexConfig::init(const std::string &dir, IndexSearcher &searcher) {
 
         //TODO
         std::string SPTAGConfigFilePath=dir;
@@ -23,7 +23,7 @@ namespace IVF {
         std::map<std::string, std::map<std::string, std::string>> my_map;
         auto vecIndex= IVF::SetupSPTAGIndex( &my_map, SPTAGConfigFilePath.c_str());
 
-        KeyVector::vectorIndexWrapper=new VectorIndexWrapper(vecIndex);
+        KeyVector::vectorIndexWrapper=std::make_shared<VectorIndexWrapper>(vecIndex);
 
         int dim=KeyVector::vectorIndexWrapper->getVecLen();
 #define DefineVectorValueType(Name, Type) \
@@ -37,6 +37,7 @@ namespace IVF {
 #include "inc/Core/DefinitionList.h"
 
 #undef DefineVectorValueType
+        searcher.indexCollection.push_back(KeyVector::vectorIndexWrapper);
     }
 
     void DefaultVectorIndexConfig::close() {

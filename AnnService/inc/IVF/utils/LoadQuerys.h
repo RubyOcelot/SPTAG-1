@@ -53,6 +53,7 @@ namespace IVF {
         }
 
         int loadVectorData(SPANN::Options *p_opts){
+            LOG(Helper::LogLevel::LL_Info, "Start loading VectorSet...\n");
             std::shared_ptr<Helper::ReaderOptions> vectorOptions(new Helper::ReaderOptions(p_opts->m_valueType, p_opts->m_dim, p_opts->m_vectorType, p_opts->m_vectorDelimiter, false));
             auto vectorReader = Helper::VectorSetReader::CreateInstance(vectorOptions);
             if (p_opts->m_vectorPath.empty())
@@ -68,6 +69,29 @@ namespace IVF {
                 }
                 p_vectorSet=vectorReader->GetVectorSet();
                 numVectors = p_vectorSet->Count();
+            }
+            return 0;
+        }
+
+        int loadFullVectorData(SPANN::Options *p_opts){
+            LOG(Helper::LogLevel::LL_Info, "Start loading full VectorSet...\n");
+            std::shared_ptr<Helper::ReaderOptions> vectorOptions(new Helper::ReaderOptions(p_opts->m_valueType, p_opts->m_dim, p_opts->m_vectorType, p_opts->m_vectorDelimiter, false));
+            auto vectorReader = Helper::VectorSetReader::CreateInstance(vectorOptions);
+            if (p_opts->m_fullVectorPath.empty())
+            {
+                LOG(Helper::LogLevel::LL_Info, "Full vector file is empty. Skipping loading.\n");
+            }
+            else {
+                if (ErrorCode::Success != vectorReader->LoadFile(p_opts->m_fullVectorPath))
+                {
+                    LOG(Helper::LogLevel::LL_Error, "Failed to read full vector file.\n");
+//                    return ErrorCode::Fail;
+                    return -1;
+                }
+                p_vectorSet=vectorReader->GetVectorSet();
+                numVectors = p_vectorSet->Count();
+                if (p_opts->m_distCalcMethod == DistCalcMethod::Cosine) p_vectorSet->Normalize(p_opts->m_searchThreadNum);
+                LOG(Helper::LogLevel::LL_Info, "\nLoad VectorSet(%d,%d).\n", p_vectorSet->Count(), p_vectorSet->Dimension());
             }
             return 0;
         }

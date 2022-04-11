@@ -94,4 +94,21 @@ namespace IVF{
         return 0;
     }
 
+    bool VectorIndexWrapper::updateAllFinished() {
+#define DefineVectorValueType(Name, Type) \
+                if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
+                     return ((SPANN::Index<Type>*)vecIndex.get())->AllFinished(); \
+                } \
+
+
+#include "inc/Core/DefinitionList.h"
+
+#undef DefineVectorValueType
+        return false;
+    }
+
+    VectorIndexWrapper::VectorIndexWrapper(const VectorIndexWrapper &vecIndexWrapper) {
+        vecIndex=vecIndexWrapper.vecIndex;
+    }
+
 }

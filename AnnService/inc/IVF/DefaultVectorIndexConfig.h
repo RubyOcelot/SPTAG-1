@@ -7,7 +7,7 @@
 namespace IVF {
     class DefaultVectorIndexConfig : public IndexConfig {
     public:
-        void init(const std::string &dir) override;
+        void init(const std::string &dir, IndexSearcher &searcher) override;
 
         void close() override;
     };

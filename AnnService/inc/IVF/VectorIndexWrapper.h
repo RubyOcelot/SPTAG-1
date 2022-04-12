@@ -5,13 +5,13 @@
 
 #include "inc/Core/VectorIndex.h"
 #include "inc/Core/SPANN/Index.h"
-#include "inc/IVF/interfaces/KeywordIndexWrapper.h"
+#include "inc/IVF/interfaces/KeywordIndex.h"
 
 using namespace SPTAG;
 using namespace SPTAG::SPANN;
 
 namespace IVF {
-    class VectorIndexWrapper:public KeywordIndexWrapper {
+    class VectorIndexWrapper:public KeywordIndex {
     public:
         VectorIndexWrapper(const std::shared_ptr<SPTAG::VectorIndex>& vecIndex);
         VectorIndexWrapper(const VectorIndexWrapper& vecIndexWrapper);

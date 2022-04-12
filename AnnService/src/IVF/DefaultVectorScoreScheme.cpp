@@ -1,7 +1,6 @@
-#include "inc/IVF/DefaultVectorScoreScheme.h"
-
 #include <utility>
-#include <inc/Core/Common.h>
+#include "inc/Core/Common.h"
+#include "inc/IVF/DefaultVectorScoreScheme.h"
 
 namespace IVF {
 
@@ -34,11 +33,6 @@ namespace IVF {
         //calc vector distance
         //TODO not sure about score and distance
         return (-1)*distFunc->calc(docVector, queryVector, vecLen);
-    }
-
-    DocId ByteToDocId(const unsigned char* Bytes){
-        auto a =  (SPTAG::SizeType*)Bytes;
-        return DocId(uint64_t(*a));
     }
 
     template<class T>

@@ -1,4 +1,5 @@
 #include <utility>
+#include "inc/Core/Common.h"
 #include "inc/IVF/KeyVector.h"
 #include "inc/IVF/SimpleScorer.h"
 #include "inc/IVF/PostingItemIter.h"
@@ -31,7 +32,7 @@ namespace IVF {
         }
 
 
-        std::vector<int> headIDs;
+        std::vector<SizeType> headIDs;
         vectorIndexWrapper->getHeadIDs(headIDs, getQueryVector());
 
         //call storage

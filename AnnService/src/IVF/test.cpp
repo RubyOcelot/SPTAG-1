@@ -1,9 +1,8 @@
-
 #include <iostream>
-#include "inc/IVF/api.h"
 #include <memory>
-#include "inc/IVF/DefaultVectorScoreScheme.h"
 #include <new>
+#include "inc/IVF/api.h"
+#include "inc/IVF/DefaultVectorScoreScheme.h"
 
 using namespace IVF;
 
@@ -73,29 +72,10 @@ int compare_result(TopDocs& td,std::set<SizeType> truth){
     return miss;
 }
 
-void test_int8(const std::string& test_dir){
-    auto opts=getSPTAGOptions(test_dir.c_str());
-
+void test_update(Options* opts,IndexSearcher &searcher){
     auto fullVectors= new VectorReaderWrap;
     fullVectors->loadFullVectorData(opts);
-
-    auto querys=new VectorReaderWrap;
-    querys->loadQueryData(opts);
-
-    auto truth=new TruthWrap;
-    truth->loadData(opts,querys->numVectors);
-
-    auto searcher=IndexSearcher(test_dir);
-    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
-
-//    std::cout<<opts->m_vectorSize<<" "<<fullVectors->numVectors<<std::endl;
-//    for(auto j=opts->m_vectorSize;j<fullVectors->numVectors;j++){
-//        auto kv=KeyVector(fullVectors->p_vectorSet->GetVector(j));
-//        searcher.addKeyword(kv);
-//    }
-
     int step=fullVectors->numVectors-opts->m_vectorSize;
-    int finishedInsert = 0;
     int insertThreads = opts->m_insertThreadNum;
     int curCount=opts->m_vectorSize;
 
@@ -103,7 +83,7 @@ void test_int8(const std::string& test_dir){
 
     StopWSPFresh sw;
 
-    std::vector<std::thread> threads;
+    std::vector<std::thread> insert_threads;
 
     std::atomic_size_t vectorsSent(0);
 
@@ -129,8 +109,8 @@ void test_int8(const std::string& test_dir){
             }
         }
     };
-    for (int j = 0; j < insertThreads; j++) { threads.emplace_back(func); }
-    for (auto& thread : threads) { thread.join(); }
+    for (int j = 0; j < insertThreads; j++) { insert_threads.emplace_back(func); }
+    for (auto& thread : insert_threads) { thread.join(); }
 
     double sendingCost = sw.getElapsedSec();
     LOG(Helper::LogLevel::LL_Info,
@@ -150,32 +130,83 @@ void test_int8(const std::string& test_dir){
         step / syncingCost,
         static_cast<uint32_t>(step));
 
-    curCount += step;
-    finishedInsert += step;
+    curCount+=step;
     LOG(Helper::LogLevel::LL_Info, "Total Vector num %d \n", curCount);
+}
 
-//        p_index->ForceCompaction();
+void test_search(Options* opts,IndexSearcher searcher,VectorReaderWrap* querys,TruthWrap* truth,int s,int e){
+    LOG(Helper::LogLevel::LL_Info, "Start searching...\n");
+
+    ScoreScheme* vScoreScheme=new DefaultVectorScoreScheme<int8_t>( std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
+
+    int searchThreads = opts->m_searchThreadNum;
+    StopWSPFresh sw;
+
+    std::vector<std::thread> search_threads;
+
+    std::atomic_size_t querysSent(s);
+    std::atomic_size_t miss_sum(0);
+
+    auto func2 = [&]()
+    {
+        size_t index = 0;
+        while (true)
+        {
+            index = querysSent.fetch_add(1);
+            if (index < e)
+            {
+                if ((index & ((1 << 12) - 1)) == 0)
+                {
+                    LOG(Helper::LogLevel::LL_Info, "Sent %.2lf%%...\n", index * 100.0 / (e-s));
+                }
+
+                auto kv=KeyVector(querys->p_vectorSet->GetVector(index));
+                KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
+                TopDocs topDocs=searcher.search(kwQuery,truth->truthK);
+//                topDocs.print_id_sort();
+//                truth->print_truth_by_id(index);
+                int miss= compare_result(topDocs,truth->truth.at(index));
+                miss_sum.fetch_add(miss);
+            }
+            else
+            {
+                return;
+            }
+        }
+    };
+    for (int j = 0; j < searchThreads; j++) { search_threads.emplace_back(func2); }
+    for (auto& thread : search_threads) { thread.join(); }
+
+    double searchingCost = sw.getElapsedSec();
+    LOG(Helper::LogLevel::LL_Info,
+        "Finish searching in %.3lf seconds, searching throughput is %.2lf, searching count %u.\n",
+        searchingCost,
+        (e-s)/ searchingCost,
+        static_cast<uint32_t>(e-s));
+
+    //TODO calc true recall
+    std::cout<<"recall rate: "<<1-((float)miss_sum/truth->truthK)/(e-s)<<std::endl;
+}
 
 
-    //TODO parallel
-    float miss_rate=0;
-    int s=0;
-    int e=1000;
-    for(int j=s;j<e;j++){
-        auto kv=KeyVector(querys->p_vectorSet->GetVector(j));
-        KeywordQuery kwQuery=KeywordQuery(kv, vScoreScheme);
-        TopDocs topDocs=searcher.search(kwQuery,truth->truthK);
-//        truth->print_truth_by_id(j);
-//        topDocs.print_id_sort();
-//        topDocs.print();
-        int miss= compare_result(topDocs,truth->truth.at(j));
-//        if(miss>0){
-//            std::cout<<j<<" miss "<<miss<<std::endl;
-//        }
-        miss_rate+=(float)miss/(float)(truth->truthK);
+void test_int8(const std::string& test_dir){
+    auto opts=getSPTAGOptions(test_dir.c_str());
+
+    auto searcher=IndexSearcher(test_dir);
+
+    if (opts->m_update)
+    {
+        test_update(opts,searcher);
     }
-    //TODO calc recall
-    std::cout<<"miss rate: "<<miss_rate/(e-s)<<std::endl;
+
+    auto querys=new VectorReaderWrap;
+    querys->loadQueryData(opts);
+
+    auto truth=new TruthWrap;
+    truth->loadData(opts,querys->numVectors);
+
+    test_search(opts,searcher,querys,truth,0,querys->numVectors);
+
 }
 
 void utils_test(const std::string& test_dir){

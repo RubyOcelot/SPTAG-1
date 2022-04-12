@@ -66,10 +66,15 @@ add_library(IVF ${IVF_HDR_FILES} ${IVF_SRC_FILES})
 
 #target_include_directories(IVF PUBLIC ${Protobuf_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 #target_link_libraries(IVF INTERFACE ${Protobuf_LIBRARIES} RocksDB::rocksdb SPTAGLib)
+
 target_link_libraries(IVF INTERFACE RocksDB::rocksdb SPTAGLib)
 
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
 add_executable(IVFTest src/IVF/test.cpp)
-target_link_libraries(IVFTest IVF)
+target_link_libraries(IVFTest IVF Threads::Threads)
 
 install(TARGETS SPTAGLib SPTAGLibStatic
   RUNTIME DESTINATION bin

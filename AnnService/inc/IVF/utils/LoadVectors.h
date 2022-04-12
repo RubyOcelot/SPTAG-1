@@ -1,5 +1,5 @@
-#ifndef SPTAGLIB_LOADQUERYS_H
-#define SPTAGLIB_LOADQUERYS_H
+#ifndef SPTAGLIB_LOADVECTORS_H
+#define SPTAGLIB_LOADVECTORS_H
 
 #include <vector>
 #include <set>
@@ -108,4 +108,4 @@ namespace IVF {
     };
 
 }
-#endif //SPTAGLIB_LOADQUERYS_H
+#endif //SPTAGLIB_LOADVECTORS_H

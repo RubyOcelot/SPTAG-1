@@ -9,4 +9,8 @@ namespace IVF {
         }
     }
 
+    std::string Term::getStr() const {
+        return str;
+    }
+
 }

@@ -18,6 +18,7 @@ namespace IVF {
 #define MAX_DOCID INT64_MAX
 
     typedef int64_t DocId;
+    typedef int32_t HeadIDType;
 
     class DocWithScore;
 

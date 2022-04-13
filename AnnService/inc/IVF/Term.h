@@ -9,9 +9,12 @@
 namespace IVF {
 
     class Term : public Keyword {
-
+    public:
         std::unique_ptr<Scorer> getScorer() override;
         static ScoreScheme* getCollectionStatHolder();
+        std::string getStr() const;
+    private:
+        std::string str;
     };
 }
 

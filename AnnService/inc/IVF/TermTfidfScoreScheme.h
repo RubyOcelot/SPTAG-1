@@ -41,10 +41,11 @@ namespace IVF {
     public:
         ScoreScheme *clone();
 
+        //{DocId id,float tf}
         bool postingStatisticsLoader(std::istream *rawStream) override;
-
+        //{TermStatType df}
         void keywordStatisticsLoader(std::string) override;
-
+        //{TermStatType docNum}
         void collectionStatisticsLoader(std::string) override;
 
         float score() override;

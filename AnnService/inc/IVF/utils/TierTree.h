@@ -11,6 +11,7 @@
 #include "inc/IVF/Term.h"
 #include "inc/IVF/ForwardDefine.h"
 #include "inc/Core/Common.h"
+#include "inc/IVF/interfaces/KeywordStatistic.h"
 
 
 namespace IVF{
@@ -22,51 +23,38 @@ namespace IVF{
         public:
             Children();
             ~Children();
-            std::shared_ptr<Node> getChild(const std::string& str,int curPos);
-            std::shared_ptr<Node> getOrAddChild(const std::string& str,int curPos,std::atomic<HeadIDType>& curHeadId_ref,void* (*statInitValue)());
+            std::shared_ptr<Node> getChild(const std::string& str,int curPos) const;
+            std::shared_ptr<Node> getOrAddChild(const std::string& str, int curPos, std::atomic<HeadIDType>& curHeadId_ref,
+                                                const std::unique_ptr<KeywordStatistic> &stat);
             void addChild(const std::shared_ptr<Node>& child);
             std::shared_ptr<Node>* charIndex;
             std::shared_mutex* charRWLock;
         };
         class Node{
         public:
-            Node(std::string ident, HeadIDType hid, void* (*statInit)(),void (*delStat)(void*), const std::shared_ptr<Children>& children=nullptr): identity(std::move(ident)){
-                headID=hid;
-                this->stat=statInit();
+            Node(std::string ident, HeadIDType hid, std::unique_ptr<KeywordStatistic> stat, const std::shared_ptr<Children>& children=nullptr): identity(std::move(ident)),headID(hid),stat(std::move(stat)){
                 if(children==nullptr){
                     this->children=std::make_shared<Children>();
                 }
                 else{
                     this->children=children;
                 }
-                this->deleteStat=delStat;
-            }
-            ~Node(){
-                (*deleteStat)(stat);
             }
             HeadIDType headID;
             std::string identity;
-            void* stat;
+            std::unique_ptr<KeywordStatistic> stat;
             std::shared_ptr<Children> children;
-            void (*deleteStat)(void*);
             mutable boost::shared_mutex divergeLock;
         };
     public:
+        explicit TierTree(std::unique_ptr<KeywordStatistic> emptyStat);
         std::shared_ptr<Node> root;
-        void init(void* (*statInitValue_in)(), void (*statAddOp_in)(void*,void*), void (*statDelOp_in)(void*,void*), void (*deleteStat_in)(void*),void* (*outputStat_in)(void*));
-        HeadIDType seek(const Term &term, void **rt_stat);
-        HeadIDType set(const Term& term,void* stat);
-        HeadIDType add(const Term& term,void* inputStat);
-        HeadIDType del(const Term& term,void* inputStat);
+        HeadIDType seek(const Term &term, std::string *rt_stat);
+        HeadIDType set(const Term& term, std::string stat);
+        HeadIDType add(const Term& term, std::string inputStat);
+        HeadIDType del(const Term& term, std::string inputStat);
         std::atomic<HeadIDType> curHeadId;
     private:
-        void* (*initStat)();
-        void (*statOpForAdd)(void*, void* inputStat);
-        void (*statOpForDel)(void*, void* inputStat);
-        void (*deleteStat)(void*);
-
-        //copy non-atomic value for stat
-        void* (*outputStat)(void*);
         std::shared_ptr<Node> seekInternalNoInsert(const std::string& str, std::shared_ptr<Node> curNode, int curPos);
         std::shared_ptr<Node> seekInternalWithInsert(const std::string& str,std::shared_ptr<Node> curNode,int curPos);
     };
@@ -84,7 +72,7 @@ namespace IVF{
         delete[] charRWLock;
     }
 
-    std::shared_ptr<TierTree::Node> TierTree::Children::getChild(const std::string &str, int curPos) {
+    std::shared_ptr<TierTree::Node> TierTree::Children::getChild(const std::string &str, int curPos) const {
         unsigned char fc=str[curPos];
         charRWLock[fc].lock_shared();
         auto node=charIndex[fc];
@@ -92,7 +80,8 @@ namespace IVF{
         return node;
     }
 
-    std::shared_ptr<TierTree::Node> TierTree::Children::getOrAddChild(const std::string &str, int curPos, std::atomic<HeadIDType>& curHeadId_ref,void* (*statInitValue)()) {
+    std::shared_ptr<TierTree::Node> TierTree::Children::getOrAddChild(const std::string &str, int curPos, std::atomic<HeadIDType>& curHeadId_ref,
+                                                                      const std::unique_ptr<KeywordStatistic> &stat) {
         unsigned char fc=str[curPos];
         charRWLock[fc].lock_shared();
         auto node=charIndex[fc];
@@ -103,7 +92,7 @@ namespace IVF{
         charRWLock[fc].lock();
         node=charIndex[fc];
         if(node==nullptr) {
-            node=std::make_shared<Node>(str.substr(curPos,std::string::npos), curHeadId_ref++, statInitValue);
+            node=std::make_shared<Node>(str.substr(curPos,std::string::npos), curHeadId_ref++, stat->getNew());
             charIndex[fc]=node;
         }
         charRWLock[fc].unlock();
@@ -122,47 +111,40 @@ namespace IVF{
         charRWLock[fc].unlock();
     }
 
-    void TierTree::init(void* (*statInitValue_in)(), void (*statAddOp_in)(void *,void *), void (*statDelOp_in)(void *,void *), void(*deleteStat_in)(void*),void* (*outputStat_in)(void*)) {
-        initStat=statInitValue_in;
-        statOpForAdd=statAddOp_in;
-        statOpForDel=statDelOp_in;
-        deleteStat=deleteStat_in;
-        outputStat=outputStat_in;
-        curHeadId=0;
-        root=std::make_shared<Node>("", curHeadId++, initStat);
+    TierTree::TierTree(std::unique_ptr<KeywordStatistic> emptyStat):curHeadId(0),
+                            root(std::make_shared<Node>("", curHeadId++, emptyStat)){
     }
 
 
-    HeadIDType TierTree::seek(const Term &term, void **rt_stat) {
+    HeadIDType TierTree::seek(const Term &term, std::string* rt_stat) {
         auto node = seekInternalNoInsert(term.getStr(),root,0);
         if(rt_stat!=nullptr){
-            *rt_stat=(*outputStat)(node->stat);
+            *rt_stat=node->stat->getContent();
         }
         auto hid=node->headID;
         node->divergeLock.unlock_shared();
         return hid;
     }
 
-    HeadIDType TierTree::set(const Term &term, void *stat) {
+    HeadIDType TierTree::set(const Term &term, std::string stat) {
         auto node = seekInternalWithInsert(term.getStr(),root,0);
-        deleteStat(node->stat);
-        node->stat=stat;
+        node->stat->set(stat);
         auto hid=node->headID;
         node->divergeLock.unlock_shared();
         return hid;
     }
 
-    HeadIDType TierTree::add(const Term &term, void *inputStat) {
+    HeadIDType TierTree::add(const Term &term, std::string inputStat) {
         auto node = seekInternalWithInsert(term.getStr(),root,0);
-        (*statOpForAdd)(node->stat, inputStat);
+        node->stat->modForAdd(inputStat);
         auto hid=node->headID;
         node->divergeLock.unlock_shared();
         return hid;
     }
 
-    HeadIDType TierTree::del(const Term &term, void *inputStat) {
+    HeadIDType TierTree::del(const Term &term, std::string inputStat) {
         auto node = seekInternalNoInsert(term.getStr(),root,0);
-        (*statOpForDel)(node->stat, inputStat);
+        node->stat->modForDel(inputStat);
         auto hid=node->headID;
         node->divergeLock.unlock_shared();
         return hid;
@@ -181,7 +163,7 @@ namespace IVF{
             }
             auto children=curNode->children;
             curNode->divergeLock.unlock_shared();
-            return seekInternalNoInsert(str, children->getOrAddChild(str, curPos, curHeadId, initStat), curPos);
+            return seekInternalNoInsert(str, children->getOrAddChild(str, curPos, curHeadId, curNode->stat), curPos);
         }
 
         curNode->divergeLock.unlock_shared();
@@ -197,17 +179,18 @@ namespace IVF{
             }
             auto children=curNode->children;
             curNode->divergeLock.unlock();
-            return seekInternalNoInsert(str, children->getOrAddChild(str, curPos, curHeadId, initStat), curPos);
+            return seekInternalNoInsert(str, children->getOrAddChild(str, curPos, curHeadId, curNode->stat), curPos);
         }
 
         auto newPos= checkPrefix(str.substr(curPos,std::string::npos),curNode->identity);
-        auto newChild1=std::make_shared<Node>(curNode->identity.substr(newPos,std::string::npos),curHeadId++,curNode->stat,curNode->children);
+        auto newChild1=std::make_shared<Node>(curNode->identity.substr(newPos,std::string::npos),curNode->headID,std::move(curNode->stat),curNode->children);
         curNode->identity=curNode->identity.substr(0,newPos);
-        curNode->stat=initStat();
+        curNode->headID=curHeadId++;
+        curNode->stat=newChild1->stat->getNew();
         curNode->children.reset(new Children());
         curNode->children->addChild(newChild1);
         if(newPos!=str.length()){
-            auto newChild2=std::make_shared<Node>(str.substr(newPos,std::string::npos), curHeadId++, initStat);
+            auto newChild2=std::make_shared<Node>(str.substr(newPos,std::string::npos), curHeadId++, curNode->stat->getNew());
             newChild2->divergeLock.lock_shared();
             curNode->children->addChild(newChild2);
 

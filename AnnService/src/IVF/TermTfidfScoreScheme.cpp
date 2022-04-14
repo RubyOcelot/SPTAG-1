@@ -43,4 +43,8 @@ namespace IVF{
     DocId TermTFIDFScoreScheme::getDocId() {
         return docId;
     }
+
+    std::unique_ptr<KeywordStatistic> TermTFIDFScoreScheme::getKeywordStatistic() {
+        return std::make_unique<DocFreq>();
+    }
 }

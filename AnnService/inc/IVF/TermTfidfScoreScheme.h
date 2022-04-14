@@ -52,7 +52,7 @@ namespace IVF {
 
         DocId getDocId() override;
 
-        std::unique_ptr<KeywordStatistic> getKeywordStatistic();
+        static std::unique_ptr<KeywordStatistic> getKeywordStatistic();
     private:
         float termFreq;
         TermStatType docFreq;

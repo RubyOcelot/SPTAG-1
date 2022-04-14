@@ -25,7 +25,6 @@ namespace IVF{
             std::shared_ptr<Node> getChild(const std::string& str,int curPos);
             std::shared_ptr<Node> getOrAddChild(const std::string& str,int curPos,std::atomic<HeadIDType>& curHeadId_ref,void* (*statInitValue)());
             void addChild(const std::shared_ptr<Node>& child);
-            //TODO lock per char
             std::shared_ptr<Node>* charIndex;
             std::shared_mutex* charRWLock;
         };
@@ -59,7 +58,6 @@ namespace IVF{
         HeadIDType set(const Term& term,void* stat);
         HeadIDType add(const Term& term,void* inputStat);
         HeadIDType del(const Term& term,void* inputStat);
-        //TODO atomic
         std::atomic<HeadIDType> curHeadId;
     private:
         void* (*initStat)();
@@ -141,7 +139,7 @@ namespace IVF{
             *rt_stat=(*outputStat)(node->stat);
         }
         auto hid=node->headID;
-        //release diverge rlock
+        node->divergeLock.unlock_shared();
         return hid;
     }
 
@@ -150,7 +148,7 @@ namespace IVF{
         deleteStat(node->stat);
         node->stat=stat;
         auto hid=node->headID;
-        //release diverge rlock
+        node->divergeLock.unlock_shared();
         return hid;
     }
 
@@ -158,7 +156,7 @@ namespace IVF{
         auto node = seekInternalWithInsert(term.getStr(),root,0);
         (*statOpForAdd)(node->stat, inputStat);
         auto hid=node->headID;
-        //release diverge rlock
+        node->divergeLock.unlock_shared();
         return hid;
     }
 
@@ -166,7 +164,7 @@ namespace IVF{
         auto node = seekInternalNoInsert(term.getStr(),root,0);
         (*statOpForDel)(node->stat, inputStat);
         auto hid=node->headID;
-        //release diverge rlock
+        node->divergeLock.unlock_shared();
         return hid;
     }
 
@@ -222,8 +220,9 @@ namespace IVF{
 
 
     std::shared_ptr<TierTree::Node> TierTree::seekInternalNoInsert(const std::string &str, std::shared_ptr<TierTree::Node> curNode, int curPos) {
-        if(curNode==nullptr)return nullptr;
-        //TODO diverge rlock
+        if(curNode==nullptr)
+            return nullptr;
+        curNode->divergeLock.lock_shared();
         auto isPref=isPrefix(curNode->identity,str);
         if(isPref){
             auto identityLen=curNode->identity.length();
@@ -232,7 +231,7 @@ namespace IVF{
                 return curNode;
             }
             auto children=curNode->children;
-            //release diverge rlock
+            curNode->divergeLock.unlock_shared();
             return seekInternalNoInsert(str, children->getChild(str, curPos), curPos);
         }
         return nullptr;

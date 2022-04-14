@@ -1,7 +1,7 @@
 #include <utility>
 #include "inc/Core/Common.h"
 #include "inc/IVF/DefaultVectorScoreScheme.h"
-#include "inc/IVF/utils/ByteToDocId.h"
+#include "inc/IVF/utils/DataTransform.h"
 
 namespace IVF {
 

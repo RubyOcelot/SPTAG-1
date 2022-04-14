@@ -7,16 +7,27 @@
 
 #include "interfaces/ScoreScheme.h"
 #include "inc/Core/Common.h"
-#include "inc/IVF/utils/ByteToDocId.h"
+#include "inc/IVF/utils/DataTransform.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
 
 namespace IVF {
-    typedef uint32_t TermStatType;
 
     class TermTFIDFScoreScheme : public ScoreScheme {
+        typedef uint32_t TermStatType;
+
+        static std::string TermStatToString(const TermStatType& data){
+            std::string s((char*)data);
+            return s;
+        }
+
+        static TermStatType* StringToTermStat(const std::string& data){
+            return (TermStatType*)data.c_str();
+        }
         class DocFreq:public KeywordStatistic{
+
         public:
             DocFreq();
+            explicit DocFreq(TermStatType docFreq);
             void reset()override;
             void set(const std::string &)override;
             void modForAdd(const std::string &)override;
@@ -25,7 +36,7 @@ namespace IVF {
             std::unique_ptr<KeywordStatistic> clone()override;
             std::unique_ptr<KeywordStatistic> getNew()override;
         private:
-            std::atomic<int> docFreq;
+            std::atomic<TermStatType> docFreq;
         };
     public:
         ScoreScheme *clone();

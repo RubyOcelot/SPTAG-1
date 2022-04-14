@@ -1,5 +1,5 @@
-#ifndef SPTAGLIB_BYTETODOCID_H
-#define SPTAGLIB_BYTETODOCID_H
+#ifndef SPTAGLIB_DATATRANSFORM_H
+#define SPTAGLIB_DATATRANSFORM_H
 
 #include "inc/Core/Common.h"
 #include "inc/IVF/ForwardDefine.h"
@@ -10,7 +10,6 @@ namespace IVF{
         auto a =  (SPTAG::SizeType*)Bytes;
         return DocId(uint64_t(*a));
     }
-
 }
 
-#endif //SPTAGLIB_BYTETODOCID_H
+#endif //SPTAGLIB_DATATRANSFORM_H

@@ -47,4 +47,40 @@ namespace IVF{
     std::unique_ptr<KeywordStatistic> TermTFIDFScoreScheme::getKeywordStatistic() {
         return std::make_unique<DocFreq>();
     }
+
+    TermTFIDFScoreScheme::DocFreq::DocFreq():docFreq(0) {
+    }
+
+    TermTFIDFScoreScheme::DocFreq::DocFreq(TermStatType docFreq):docFreq(docFreq) {
+
+    }
+
+    void TermTFIDFScoreScheme::DocFreq::reset() {
+        docFreq=0;
+    }
+
+    std::string TermTFIDFScoreScheme::DocFreq::getContent() {
+        return TermTFIDFScoreScheme::TermStatToString(docFreq);
+    }
+
+    std::unique_ptr<KeywordStatistic> TermTFIDFScoreScheme::DocFreq::clone() {
+        return std::make_unique<DocFreq>(docFreq);
+    }
+
+    std::unique_ptr<KeywordStatistic> TermTFIDFScoreScheme::DocFreq::getNew() {
+        return std::make_unique<DocFreq>();
+    }
+
+    void TermTFIDFScoreScheme::DocFreq::set(const std::string &data) {
+        docFreq=*StringToTermStat(data);
+    }
+
+    void TermTFIDFScoreScheme::DocFreq::modForAdd(const std::string &data) {
+        docFreq++;
+    }
+
+    void TermTFIDFScoreScheme::DocFreq::modForDel(const std::string &data) {
+        docFreq--;
+    }
+
 }

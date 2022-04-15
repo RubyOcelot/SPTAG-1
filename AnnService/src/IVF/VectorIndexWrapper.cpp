@@ -111,4 +111,8 @@ namespace IVF{
         vecIndex=vecIndexWrapper.vecIndex;
     }
 
+    void VectorIndexWrapper::close() {
+        vecIndex.reset();
+    }
+
 }

@@ -23,9 +23,9 @@ namespace IVF {
         std::map<std::string, std::map<std::string, std::string>> my_map;
         auto vecIndex= IVF::SetupSPTAGIndex( &my_map, SPTAGConfigFilePath.c_str());
 
-        KeyVector::vectorIndexWrapper=std::make_shared<VectorIndexWrapper>(vecIndex);
+        vectorIndexWrapper=std::make_shared<VectorIndexWrapper>(vecIndex);
 
-        int dim=KeyVector::vectorIndexWrapper->getVecLen();
+        int dim=vectorIndexWrapper->getVecLen();
 #define DefineVectorValueType(Name, Type) \
                 if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
                     auto collectionStatHolder = new DefaultVectorScoreScheme<Type>();\
@@ -37,11 +37,19 @@ namespace IVF {
 #include "inc/Core/DefinitionList.h"
 
 #undef DefineVectorValueType
-        searcher.indexCollection.push_back(KeyVector::vectorIndexWrapper);
+        searcher.indexCollection.push_back(vectorIndexWrapper);
     }
 
     void DefaultVectorIndexConfig::close() {
-        KeyVector::vectorIndexWrapper->~VectorIndexWrapper();
+        //TODO
+    }
+
+    std::unique_ptr<KeyVector> DefaultVectorIndexConfig::getVectorFactory() {
+        return std::make_unique<KeyVector>(nullptr,vectorIndexWrapper);
+    }
+
+    std::unique_ptr<Keyword> DefaultVectorIndexConfig::getFactory() {
+        return getVectorFactory();
     }
 
 }

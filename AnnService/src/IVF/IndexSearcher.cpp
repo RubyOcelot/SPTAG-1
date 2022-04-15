@@ -32,26 +32,27 @@ namespace IVF {
     IndexSearcher::IndexSearcher(const std::string &path) {
 
         //TODO read indexconfig from file
-        //TODO template type
         auto indexConfig = DefaultVectorIndexConfig();
         indexConfig.init(path, *this);
-
-        //TODO init SPTAG
-
+        keywordFactory=indexConfig.getFactory();
 
     }
 
-    int IndexSearcher::addKeyword(Keyword &kw) {
+    int IndexSearcher::addKeyword(std::unique_ptr<Keyword> kw) {
         //TODO error
-        kw.addToIndex();
+        kw->addToIndex();
         return 0;
     }
 
     bool IndexSearcher::updateAllFinished() {
-        for(auto iter:indexCollection){
+        for(const auto& iter:indexCollection){
             if(!iter->updateAllFinished())
                 return false;
         }
         return true;
+    }
+
+    std::shared_ptr<Keyword> IndexSearcher::getKeywordFactory() {
+        return keywordFactory;
     }
 }

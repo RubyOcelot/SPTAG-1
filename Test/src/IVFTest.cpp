@@ -69,6 +69,8 @@ namespace IVF {
         int insertThreads = opts->m_insertThreadNum;
         int curCount = opts->m_vectorSize;
 
+        auto kvFactory=(KeyVector*)(searcher.getKeywordFactory().get());
+
         LOG(Helper::LogLevel::LL_Info, "Start updating...\n");
 
         StopWSPFresh sw;
@@ -86,8 +88,7 @@ namespace IVF {
                         LOG(Helper::LogLevel::LL_Info, "Sent %.2lf%%...\n", index * 100.0 / step);
                     }
 
-                    auto kv = KeyVector(fullVectors.p_vectorSet->GetVector(index + curCount));
-                    searcher.addKeyword(kv);
+                    searcher.addKeyword(kvFactory->asFactory(fullVectors.p_vectorSet->GetVector(index + curCount)));
                 } else {
                     return;
                 }
@@ -120,6 +121,8 @@ namespace IVF {
     void test_search(Options *opts, IndexSearcher searcher, VectorReaderWrap &querys, TruthWrap &truth, int s, int e) {
         LOG(Helper::LogLevel::LL_Info, "Start searching...\n");
 
+        auto kvFactory=(KeyVector*)(searcher.getKeywordFactory().get());
+
         ScoreScheme *vScoreScheme = new DefaultVectorScoreScheme<int8_t>(
                 std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
 
@@ -140,8 +143,7 @@ namespace IVF {
                         LOG(Helper::LogLevel::LL_Info, "Sent %.2lf%%...\n", index * 100.0 / (e - s));
                     }
 
-                    auto kv = KeyVector(querys.p_vectorSet->GetVector(index));
-                    KeywordQuery kwQuery = KeywordQuery(kv, vScoreScheme);
+                    KeywordQuery kwQuery = KeywordQuery(kvFactory->asFactory(querys.p_vectorSet->GetVector(index)), vScoreScheme);
                     TopDocs topDocs = searcher.search(kwQuery, truth.truthK);
 //                topDocs.print_id_sort();
 //                truth->print_truth_by_id(index);

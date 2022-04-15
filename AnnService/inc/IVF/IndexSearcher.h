@@ -14,19 +14,24 @@ namespace IVF {
         //top n
         //use BulkScorer with query
     public:
+        explicit IndexSearcher(const std::string &path);
+
         TopDocs search(Query &query, int n);
 
-        int addKeyword(Keyword &kw);
+        int addKeyword(std::unique_ptr<Keyword> kw);
 
         Bits getLiveDocs();
 
         void getCollectionStatistics(ScoreScheme *scoreScheme);
 
-        explicit IndexSearcher(const std::string &path);
 
         bool updateAllFinished();
 
+        std::shared_ptr<Keyword> getKeywordFactory();
+
         std::vector<std::shared_ptr<KeywordIndex>> indexCollection;
+    private:
+        std::shared_ptr<Keyword> keywordFactory;
     };
 }
 

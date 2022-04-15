@@ -30,6 +30,8 @@ namespace IVF {
 
         bool updateAllFinished() override;
 
+        void close() override;
+
     private:
         std::shared_ptr<SPTAG::VectorIndex> vecIndex;
     };

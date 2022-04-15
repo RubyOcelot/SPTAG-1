@@ -6,7 +6,9 @@
 namespace IVF {
 
     class TermIndex : public KeywordIndex {
+    public:
         bool updateAllFinished() override;
+        void close() override;
     };
 
 }

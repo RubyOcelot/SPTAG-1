@@ -10,7 +10,7 @@ namespace IVF {
     public:
         //init ScorerScheme for each index/keyword.
         virtual void init(const std::string &dir, IndexSearcher &searcher) = 0;
-
+        virtual std::unique_ptr<Keyword> getFactory()=0;
         virtual void close() = 0;
     };
 }

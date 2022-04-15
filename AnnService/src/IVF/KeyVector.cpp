@@ -13,8 +13,6 @@ namespace IVF {
 
     VectorScoreScheme *KeyVector::collectionStatHolder;
 
-    std::shared_ptr<VectorIndexWrapper>KeyVector::vectorIndexWrapper;
-
     std::unique_ptr<Scorer> KeyVector::getScorer() {
         auto defaultScoreScheme = KeyVector::getCollectionStatHolder();
         if (defaultScoreScheme == nullptr) {
@@ -49,16 +47,12 @@ namespace IVF {
             subScorers->add(std::move(clusterScorer));
         }
 
-
         //consume input pointer
         delete vScoreScheme;
         std::unique_ptr<Scorer> retScorer = std::make_unique<BooleanScorer>(LogicOperator::OR, std::move(subScorers));
         return retScorer;
     }
 
-    KeyVector::KeyVector(void* vecValue) : vectorValue(vecValue) {
-
-    }
 
     void KeyVector::setCollectionStatHolder(VectorScoreScheme *collectionStat) {
         collectionStatHolder = collectionStat;
@@ -79,7 +73,17 @@ namespace IVF {
 
     int KeyVector::addToIndex() {
         vectorIndexWrapper->addVector(vectorValue, 1);
+        //TODO vector lifetime
         return 0;
+    }
+
+    std::unique_ptr<KeyVector> KeyVector::asFactory(void *vecValue) {
+        auto kv=std::make_unique<KeyVector>(vecValue,vectorIndexWrapper);
+        return kv;
+    }
+
+    KeyVector::KeyVector(void *vecValue, std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper) : vectorValue(vecValue), vectorIndexWrapper(std::move(vectorIndexWrapper)){
+
     }
 
 }

@@ -5,16 +5,20 @@
 #include "CommonUse.h"
 #include "interfaces/Keyword.h"
 #include "interfaces/Scorer.h"
+#include "TermIndex.h"
 
 namespace IVF {
 
     class Term : public Keyword {
     public:
+        Term(std::string str,std::shared_ptr<TermIndex> termIndex);
         std::unique_ptr<Scorer> getScorer() override;
-        static ScoreScheme* getCollectionStatHolder();
+        int addToIndex() override;
         std::string getStr() const;
+        static ScoreScheme* getCollectionStatHolder();
     private:
         std::string str;
+        std::shared_ptr<TermIndex> termIndex;
     };
 }
 

@@ -10,7 +10,9 @@ namespace IVF {
 
     class KeyVector : public Keyword {
     public:
-        explicit KeyVector(void* vecValue);
+        KeyVector(void* vecValue,std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper);
+
+        std::unique_ptr<KeyVector> asFactory(void* vecValue);
 
         std::unique_ptr<Scorer> getScorer() override;
 
@@ -18,16 +20,17 @@ namespace IVF {
 
         std::unique_ptr<Scorer> getScorer(VectorScoreScheme *scoreScheme);
 
+        void* getQueryVector();
+
+        std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper;
+
         //default: DefaultVectorScoreScheme
         static void setCollectionStatHolder(VectorScoreScheme *collectionStat);
 
         static VectorScoreScheme *getCollectionStatHolder();
 
-        void* getQueryVector();
-
         static VectorScoreScheme *collectionStatHolder;
 
-        static std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper;
 
     private:
         void* vectorValue;

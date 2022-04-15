@@ -6,6 +6,7 @@ namespace IVF {
     class KeywordIndex {
     public:
         virtual bool updateAllFinished()=0;
+        virtual void close()=0;
     };
 
 }

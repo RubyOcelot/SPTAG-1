@@ -3,11 +3,12 @@
 namespace IVF {
 
     std::unique_ptr<Scorer> KeywordQuery::getScorer() {
-        return keyword.getScorer();
+        return keyword->getScorer();
     }
 
-    KeywordQuery::KeywordQuery(Keyword &keyword, ScoreScheme *scoreScheme) : keyword(keyword),
-                                                                             scoreScheme(scoreScheme) {
+    KeywordQuery::KeywordQuery(std::unique_ptr<Keyword> keyword, ScoreScheme *scoreScheme):keyword(std::move(keyword)),
+    scoreScheme(scoreScheme)  {
 
-    };
+    }
+
 }

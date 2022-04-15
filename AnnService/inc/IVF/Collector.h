@@ -1,9 +1,9 @@
 #ifndef IVF_COLLECTOR_H
 #define IVF_COLLECTOR_H
 
-#include "ForwardDefine.h"
+#include "CommonUse.h"
 #include "utils/DocPriorityQueue.h"
-#include "TopDocs.h"
+#include "inc/IVF/utils/TopDocs.h"
 
 namespace IVF {
     class Collector {

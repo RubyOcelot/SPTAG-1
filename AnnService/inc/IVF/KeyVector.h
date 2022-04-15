@@ -1,7 +1,7 @@
 #ifndef IVF_KEYVECTOR_H
 #define IVF_KEYVECTOR_H
 
-#include "ForwardDefine.h"
+#include "CommonUse.h"
 #include "interfaces/Keyword.h"
 #include "interfaces/VectorScoreScheme.h"
 #include "VectorIndexWrapper.h"

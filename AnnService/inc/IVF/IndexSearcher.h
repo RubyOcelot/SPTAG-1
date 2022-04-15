@@ -5,6 +5,9 @@
 #include "interfaces/ScoreScheme.h"
 #include "interfaces/Keyword.h"
 #include "interfaces/KeywordIndex.h"
+#include "inc/IVF/utils/TopDocs.h"
+#include "inc/IVF/interfaces/Query.h"
+#include "inc/IVF/utils/Bits.h"
 
 namespace IVF {
     class IndexSearcher {

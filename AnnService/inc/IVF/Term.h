@@ -2,7 +2,7 @@
 #define SPTAGLIB_TERM_H
 
 #include <memory>
-#include "ForwardDefine.h"
+#include "CommonUse.h"
 #include "interfaces/Keyword.h"
 #include "interfaces/Scorer.h"
 

@@ -2,7 +2,7 @@
 #define SPTAGLIB_DATATRANSFORM_H
 
 #include "inc/Core/Common.h"
-#include "inc/IVF/ForwardDefine.h"
+#include "inc/IVF/CommonUse.h"
 
 namespace IVF{
 

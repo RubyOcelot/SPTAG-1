@@ -1,7 +1,7 @@
 #ifndef IVF_SCORER_H
 #define IVF_SCORER_H
 
-#include "../ForwardDefine.h"
+#include "../CommonUse.h"
 #include "ScoreScheme.h"
 
 namespace IVF {

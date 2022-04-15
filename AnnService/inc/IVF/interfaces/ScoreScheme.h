@@ -1,7 +1,7 @@
 #ifndef IVF_SCORESCHEME_H
 #define IVF_SCORESCHEME_H
 
-#include "../ForwardDefine.h"
+#include "../CommonUse.h"
 
 namespace IVF {
     class ScoreScheme {

@@ -7,6 +7,7 @@ namespace IVF {
         if (termScoreScheme == nullptr) {
             //TODO error;
         }
+        return nullptr;
     }
 
     std::string Term::getStr() const {

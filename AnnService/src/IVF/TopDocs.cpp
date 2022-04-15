@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "inc/IVF/TopDocs.h"
+#include "inc/IVF/utils/TopDocs.h"
 
 namespace IVF {
     void TopDocs::print() {

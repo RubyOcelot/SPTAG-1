@@ -1,7 +1,7 @@
 #ifndef IVF_DOCWITHSCORE_H
 #define IVF_DOCWITHSCORE_H
 
-#include "../ForwardDefine.h"
+#include "../CommonUse.h"
 
 namespace IVF {
     class DocWithScore {

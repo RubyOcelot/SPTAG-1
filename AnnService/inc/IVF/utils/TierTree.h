@@ -9,7 +9,7 @@
 #include <shared_mutex>
 #include <boost/thread/shared_mutex.hpp>
 #include "inc/IVF/Term.h"
-#include "inc/IVF/ForwardDefine.h"
+#include "inc/IVF/CommonUse.h"
 #include "inc/Core/Common.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
 

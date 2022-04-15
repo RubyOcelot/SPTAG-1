@@ -1,9 +1,9 @@
 #ifndef IVF_TOPDOCS_H
 #define IVF_TOPDOCS_H
 
-#include "ForwardDefine.h"
-#include "utils/DocWithScore.h"
-#include "utils/LoadTruth.h"
+#include "inc/IVF/CommonUse.h"
+#include "DocWithScore.h"
+#include "LoadTruth.h"
 
 namespace IVF {
     class TopDocs {

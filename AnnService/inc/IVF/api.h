@@ -7,7 +7,7 @@
 #include "KeyVector.h"
 #include "KeywordQuery.h"
 #include "IndexSearcher.h"
-#include "TopDocs.h"
+#include "inc/IVF/utils/TopDocs.h"
 #include "interfaces/ScoreScheme.h"
 #include "DefaultVectorScoreScheme.h"
 #include "interfaces/IndexConfig.h"

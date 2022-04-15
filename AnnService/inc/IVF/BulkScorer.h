@@ -1,9 +1,10 @@
 #ifndef IVF_BULKSCORER_H
 #define IVF_BULKSCORER_H
 
-#include "ForwardDefine.h"
+#include "CommonUse.h"
 #include "Collector.h"
 #include "interfaces/Scorer.h"
+#include "inc/IVF/utils/Bits.h"
 
 namespace IVF {
     class BulkScorer {

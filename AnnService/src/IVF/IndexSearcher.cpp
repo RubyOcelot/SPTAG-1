@@ -1,6 +1,6 @@
 #include "inc/IVF/IndexSearcher.h"
 #include "inc/IVF/interfaces/Query.h"
-#include "inc/IVF/TopDocs.h"
+#include "inc/IVF/utils/TopDocs.h"
 #include "inc/IVF//utils/Bits.h"
 #include "inc/IVF//BulkScorer.h"
 #include "inc/IVF/DefaultVectorIndexConfig.h"

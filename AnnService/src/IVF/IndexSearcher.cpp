@@ -30,7 +30,9 @@ namespace IVF {
     }
 
     IndexSearcher::IndexSearcher(const std::string &path, const std::shared_ptr<IndexConfig>& config) {
-
+        if(config==nullptr){
+            //TODO error;
+        }
         config->init(path, *this);
     }
 

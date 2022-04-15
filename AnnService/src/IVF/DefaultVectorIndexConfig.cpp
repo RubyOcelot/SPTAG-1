@@ -10,6 +10,7 @@
 
 #include "inc/IVF/SPTAGSSDServingWrapper.h"
 #include "inc/IVF/VectorIndexWrapper.h"
+#include "inc/IVF/IndexSearcher.h"
 using namespace SPTAG;
 
 using namespace SPTAG::SSDServing;

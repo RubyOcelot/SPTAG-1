@@ -7,7 +7,7 @@
 #include "KeyVector.h"
 #include "KeywordQuery.h"
 #include "IndexSearcher.h"
-#include "inc/IVF/utils/TopDocs.h"
+#include "utils/TopDocs.h"
 #include "interfaces/ScoreScheme.h"
 #include "DefaultVectorScoreScheme.h"
 #include "interfaces/IndexConfig.h"
@@ -15,5 +15,6 @@
 #include "utils/GetSPTAGOptions.h"
 #include "utils/LoadVectors.h"
 #include "utils/LoadTruth.h"
+#include "SparseAndDenseIndexConfig.h"
 
 #endif //IVF_API_H

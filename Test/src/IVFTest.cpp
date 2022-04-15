@@ -62,14 +62,12 @@ namespace IVF {
         return miss;
     }
 
-    void test_update(Options *opts, IndexSearcher &searcher) {
+    void test_update(Options *opts, IndexSearcher &searcher, std::shared_ptr<KeyVector> kvFactory) {
         auto fullVectors = VectorReaderWrap();
         fullVectors.loadFullVectorData(opts);
         int step = fullVectors.numVectors - opts->m_vectorSize;
         int insertThreads = opts->m_insertThreadNum;
         int curCount = opts->m_vectorSize;
-
-        auto kvFactory=(KeyVector*)(searcher.getKeywordFactory().get());
 
         LOG(Helper::LogLevel::LL_Info, "Start updating...\n");
 
@@ -118,10 +116,9 @@ namespace IVF {
         LOG(Helper::LogLevel::LL_Info, "Total Vector num %d \n", curCount);
     }
 
-    void test_search(Options *opts, IndexSearcher searcher, VectorReaderWrap &querys, TruthWrap &truth, int s, int e) {
+    void test_search(Options *opts, IndexSearcher searcher, std::shared_ptr<KeyVector> kvFactory, VectorReaderWrap &querys,
+                TruthWrap &truth, int s, int e) {
         LOG(Helper::LogLevel::LL_Info, "Start searching...\n");
-
-        auto kvFactory=(KeyVector*)(searcher.getKeywordFactory().get());
 
         ScoreScheme *vScoreScheme = new DefaultVectorScoreScheme<int8_t>(
                 std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
@@ -171,10 +168,14 @@ namespace IVF {
     void test_int8(const std::string &test_dir) {
         auto opts = getSPTAGOptions(test_dir.c_str());
 
-        auto searcher = IndexSearcher(test_dir);
+        auto indexConfig=std::make_shared<SparseAndDenseIndexConfig>();
+
+        auto searcher = IndexSearcher(test_dir, indexConfig);
+
+        std::shared_ptr<KeyVector> kvFactory=indexConfig->getTermAndVectorFactory();
 
         if (opts->m_update) {
-            test_update(opts, searcher);
+            test_update(opts, searcher,kvFactory);
         }
 
         auto querys = VectorReaderWrap();
@@ -183,7 +184,7 @@ namespace IVF {
         auto truth = TruthWrap();
         truth.loadData(opts, querys.numVectors);
 
-        test_search(opts, searcher, querys, truth, 0, querys.numVectors);
+        test_search(opts, searcher, kvFactory, querys, truth, 0, querys.numVectors);
     }
 
     void utils_test(const std::string &test_dir) {

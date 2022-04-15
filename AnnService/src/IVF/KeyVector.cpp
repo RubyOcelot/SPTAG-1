@@ -86,4 +86,9 @@ namespace IVF {
 
     }
 
+    KeyVector::KeyVector():vectorValue(nullptr) {
+
+    }
+
+
 }

@@ -12,6 +12,8 @@ namespace IVF {
     public:
         KeyVector(void* vecValue,std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper);
 
+        KeyVector();
+
         std::unique_ptr<KeyVector> asFactory(void* vecValue);
 
         std::unique_ptr<Scorer> getScorer() override;

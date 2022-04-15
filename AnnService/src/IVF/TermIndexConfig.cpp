@@ -1,4 +1,5 @@
 #include "inc/IVF/TermIndexConfig.h"
+#include "inc/IVF/IndexSearcher.h"
 
 namespace IVF {
 
@@ -13,5 +14,9 @@ namespace IVF {
     void TermIndexConfig::init(const std::string &dir, IndexSearcher &searcher) {
         termIndex=std::make_shared<TermIndex>();
         searcher.indexCollection.push_back(termIndex);
+    }
+
+    void TermIndexConfig::close() {
+        //TODO index lifetime
     }
 }

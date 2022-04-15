@@ -11,6 +11,7 @@ namespace IVF {
         void close() override;
     };
 
+
 }
 
 #endif //SPTAGLIB_TERMINDEX_H

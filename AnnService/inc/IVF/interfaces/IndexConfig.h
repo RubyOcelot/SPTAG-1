@@ -2,7 +2,8 @@
 #define IVF_INDEXCONFIG_H
 
 #include <string>
-#include "inc/IVF/IndexSearcher.h"
+#include "inc/IVF/CommonUse.h"
+#include "inc/IVF/interfaces/Keyword.h"
 
 namespace IVF {
 

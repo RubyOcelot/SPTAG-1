@@ -12,13 +12,16 @@ namespace IVF {
     class Term : public Keyword {
     public:
         Term(std::string str,std::shared_ptr<TermIndex> termIndex);
+
+        Term();
+
         std::unique_ptr<Scorer> getScorer() override;
         int addToIndex() override;
         std::string getStr() const;
         static ScoreScheme* getCollectionStatHolder();
+        std::shared_ptr<TermIndex> termIndex;
     private:
         std::string str;
-        std::shared_ptr<TermIndex> termIndex;
     };
 }
 

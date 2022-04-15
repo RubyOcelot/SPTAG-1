@@ -20,4 +20,14 @@ namespace IVF {
 
     }
 
+    int Term::addToIndex() {
+        return 0;
+    }
+
+    ScoreScheme *Term::getCollectionStatHolder() {
+        return nullptr;
+    }
+
+    Term::Term() = default;
+
 }

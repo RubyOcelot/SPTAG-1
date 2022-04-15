@@ -24,6 +24,9 @@ namespace IVF {
         AND, OR
     };
 
+    class IndexConfig;
+    class IndexSearcher;
+
     class ScoreScheme;
     typedef ScoreScheme PostingItem;
 

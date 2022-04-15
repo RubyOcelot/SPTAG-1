@@ -29,13 +29,9 @@ namespace IVF {
         scoreScheme->collectionStatisticsLoader("");
     }
 
-    IndexSearcher::IndexSearcher(const std::string &path) {
+    IndexSearcher::IndexSearcher(const std::string &path, const std::shared_ptr<IndexConfig>& config) {
 
-        //TODO read indexconfig from file
-        auto indexConfig = DefaultVectorIndexConfig();
-        indexConfig.init(path, *this);
-        keywordFactory=indexConfig.getFactory();
-
+        config->init(path, *this);
     }
 
     int IndexSearcher::addKeyword(std::unique_ptr<Keyword> kw) {
@@ -50,9 +46,5 @@ namespace IVF {
                 return false;
         }
         return true;
-    }
-
-    std::shared_ptr<Keyword> IndexSearcher::getKeywordFactory() {
-        return keywordFactory;
     }
 }

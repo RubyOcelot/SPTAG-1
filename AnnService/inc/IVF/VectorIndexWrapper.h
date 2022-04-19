@@ -16,9 +16,9 @@ namespace IVF {
         VectorIndexWrapper(const std::shared_ptr<SPTAG::VectorIndex>& vecIndex);
         VectorIndexWrapper(const VectorIndexWrapper& vecIndexWrapper);
 
-        void getHeadIDs(std::vector<int> &headIDs, void *query_vector);
+        void getHeadIDs(std::vector<HeadIDType> &headIDs, void *query_vector);
 
-        void getPostingList(SizeType headID, std::istringstream *postingItemStream);
+        void getPostingList(HeadIDType headID, std::istringstream *postingItemStream);
 
         ~VectorIndexWrapper() = default;
 

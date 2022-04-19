@@ -5,10 +5,10 @@
 #include "CommonUse.h"
 #include "interfaces/Keyword.h"
 #include "interfaces/Scorer.h"
-#include "TermIndex.h"
 
 namespace IVF {
 
+    class TermIndex;
     class Term : public Keyword {
     public:
         Term(std::string str,std::shared_ptr<TermIndex> termIndex);

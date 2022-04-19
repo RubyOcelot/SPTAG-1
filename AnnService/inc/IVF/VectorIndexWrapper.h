@@ -6,6 +6,7 @@
 #include "inc/Core/VectorIndex.h"
 #include "inc/Core/SPANN/Index.h"
 #include "inc/IVF/interfaces/KeywordIndex.h"
+#include "inc/IVF/CommonUse.h"
 
 using namespace SPTAG;
 using namespace SPTAG::SPANN;

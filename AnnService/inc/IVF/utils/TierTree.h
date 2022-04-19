@@ -12,10 +12,11 @@
 #include "inc/IVF/CommonUse.h"
 #include "inc/Core/Common.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
+#include "inc/IVF/interfaces/TermHeadIndex.h"
 
 
 namespace IVF{
-    class TierTree{
+    class TierTree:TermHeadIndex{
         static bool isPrefix(const std::string& prefix,const std::string& full);
         static int checkPrefix(const std::string& a,const std::string& b);
         class Node;

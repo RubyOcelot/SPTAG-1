@@ -9,4 +9,8 @@ namespace IVF{
     void TermIndex::close() {
 
     }
+
+    void TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder) {
+        
+    }
 }

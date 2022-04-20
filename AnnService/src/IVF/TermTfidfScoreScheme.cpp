@@ -83,4 +83,36 @@ namespace IVF{
         docFreq--;
     }
 
+    TermTFIDFScoreScheme::DocNum::DocNum():docNum(0) {
+
+    }
+
+    TermTFIDFScoreScheme::DocNum::DocNum(TermTFIDFScoreScheme::TermStatType docNum):docNum(docNum) {
+
+    }
+
+    void TermTFIDFScoreScheme::DocNum::reset() {
+        docNum=0;
+    }
+
+    void TermTFIDFScoreScheme::DocNum::set(const std::string & data) {
+        docNum=*StringToTermStat(data);
+
+    }
+
+    void TermTFIDFScoreScheme::DocNum::modForAdd(const std::string &data) {
+        docNum++;
+    }
+
+    void TermTFIDFScoreScheme::DocNum::modForDel(const std::string &data) {
+        docNum--;
+    }
+
+    std::string TermTFIDFScoreScheme::DocNum::getContent() {
+        return TermTFIDFScoreScheme::TermStatToString(docNum);
+    }
+
+    std::unique_ptr<CollectionStatistic> TermTFIDFScoreScheme::DocNum::clone() {
+        return std::make_unique<DocNum>(docNum);
+    }
 }

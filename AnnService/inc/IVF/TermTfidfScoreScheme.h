@@ -9,6 +9,7 @@
 #include "inc/Core/Common.h"
 #include "inc/IVF/utils/DataTransform.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
+#include "inc/IVF/interfaces/CollectionStatistic.h"
 
 namespace IVF {
 
@@ -37,6 +38,19 @@ namespace IVF {
             std::unique_ptr<KeywordStatistic> getNew()override;
         private:
             std::atomic<TermStatType> docFreq;
+        };
+        class DocNum:public CollectionStatistic{
+        public:
+            DocNum();
+            explicit DocNum(TermStatType docNum);
+            void reset()override;
+            void set(const std::string &)override;
+            void modForAdd(const std::string &)override;
+            void modForDel(const std::string &)override;
+            std::string getContent()override;
+            std::unique_ptr<CollectionStatistic> clone()override;
+        private:
+            std::atomic<TermStatType> docNum;
         };
     public:
         ScoreScheme *clone();

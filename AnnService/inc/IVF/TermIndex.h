@@ -5,6 +5,7 @@
 #include "inc/IVF/interfaces/KeyValueIO.h"
 #include "inc/IVF/Term.h"
 #include "inc/IVF/interfaces/StringHeadIndex.h"
+#include "inc/IVF/utils/TermSetDataHolder.h"
 
 namespace IVF {
 
@@ -14,9 +15,11 @@ namespace IVF {
         void close() override;
         HeadIDType getHeadID(const Term& term);
         void getPostingList(HeadIDType headID, std::istringstream *postingItemStream);
+        void buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder);
     private:
         std::unique_ptr<KeyValueIO> db;
         std::unique_ptr<StringHeadIndex> head_index;
+        std::unique_ptr<CollectionStatistic> collectionStatistic;
     };
 
 

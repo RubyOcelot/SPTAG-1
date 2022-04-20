@@ -1,4 +1,5 @@
 #include "inc/IVF/TermTfidfScoreScheme.h"
+#include "inc/IVF/utils/DataTransform.h"
 
 namespace IVF{
 
@@ -57,7 +58,7 @@ namespace IVF{
     }
 
     ScoreScheme *TermTFIDFScoreScheme::clone() {
-        return nullptr;
+        return new TermTFIDFScoreScheme(termFreq,docFreq,docNum,docId);
     }
 
     std::unique_ptr<ScoreScheme> TermTFIDFScoreScheme::smart_clone() {
@@ -67,6 +68,11 @@ namespace IVF{
     TermTFIDFScoreScheme::TermTFIDFScoreScheme(float termFreq, TermTFIDFScoreScheme::TermStatType docFreq,
                                                TermTFIDFScoreScheme::TermStatType docNum, DocId docId):termFreq(termFreq),docFreq(docFreq),docNum(docNum),docId(docId) {
 
+    }
+
+    std::string TermTFIDFScoreScheme::serializePostingStat(DocId docId, float termFreq) {
+
+        return DataToString((uint32_t)docId)+DataToString( termFreq);
     }
 
     TermTFIDFScoreScheme::DocFreq::DocFreq():docFreq(0) {

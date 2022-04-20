@@ -17,6 +17,10 @@ namespace IVF{
         for(auto i=0;i<dataHolder->termNum;i++){
             auto data=dataHolder->termData+i;
             auto hid=head_index->set(data->str,data->kwstat->getContent());
+            if(hid==-1){
+                //TODO error
+                exit(1);
+            }
             setPostingList(hid,data->posting_data);
         }
     }
@@ -24,6 +28,8 @@ namespace IVF{
     void TermIndex::setPostingList(HeadIDType headID, const std::string &value) {
         if(db == nullptr){
             //TODO error
+            std::cout<<"db=null!"<<std::endl;
+            exit(1);
         }
         //TODO ErrorCode;
         db->Put(headID,value);

@@ -140,7 +140,7 @@ namespace IVF {
                         LOG(Helper::LogLevel::LL_Info, "Sent %.2lf%%...\n", index * 100.0 / (e - s));
                     }
 
-                    KeywordQuery kwQuery = KeywordQuery(kvFactory->asFactory(querys.p_vectorSet->GetVector(index)), vScoreScheme);
+                    KeywordQuery kwQuery = KeywordQuery(kvFactory->asFactory(querys.p_vectorSet->GetVector(index)));
                     TopDocs topDocs = searcher.search(kwQuery, truth.truthK);
 //                topDocs.print_id_sort();
 //                truth->print_truth_by_id(index);
@@ -198,6 +198,22 @@ namespace IVF {
         delete opts;
     }
 
+    void test_term(const std::string &test_dir) {
+        auto opts = getSPTAGOptions(test_dir.c_str());
+
+        auto indexConfig=std::make_shared<DefaultTermIndexConfig>();
+
+        auto searcher = IndexSearcher(test_dir, indexConfig);
+
+        std::shared_ptr<Term> termFactory=indexConfig->getTermFactory();
+
+        KeywordQuery kwQuery = KeywordQuery(termFactory->asFactory("happy"));
+        TopDocs topDocs = searcher.search(kwQuery, 3);
+        topDocs.print();
+
+        delete opts;
+    }
+
     void utils_test(const std::string &test_dir) {
         auto opts = getSPTAGOptions(test_dir.c_str());
         auto baseVectors = VectorReaderWrap();
@@ -218,7 +234,7 @@ BOOST_AUTO_TEST_SUITE(IVFTest)
 BOOST_AUTO_TEST_CASE(IVFUpdateSearch)
         {
             std::string test_path = "IVFtest.ini";
-            IVF::test_int8(test_path);
+            IVF::test_term(test_path);
 //    utils_test(test_dir);
         }
 

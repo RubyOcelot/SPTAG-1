@@ -16,6 +16,8 @@ namespace IVF {
 
         Term();
 
+        std::unique_ptr<Term> asFactory(const std::string &str);
+
         std::unique_ptr<Scorer> getScorer() override;
         int addToIndex() override;
         [[nodiscard]] std::string getStr() const;

@@ -29,30 +29,30 @@ namespace IVF {
         termIndex=std::make_shared<TermIndex>();
 
         std::unique_ptr<ScoreScheme> scoreScheme;
-        if((*config_map)["Base"]["ScoreScheme"]=="TF-IDF"){
+        if((*config_map)["Base"]["scorescheme"]=="TF-IDF"){
             scoreScheme=std::make_unique<TermTFIDFScoreScheme>();
         }
 
-        auto headIndexFile=(*config_map)["Base"]["HeadIndexFile"];
-        if((*config_map)["Base"]["HeadIndexType"]=="TierTree"){
+        auto headIndexFile=(*config_map)["Base"]["headindexfile"];
+        if((*config_map)["Base"]["headindextype"]=="TierTree"){
             termIndex->setHeadIndex(std::make_unique<TierTree>(scoreScheme->getEmptyKeywordStatistic(),headIndexFile));
         }
         termIndex->setScoreScheme(std::move(scoreScheme));
 
         std::unique_ptr<KeyValueIO> kvio;
-        if((*config_map)["Base"]["KVIOType"]=="Rocksdb"){
+        if((*config_map)["Base"]["kviotype"]=="Rocksdb"){
             kvio = std::make_unique<RocksDBIO>();
         }
-        kvio->Initialize((*config_map)["Base"]["KVIOPath"].c_str());
+        kvio->Initialize((*config_map)["Base"]["kviopath"].c_str());
         termIndex->setKV(std::move(kvio));
 
-        if((*config_map)["BuildIndex"]["BuildIndex"]=="true"){
-            if((*config_map)["BuildIndex"]["WarmUpHead"]=="true"){
-                auto warmUpHeadIndexFile=(*config_map)["BuildIndex"]["WarmUpHeadIndexFile"];
+        if((*config_map)["BuildIndex"]["buildindex"]=="true"){
+            if((*config_map)["BuildIndex"]["warmuphead"]=="true"){
+                auto warmUpHeadIndexFile=(*config_map)["BuildIndex"]["warmupheadindexfile"];
                 termIndex->loadHeadIndexWarmup(warmUpHeadIndexFile);
             }
-            auto sourceFile=(*config_map)["BuildIndex"]["SourceFile"];
-            auto threadNum=std::atoi((*config_map)["BuildIndex"]["NumberOfThreads"].c_str());
+            auto sourceFile=(*config_map)["BuildIndex"]["sourcefile"];
+            auto threadNum=std::atoi((*config_map)["BuildIndex"]["numberofthreads"].c_str());
             auto termDataLoader=new LoadTermData();
             termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile),threadNum);
         }

@@ -4,11 +4,11 @@
 
 namespace IVF{
     TierTree::Children::Children() {
-        charIndex=new std::shared_ptr<Node>[sizeof(char)];
-        for(auto i=0;i<sizeof(char);i++){
+        charIndex=new std::shared_ptr<Node>[sizeof(char)*0x100];
+        for(auto i=0;i<sizeof(char)*0x100;i++){
             charIndex[i]=nullptr;
         }
-        charRWLock=new std::shared_mutex[sizeof(char)];
+        charRWLock=new std::shared_mutex[sizeof(char)*0x100];
     }
 
     TierTree::Children::~Children() {
@@ -111,7 +111,7 @@ namespace IVF{
             }
             auto children=curNode->children;
             curNode->divergeLock.unlock_shared();
-            return seekInternalNoInsert(str, children->getOrAddChild(str, curPos, curHeadId, curNode->stat), curPos);
+            return seekInternalWithInsert(str, children->getOrAddChild(str, curPos, curHeadId, curNode->stat), curPos);
         }
 
         curNode->divergeLock.unlock_shared();

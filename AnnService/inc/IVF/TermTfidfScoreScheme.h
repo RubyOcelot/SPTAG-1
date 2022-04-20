@@ -14,10 +14,14 @@
 namespace IVF {
 
     class TermTFIDFScoreScheme : public ScoreScheme {
+    public:
         typedef uint32_t TermStatType;
 
         static std::string TermStatToString(const TermStatType& data){
-            std::string s((char*)data);
+            std::string s;
+            for(auto i=0;i<sizeof(data);i++){
+                s+=*((char*)(&data)+i);
+            }
             return s;
         }
 
@@ -51,7 +55,6 @@ namespace IVF {
         private:
             std::atomic<TermStatType> docNum;
         };
-    public:
         ScoreScheme *clone() override;
 
         std::unique_ptr<ScoreScheme> smart_clone() override;
@@ -73,6 +76,8 @@ namespace IVF {
         std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic() override;
 
         static std::unique_ptr<KeywordStatistic> getKeywordStatistic();
+
+        static std::string serializePostingStat(DocId docId,float termFreq);
     private:
         float termFreq;
         TermStatType docFreq;

@@ -37,6 +37,10 @@ namespace IVF {
         return 0;
     }
 
+    std::unique_ptr<Term> Term::asFactory(const std::string &str) {
+        return std::make_unique<Term>(str,termIndex);
+    }
+
 
     Term::Term() = default;
 

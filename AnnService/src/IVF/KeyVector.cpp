@@ -78,8 +78,7 @@ namespace IVF {
     }
 
     std::unique_ptr<KeyVector> KeyVector::asFactory(void *vecValue) {
-        auto kv=std::make_unique<KeyVector>(vecValue,vectorIndexWrapper);
-        return kv;
+        return std::make_unique<KeyVector>(vecValue,vectorIndexWrapper);
     }
 
     KeyVector::KeyVector(void *vecValue, std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper) : vectorValue(vecValue), vectorIndexWrapper(std::move(vectorIndexWrapper)){

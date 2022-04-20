@@ -12,9 +12,10 @@
 #include "DefaultVectorScoreScheme.h"
 #include "interfaces/IndexConfig.h"
 #include "DefaultVectorIndexConfig.h"
+#include "DefaultTermIndexConfig.h"
+#include "SparseAndDenseIndexConfig.h"
 #include "utils/GetSPTAGOptions.h"
 #include "utils/LoadVectors.h"
 #include "utils/LoadTruth.h"
-#include "SparseAndDenseIndexConfig.h"
 
 #endif //IVF_API_H

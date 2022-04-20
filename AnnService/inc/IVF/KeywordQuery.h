@@ -7,13 +7,11 @@
 namespace IVF {
     class KeywordQuery : public Query {
     public:
-        KeywordQuery(std::unique_ptr<Keyword> keyword, ScoreScheme *scoreScheme);
+        explicit KeywordQuery(std::unique_ptr<Keyword> keyword);
 
         std::unique_ptr<Keyword> keyword;
 
         std::unique_ptr<Scorer> getScorer() override;
-
-        ScoreScheme *scoreScheme;
     };
 }
 

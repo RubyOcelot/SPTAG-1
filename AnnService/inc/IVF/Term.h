@@ -5,6 +5,7 @@
 #include "CommonUse.h"
 #include "interfaces/Keyword.h"
 #include "interfaces/Scorer.h"
+#include "TermIndex.h"
 
 namespace IVF {
 
@@ -18,7 +19,6 @@ namespace IVF {
         std::unique_ptr<Scorer> getScorer() override;
         int addToIndex() override;
         [[nodiscard]] std::string getStr() const;
-        static ScoreScheme* getCollectionStatHolder();
         std::shared_ptr<TermIndex> termIndex;
     private:
         std::string str;

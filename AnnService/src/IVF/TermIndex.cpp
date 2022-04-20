@@ -16,7 +16,7 @@ namespace IVF{
         //TODO parallel;
         for(auto i=0;i<dataHolder->termNum;i++){
             auto data=dataHolder->termData+i;
-            auto hid=head_index->set(data->term.getStr(),data->kwstat->getContent());
+            auto hid=head_index->set(data->str,data->kwstat->getContent());
             setPostingList(hid,data->posting_data);
         }
     }
@@ -29,11 +29,11 @@ namespace IVF{
         db->Put(headID,value);
     }
 
-    HeadIDType TermIndex::getHeadID(const Term &term, std::string *rt_stat) {
+    HeadIDType TermIndex::getHeadID(const std::string &str, std::string *rt_stat) {
         if(head_index == nullptr){
             //TODO error
         }
-        return head_index->seek(term.getStr(),rt_stat);
+        return head_index->seek(str, rt_stat);
     }
 
     void TermIndex::getPostingList(HeadIDType headID,std::istream **value) {
@@ -58,5 +58,15 @@ namespace IVF{
 
     void TermIndex::loadHeadIndexWarmup(const std::string& path) {
 
+    }
+
+    void TermIndex::setScoreScheme(std::unique_ptr<ScoreScheme> scoreScheme) {
+        this->scoreScheme=std::move(scoreScheme);
+    }
+
+    std::unique_ptr<ScoreScheme> TermIndex::getCollectionStatHolder() {
+        auto s=scoreScheme->smart_clone();
+        s->collectionStatisticsLoader(collectionStatistic->getContent());
+        return s;
     }
 }

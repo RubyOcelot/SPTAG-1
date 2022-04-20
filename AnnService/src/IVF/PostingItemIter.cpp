@@ -32,11 +32,10 @@ namespace IVF {
     }
 
     PostingItemIter::~PostingItemIter() {
-        delete modelItem;
     }
 
-    PostingItemIter::PostingItemIter(ScoreScheme *modelItem, std::istream *value) : modelItem(modelItem),
-                                                                                    rawValue(value) {
+    PostingItemIter::PostingItemIter(std::unique_ptr<ScoreScheme> modelItem, std::istream *value) : modelItem(std::move(modelItem)),
+                                                                                                    rawValue(value) {
 
     }
 

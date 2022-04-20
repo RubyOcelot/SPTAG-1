@@ -54,7 +54,11 @@ namespace IVF {
     public:
         ScoreScheme *clone() override;
 
+        std::unique_ptr<ScoreScheme> smart_clone() override;
+
         TermTFIDFScoreScheme();
+        TermTFIDFScoreScheme(float termFreq,TermStatType docFreq,TermStatType docNum,DocId docId);
+
         //{DocId id,float tf}
         bool postingStatisticsLoader(std::istream *rawStream) override;
         //{TermStatType df}
@@ -70,9 +74,9 @@ namespace IVF {
 
         static std::unique_ptr<KeywordStatistic> getKeywordStatistic();
     private:
-        float termFreq{};
-        TermStatType docFreq{};
-        TermStatType docNum{};
+        float termFreq;
+        TermStatType docFreq;
+        TermStatType docNum;
         DocId docId = -1;
     };
 

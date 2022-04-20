@@ -16,7 +16,8 @@ namespace IVF {
 
         VectorScoreScheme *clone() override;
 
-//    ScoreScheme* clone() override;
+        std::unique_ptr<ScoreScheme> smart_clone() override;
+
         explicit DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction> distFunc=std::make_unique<DistanceUtilsWrap<T>>(SPTAG::DistCalcMethod::L2), void* queryVector=nullptr, DocId docId=-1, void* docVector=nullptr, int vecLen=-1);
 
         bool postingStatisticsLoader(std::istream *rawStream) override;

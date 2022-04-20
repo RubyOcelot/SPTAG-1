@@ -9,7 +9,7 @@ namespace IVF {
     public:
         //TODO TESTC
         //PostingItemIter();
-        PostingItemIter(ScoreScheme *modelItem, std::istream *value);
+        PostingItemIter(std::unique_ptr<ScoreScheme> modelItem, std::istream *value);
 
         //TODO TESTC
         ScoreScheme *getFirst();
@@ -21,7 +21,7 @@ namespace IVF {
         ~PostingItemIter();
 
     private:
-        ScoreScheme *modelItem;
+        std::unique_ptr<ScoreScheme> modelItem;
         std::istream *rawValue;
     };
 }

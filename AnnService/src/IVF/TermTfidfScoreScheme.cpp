@@ -60,6 +60,15 @@ namespace IVF{
         return nullptr;
     }
 
+    std::unique_ptr<ScoreScheme> TermTFIDFScoreScheme::smart_clone() {
+        return std::make_unique<TermTFIDFScoreScheme>(termFreq,docFreq,docNum,docId);
+    }
+
+    TermTFIDFScoreScheme::TermTFIDFScoreScheme(float termFreq, TermTFIDFScoreScheme::TermStatType docFreq,
+                                               TermTFIDFScoreScheme::TermStatType docNum, DocId docId):termFreq(termFreq),docFreq(docFreq),docNum(docNum),docId(docId) {
+
+    }
+
     TermTFIDFScoreScheme::DocFreq::DocFreq():docFreq(0) {
     }
 

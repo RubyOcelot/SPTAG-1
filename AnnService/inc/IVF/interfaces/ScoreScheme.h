@@ -9,6 +9,8 @@ namespace IVF {
     public:
         virtual ScoreScheme *clone() = 0;
 
+        virtual std::unique_ptr<ScoreScheme> smart_clone()=0;
+
         virtual bool postingStatisticsLoader(std::istream *rawStream) = 0;
 
         virtual void keywordStatisticsLoader(std::string) = 0;

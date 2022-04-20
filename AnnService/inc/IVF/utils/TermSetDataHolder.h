@@ -4,7 +4,6 @@
 #include <memory>
 #include "inc/IVF/interfaces/CollectionStatistic.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
-#include "inc/IVF/Term.h"
 
 namespace IVF {
 
@@ -12,7 +11,7 @@ namespace IVF {
     public:
         class TermData {
         public:
-            Term term;
+            std::string str;
             std::unique_ptr<KeywordStatistic> kwstat;
             std::string posting_data;
         };

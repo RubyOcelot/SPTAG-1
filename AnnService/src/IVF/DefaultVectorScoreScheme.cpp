@@ -11,6 +11,11 @@ namespace IVF {
     }
 
     template<class T>
+    std::unique_ptr<ScoreScheme> DefaultVectorScoreScheme<T>::smart_clone() {
+        return std::make_unique<DefaultVectorScoreScheme>( distFunc, queryVector, docId, docVector, vecLen);
+    }
+
+    template<class T>
     DefaultVectorScoreScheme<T>::DefaultVectorScoreScheme(const DefaultVectorScoreScheme& d):
             distFunc(d.distFunc),
             queryVector(d.queryVector),
@@ -102,6 +107,7 @@ namespace IVF {
     std::unique_ptr<KeywordStatistic> DefaultVectorScoreScheme<T>::getEmptyKeywordStatistic() {
         return std::unique_ptr<KeywordStatistic>();
     }
+
 
 
 }

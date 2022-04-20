@@ -37,6 +37,7 @@ namespace IVF {
         if((*config_map)["Base"]["HeadIndexType"]=="TierTree"){
             termIndex->setHeadIndex(std::make_unique<TierTree>(scoreScheme->getEmptyKeywordStatistic(),headIndexFile));
         }
+        termIndex->setScoreScheme(std::move(scoreScheme));
 
         std::unique_ptr<KeyValueIO> kvio;
         if((*config_map)["Base"]["KVIOType"]=="Rocksdb"){

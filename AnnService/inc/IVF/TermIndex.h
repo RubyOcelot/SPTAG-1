@@ -4,6 +4,7 @@
 #include "inc/IVF/interfaces/KeywordIndex.h"
 #include "inc/IVF/interfaces/KeyValueIO.h"
 #include "inc/IVF/Term.h"
+#include "inc/IVF/interfaces/StringHeadIndex.h"
 
 namespace IVF {
 
@@ -15,7 +16,7 @@ namespace IVF {
         void getPostingList(HeadIDType headID, std::istringstream *postingItemStream);
     private:
         std::unique_ptr<KeyValueIO> db;
-
+        std::unique_ptr<StringHeadIndex> head_index;
     };
 
 

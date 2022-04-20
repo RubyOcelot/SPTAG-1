@@ -12,11 +12,11 @@
 #include "inc/IVF/CommonUse.h"
 #include "inc/Core/Common.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
-#include "inc/IVF/interfaces/TermHeadIndex.h"
+#include "inc/IVF/interfaces/StringHeadIndex.h"
 
 
 namespace IVF{
-    class TierTree:TermHeadIndex{
+    class TierTree: StringHeadIndex{
         static bool isPrefix(const std::string& prefix,const std::string& full);
         static int checkPrefix(const std::string& a,const std::string& b);
         class Node;
@@ -50,10 +50,10 @@ namespace IVF{
     public:
         explicit TierTree(std::unique_ptr<KeywordStatistic> emptyStat);
         std::shared_ptr<Node> root;
-        HeadIDType seek(const Term &term, std::string *rt_stat);
-        HeadIDType set(const Term& term, std::string stat);
-        HeadIDType add(const Term& term, std::string inputStat);
-        HeadIDType del(const Term& term, std::string inputStat);
+        HeadIDType seek(const std::string &str, std::string *rt_stat) override;
+        HeadIDType set(const std::string &str, std::string stat) override;
+        HeadIDType add(const std::string &str, std::string inputStat) override;
+        HeadIDType del(const std::string &str, std::string inputStat) override;
         std::atomic<HeadIDType> curHeadId;
     private:
         std::shared_ptr<Node> seekInternalNoInsert(const std::string& str, std::shared_ptr<Node> curNode, int curPos);
@@ -117,8 +117,8 @@ namespace IVF{
     }
 
 
-    HeadIDType TierTree::seek(const Term &term, std::string* rt_stat) {
-        auto node = seekInternalNoInsert(term.getStr(),root,0);
+    HeadIDType TierTree::seek(const std::string &str, std::string* rt_stat) {
+        auto node = seekInternalNoInsert(str, root, 0);
         if(rt_stat!=nullptr){
             *rt_stat=node->stat->getContent();
         }
@@ -127,24 +127,24 @@ namespace IVF{
         return hid;
     }
 
-    HeadIDType TierTree::set(const Term &term, std::string stat) {
-        auto node = seekInternalWithInsert(term.getStr(),root,0);
+    HeadIDType TierTree::set(const std::string &str, std::string stat) {
+        auto node = seekInternalWithInsert(str, root, 0);
         node->stat->set(stat);
         auto hid=node->headID;
         node->divergeLock.unlock_shared();
         return hid;
     }
 
-    HeadIDType TierTree::add(const Term &term, std::string inputStat) {
-        auto node = seekInternalWithInsert(term.getStr(),root,0);
+    HeadIDType TierTree::add(const std::string &str, std::string inputStat) {
+        auto node = seekInternalWithInsert(str, root, 0);
         node->stat->modForAdd(inputStat);
         auto hid=node->headID;
         node->divergeLock.unlock_shared();
         return hid;
     }
 
-    HeadIDType TierTree::del(const Term &term, std::string inputStat) {
-        auto node = seekInternalNoInsert(term.getStr(),root,0);
+    HeadIDType TierTree::del(const std::string &str, std::string inputStat) {
+        auto node = seekInternalNoInsert(str, root, 0);
         node->stat->modForDel(inputStat);
         auto hid=node->headID;
         node->divergeLock.unlock_shared();

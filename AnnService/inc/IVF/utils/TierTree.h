@@ -16,7 +16,7 @@
 
 
 namespace IVF{
-    class TierTree: StringHeadIndex{
+    class TierTree: public StringHeadIndex{
         static bool isPrefix(const std::string& prefix,const std::string& full);
         static int checkPrefix(const std::string& a,const std::string& b);
         class Node;
@@ -116,7 +116,8 @@ namespace IVF{
     }
 
     TierTree::TierTree(std::unique_ptr<KeywordStatistic> emptyStat):curHeadId(0),
-                            root(std::make_shared<Node>("", curHeadId++, emptyStat)){
+                            root(std::make_shared<Node>("", 0, std::move(emptyStat))){
+        curHeadId++;
         if(root->stat== nullptr){
             //TODO error
         }

@@ -19,12 +19,10 @@ namespace IVF {
         std::unique_ptr<CollectionStatistic> cstat;
         int termNum;
         TermData* termData;
+        std::unique_ptr<KeywordStatistic>emptyStat;
         ~TermSetDataHolder();
     };
 
-    TermSetDataHolder::~TermSetDataHolder() {
-        delete[] termData;
-    }
 
 }
 

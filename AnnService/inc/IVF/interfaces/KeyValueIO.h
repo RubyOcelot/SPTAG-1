@@ -8,15 +8,15 @@
 namespace IVF {
     class KeyValueIO {
     public:
-        virtual ~KeyValueIO() {}
+        virtual ~KeyValueIO()=0;
 
         virtual bool Initialize(const char *filePath) = 0;
 
         virtual void ShutDown() = 0;
 
-        virtual SPTAG::ErrorCode Get(const std::string &key, std::string *value) = 0;
+        virtual SPTAG::ErrorCode Get(const std::string &key, std::istringstream *value) = 0;
 
-        virtual SPTAG::ErrorCode Get(HeadIDType key, std::string *value) = 0;
+        virtual SPTAG::ErrorCode Get(HeadIDType key, std::istringstream *value) = 0;
 
         virtual SPTAG::ErrorCode Put(const std::string &key, const std::string &value) = 0;
 

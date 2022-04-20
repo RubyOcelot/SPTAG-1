@@ -1,4 +1,5 @@
 #include "inc/IVF/TermIndex.h"
+#include "inc/IVF/utils/TierTree.h"
 
 namespace IVF{
 
@@ -10,7 +11,37 @@ namespace IVF{
 
     }
 
-    void TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder) {
-        
+    void TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder,int threadNum) {
+        collectionStatistic=std::move(dataHolder->cstat);
+        //TODO parallel;
+        head_index=std::make_unique<TierTree>(std::move(dataHolder->emptyStat));
+        for(auto i=0;i<dataHolder->termNum;i++){
+            auto data=dataHolder->termData+i;
+            auto hid=head_index->set(data->term.getStr(),data->kwstat->getContent());
+            setPostingList(hid,data->posting_data);
+        }
+    }
+
+    void TermIndex::setPostingList(HeadIDType headID, const std::string &value) {
+        if(db == nullptr){
+            //TODO error
+        }
+        //TODO ErrorCode;
+        db->Put(headID,value);
+    }
+
+    HeadIDType TermIndex::getHeadID(const Term &term, std::string *rt_stat) {
+        if(head_index == nullptr){
+            //TODO error
+        }
+        return head_index->seek(term.getStr(),rt_stat);
+    }
+
+    void TermIndex::getPostingList(HeadIDType headID, std::istringstream *postingItemStream) {
+        if(db == nullptr){
+            //TODO error
+        }
+        //TODO ErrorCode;
+        db->Get(headID,postingItemStream);
     }
 }

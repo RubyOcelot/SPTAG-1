@@ -34,6 +34,9 @@ namespace IVF{
         class Node{
         public:
             Node(std::string ident, HeadIDType hid, std::unique_ptr<KeywordStatistic> stat, const std::shared_ptr<Children>& children=nullptr): identity(std::move(ident)),headID(hid),stat(std::move(stat)){
+                if(this->stat == nullptr){
+                    //TODO error
+                }
                 if(children==nullptr){
                     this->children=std::make_shared<Children>();
                 }
@@ -114,6 +117,9 @@ namespace IVF{
 
     TierTree::TierTree(std::unique_ptr<KeywordStatistic> emptyStat):curHeadId(0),
                             root(std::make_shared<Node>("", curHeadId++, emptyStat)){
+        if(root->stat== nullptr){
+            //TODO error
+        }
     }
 
 

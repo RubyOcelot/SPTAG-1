@@ -51,16 +51,19 @@ namespace IVF{
             mutable boost::shared_mutex divergeLock;
         };
     public:
-        explicit TierTree(std::unique_ptr<KeywordStatistic> emptyStat);
+        explicit TierTree(std::unique_ptr<KeywordStatistic> emptyStat, std::string filePath);
         std::shared_ptr<Node> root;
         HeadIDType seek(const std::string &str, std::string *rt_stat) override;
         HeadIDType set(const std::string &str, std::string stat) override;
         HeadIDType add(const std::string &str, std::string inputStat) override;
         HeadIDType del(const std::string &str, std::string inputStat) override;
         std::atomic<HeadIDType> curHeadId;
+        void loadIndex(std::istream data) override;
+        void loadWarmupIndex(std::istream data) override;
     private:
         std::shared_ptr<Node> seekInternalNoInsert(const std::string& str, std::shared_ptr<Node> curNode, int curPos);
         std::shared_ptr<Node> seekInternalWithInsert(const std::string& str,std::shared_ptr<Node> curNode,int curPos);
+        std::string filePath;
     };
 
 

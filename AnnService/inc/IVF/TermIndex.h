@@ -18,6 +18,9 @@ namespace IVF {
         void setPostingList(HeadIDType headID,  const std::string &value);
         void buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder,int threadNum);
         void setHeadIndex(std::unique_ptr<StringHeadIndex> head_index);
+        void setKV(std::unique_ptr<KeyValueIO> kvio);
+        void loadHeadIndex(const std::string& path);
+        void loadHeadIndexWarmup(const std::string& path);
     private:
         std::unique_ptr<KeyValueIO> db;
         std::unique_ptr<StringHeadIndex> head_index;

@@ -6,11 +6,12 @@
 
 #include "inc/Helper/KeyValueIO.h"
 #include "inc/Helper/StringConvert.h"
+#include "inc/IVF/interfaces/KeyValueIO.h"
+
 #include "rocksdb/db.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/options.h"
 #include "rocksdb/merge_operator.h"
-#include "inc/IVF/interfaces/KeyValueIO.h"
 
 using namespace SPTAG;
 

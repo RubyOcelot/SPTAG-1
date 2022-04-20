@@ -1,9 +1,12 @@
 #include <map>
+#include <memory>
 #include "inc/IVF/DefaultTermIndexConfig.h"
 #include "inc/IVF/IndexSearcher.h"
 #include "inc/IVF/interfaces/ScoreScheme.h"
 #include "inc/IVF/TermTfidfScoreScheme.h"
 #include "inc/IVF/utils/TierTree.h"
+#include "inc/IVF/utils/RocksDBIO.h"
+#include "inc/IVF/utils/LoadTermData.h"
 
 namespace IVF {
 
@@ -30,10 +33,32 @@ namespace IVF {
             scoreScheme=std::make_unique<TermTFIDFScoreScheme>();
         }
 
-        if((*config_map)["Base"]["HeadIndexType"]=="TierTree"){
-            termIndex->setHeadIndex(std::make_unique<TierTree>(scoreScheme->getEmptyKeywordStatistic()));
-        }
         auto headIndexFile=(*config_map)["Base"]["HeadIndexFile"];
+        if((*config_map)["Base"]["HeadIndexType"]=="TierTree"){
+            termIndex->setHeadIndex(std::make_unique<TierTree>(scoreScheme->getEmptyKeywordStatistic(),headIndexFile));
+        }
+
+        std::unique_ptr<KeyValueIO> kvio;
+        if((*config_map)["Base"]["KVIOType"]=="Rocksdb"){
+            kvio = std::make_unique<RocksDBIO>();
+        }
+        kvio->Initialize((*config_map)["Base"]["KVIOPath"].c_str());
+        termIndex->setKV(std::move(kvio));
+
+        if((*config_map)["BuildIndex"]["BuildIndex"]=="true"){
+            if((*config_map)["BuildIndex"]["WarmUpHead"]=="true"){
+                auto warmUpHeadIndexFile=(*config_map)["BuildIndex"]["WarmUpHeadIndexFile"];
+                termIndex->loadHeadIndexWarmup(warmUpHeadIndexFile);
+            }
+            auto sourceFile=(*config_map)["BuildIndex"]["SourceFile"];
+            auto threadNum=std::atoi((*config_map)["BuildIndex"]["NumberOfThreads"].c_str());
+            auto termDataLoader=new LoadTermData();
+            termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile),threadNum);
+        }
+        else{
+            termIndex->loadHeadIndex(headIndexFile);
+        }
+
 
         searcher.indexCollection.push_back(termIndex);
         delete config_map;

@@ -14,7 +14,6 @@ namespace IVF{
     void TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder,int threadNum) {
         collectionStatistic=std::move(dataHolder->cstat);
         //TODO parallel;
-        head_index=std::make_unique<TierTree>(std::move(dataHolder->emptyStat));
         for(auto i=0;i<dataHolder->termNum;i++){
             auto data=dataHolder->termData+i;
             auto hid=head_index->set(data->term.getStr(),data->kwstat->getContent());
@@ -47,5 +46,17 @@ namespace IVF{
 
     void TermIndex::setHeadIndex(std::unique_ptr<StringHeadIndex> head_index) {
         this->head_index=std::move(head_index);
+    }
+
+    void TermIndex::setKV(std::unique_ptr<KeyValueIO> kvio) {
+        this->db=std::move(kvio);
+    }
+
+    void TermIndex::loadHeadIndex(const std::string& path) {
+
+    }
+
+    void TermIndex::loadHeadIndexWarmup(const std::string& path) {
+
     }
 }

@@ -8,7 +8,7 @@
 namespace IVF {
     class KeyValueIO {
     public:
-        virtual ~KeyValueIO()=0;
+        virtual ~KeyValueIO() {};
 
         virtual bool Initialize(const char *filePath) = 0;
 

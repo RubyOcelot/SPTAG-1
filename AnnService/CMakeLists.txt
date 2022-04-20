@@ -55,7 +55,7 @@ file(GLOB_RECURSE IVF_SRC_FILES ${AnnService}/src/IVF/*.cpp ${AnnService}/src/IV
 
 add_library(IVF ${IVF_HDR_FILES} ${IVF_SRC_FILES})
 
-target_link_libraries(IVF INTERFACE RocksDB::rocksdb Boost::system Boost::thread SPTAGLib)
+target_link_libraries(IVF PUBLIC RocksDB::rocksdb Boost::system Boost::thread SPTAGLib)
 
 install(TARGETS SPTAGLib SPTAGLibStatic
   RUNTIME DESTINATION bin

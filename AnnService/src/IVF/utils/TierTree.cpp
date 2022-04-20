@@ -1,5 +1,7 @@
 #include "inc/IVF/utils/TierTree.h"
 
+#include <utility>
+
 namespace IVF{
     TierTree::Children::Children() {
         charIndex=new std::shared_ptr<Node>[sizeof(char)];
@@ -53,8 +55,8 @@ namespace IVF{
         charRWLock[fc].unlock();
     }
 
-    TierTree::TierTree(std::unique_ptr<KeywordStatistic> emptyStat):curHeadId(0),
-                                                                    root(std::make_shared<Node>("", 0, std::move(emptyStat))){
+    TierTree::TierTree(std::unique_ptr<KeywordStatistic> emptyStat, std::string filePath) : curHeadId(0),filePath(std::move(filePath)),
+                                                                                                   root(std::make_shared<Node>("", 0, std::move(emptyStat))){
         curHeadId++;
         if(root->stat== nullptr){
             //TODO error
@@ -177,5 +179,13 @@ namespace IVF{
             }
         }
         return 0;
+    }
+
+    void TierTree::loadIndex(std::istream data) {
+
+    }
+
+    void TierTree::loadWarmupIndex(std::istream data) {
+
     }
 }

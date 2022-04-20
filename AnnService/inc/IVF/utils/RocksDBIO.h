@@ -46,9 +46,9 @@ namespace IVF {
 
         ErrorCode Get(const std::string &key, std::istream **value) override  {
             if(value==nullptr)return ErrorCode::Fail;
-            std::string strValue;
+            std::string *strValue;
             auto s = db->Get(rocksdb::ReadOptions(), key, strValue);
-            auto stream=new std::istringstream(strValue);
+            auto stream=new std::istringstream(*strValue);
             *value=stream;
             if (s == rocksdb::Status::OK()) {
                 return ErrorCode::Success;

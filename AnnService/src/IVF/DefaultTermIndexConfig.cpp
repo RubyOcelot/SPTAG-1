@@ -33,6 +33,7 @@ namespace IVF {
         if((*config_map)["Base"]["HeadIndexType"]=="TierTree"){
             termIndex->setHeadIndex(std::make_unique<TierTree>(scoreScheme->getEmptyKeywordStatistic()));
         }
+        auto headIndexFile=(*config_map)["Base"]["HeadIndexFile"];
 
         searcher.indexCollection.push_back(termIndex);
         delete config_map;

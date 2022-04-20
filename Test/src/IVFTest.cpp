@@ -165,14 +165,24 @@ namespace IVF {
         std::cout << "recall rate: " << 1 - ((float) miss_sum / truth.truthK) / (e - s) << std::endl;
     }
 
+    void test_combine(const std::string &test_dir){
+        auto opts = getSPTAGOptions(test_dir.c_str());
+        auto indexConfig=std::make_shared<SparseAndDenseIndexConfig>();
+        auto searcher = IndexSearcher(test_dir, indexConfig);
+        std::shared_ptr<KeyVector> kvFactory=indexConfig->getTermAndVectorFactory();
+        std::shared_ptr<Term> termFactory=indexConfig->getTermAndVectorFactory();
+
+        delete opts;
+    }
+
     void test_int8(const std::string &test_dir) {
         auto opts = getSPTAGOptions(test_dir.c_str());
 
-        auto indexConfig=std::make_shared<SparseAndDenseIndexConfig>();
+        auto indexConfig=std::make_shared<DefaultVectorIndexConfig>();
 
         auto searcher = IndexSearcher(test_dir, indexConfig);
 
-        std::shared_ptr<KeyVector> kvFactory=indexConfig->getTermAndVectorFactory();
+        std::shared_ptr<KeyVector> kvFactory=indexConfig->getVectorFactory();
 
         if (opts->m_update) {
             test_update(opts, searcher,kvFactory);
@@ -185,6 +195,7 @@ namespace IVF {
         truth.loadData(opts, querys.numVectors);
 
         test_search(opts, searcher, kvFactory, querys, truth, 0, querys.numVectors);
+        delete opts;
     }
 
     void utils_test(const std::string &test_dir) {
@@ -206,9 +217,8 @@ BOOST_AUTO_TEST_SUITE(IVFTest)
 
 BOOST_AUTO_TEST_CASE(IVFUpdateSearch)
         {
-            std::string configPath = "IVFtest.ini";
-            std::string test_dir = std::string(configPath);
-            IVF::test_int8(test_dir);
+            std::string test_path = "IVFtest.ini";
+            IVF::test_int8(test_path);
 //    utils_test(test_dir);
         }
 

@@ -5,11 +5,8 @@
 #include "inc/IVF/CommonUse.h"
 
 namespace IVF{
+    DocId ByteToDocId(const unsigned char* Bytes);
 
-    DocId ByteToDocId(const unsigned char* Bytes){
-        auto a =  (SPTAG::SizeType*)Bytes;
-        return DocId(uint64_t(*a));
-    }
 }
 
 #endif //SPTAGLIB_DATATRANSFORM_H

@@ -1,7 +1,7 @@
 #ifndef IVF_TERMTFIDFSCORESCHEME_H
 #define IVF_TERMTFIDFSCORESCHEME_H
 
-#include <math.h>
+#include <cmath>
 #include <atomic>
 #include <string>
 
@@ -26,7 +26,6 @@ namespace IVF {
             return (TermStatType*)data.c_str();
         }
         class DocFreq:public KeywordStatistic{
-
         public:
             DocFreq();
             explicit DocFreq(TermStatType docFreq);
@@ -54,8 +53,9 @@ namespace IVF {
             std::atomic<TermStatType> docNum;
         };
     public:
-        ScoreScheme *clone();
+        ScoreScheme *clone() override;
 
+        TermTFIDFScoreScheme();
         //{DocId id,float tf}
         bool postingStatisticsLoader(std::istream *rawStream) override;
         //{TermStatType df}
@@ -73,9 +73,9 @@ namespace IVF {
 
         static std::unique_ptr<KeywordStatistic> getKeywordStatistic();
     private:
-        float termFreq;
-        TermStatType docFreq;
-        TermStatType docNum;
+        float termFreq{};
+        TermStatType docFreq{};
+        TermStatType docNum{};
         DocId docId = -1;
     };
 

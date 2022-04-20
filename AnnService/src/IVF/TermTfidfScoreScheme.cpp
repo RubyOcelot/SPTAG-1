@@ -52,6 +52,14 @@ namespace IVF{
         return std::make_unique<TermTFIDFScoreScheme::DocFreq>();
     }
 
+    TermTFIDFScoreScheme::TermTFIDFScoreScheme():docId(-1),docFreq(0),docNum(0),termFreq(0) {
+
+    }
+
+    ScoreScheme *TermTFIDFScoreScheme::clone() {
+        return nullptr;
+    }
+
     TermTFIDFScoreScheme::DocFreq::DocFreq():docFreq(0) {
     }
 

@@ -44,4 +44,8 @@ namespace IVF{
         //TODO ErrorCode;
         db->Get(headID,value);
     }
+
+    void TermIndex::setHeadIndex(std::unique_ptr<StringHeadIndex> head_index) {
+        this->head_index=std::move(head_index);
+    }
 }

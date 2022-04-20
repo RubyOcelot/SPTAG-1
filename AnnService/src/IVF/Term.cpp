@@ -12,7 +12,7 @@ namespace IVF {
         return nullptr;
     }
 
-    std::string Term::getStr() const {
+    std::string Term::getStr() const{
         return str;
     }
 

@@ -2,6 +2,7 @@
 #define IVF_SCORESCHEME_H
 
 #include "../CommonUse.h"
+#include "KeywordStatistic.h"
 
 namespace IVF {
     class ScoreScheme {
@@ -19,6 +20,8 @@ namespace IVF {
         virtual DocId getDocId() = 0;
 
         virtual ~ScoreScheme() = default;
+
+        virtual std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic()=0;
     };
 
 }

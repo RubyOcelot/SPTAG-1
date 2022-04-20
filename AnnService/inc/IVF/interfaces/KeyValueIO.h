@@ -14,9 +14,9 @@ namespace IVF {
 
         virtual void ShutDown() = 0;
 
-        virtual SPTAG::ErrorCode Get(const std::string &key, std::istringstream *value) = 0;
+        virtual SPTAG::ErrorCode Get(const std::string &key, std::istream **value) = 0;
 
-        virtual SPTAG::ErrorCode Get(HeadIDType key, std::istringstream *value) = 0;
+        virtual SPTAG::ErrorCode Get(HeadIDType key, std::istream **value) = 0;
 
         virtual SPTAG::ErrorCode Put(const std::string &key, const std::string &value) = 0;
 

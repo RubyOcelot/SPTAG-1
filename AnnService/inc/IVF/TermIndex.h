@@ -14,9 +14,10 @@ namespace IVF {
         bool updateAllFinished() override;
         void close() override;
         HeadIDType getHeadID(const Term &term, std::string *rt_stat);
-        void getPostingList(HeadIDType headID, std::istringstream *postingItemStream);
+        void getPostingList(HeadIDType headID,std::istream **value);
         void setPostingList(HeadIDType headID,  const std::string &value);
         void buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder,int threadNum);
+        void setHeadIndex(std::unique_ptr<StringHeadIndex> head_index);
     private:
         std::unique_ptr<KeyValueIO> db;
         std::unique_ptr<StringHeadIndex> head_index;

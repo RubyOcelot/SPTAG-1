@@ -98,6 +98,10 @@ namespace IVF {
         return vecLen;
     }
 
+    template<class T>
+    std::unique_ptr<KeywordStatistic> DefaultVectorScoreScheme<T>::getEmptyKeywordStatistic() {
+        return std::unique_ptr<KeywordStatistic>();
+    }
 
 
 }

@@ -8,7 +8,7 @@
 namespace IVF {
     class DefaultVectorIndexConfig : public IndexConfig {
     public:
-        void init(const std::string &dir, IndexSearcher &searcher) override;
+        void init(const std::string &path, IndexSearcher &searcher) override;
         std::unique_ptr<Keyword> getFactory() override;
         void close() override;
         std::unique_ptr<KeyVector> getVectorFactory();

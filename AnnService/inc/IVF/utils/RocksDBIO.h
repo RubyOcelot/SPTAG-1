@@ -44,10 +44,12 @@ namespace IVF {
             delete db;
         }
 
-        ErrorCode Get(const std::string &key, std::istringstream *value) override  {
+        ErrorCode Get(const std::string &key, std::istream **value) override  {
+            if(value==nullptr)return ErrorCode::Fail;
             std::string strValue;
             auto s = db->Get(rocksdb::ReadOptions(), key, strValue);
-            value->str(strValue);
+            auto stream=new std::istringstream(strValue);
+            *value=stream;
             if (s == rocksdb::Status::OK()) {
                 return ErrorCode::Success;
             } else {
@@ -55,7 +57,7 @@ namespace IVF {
             }
         }
 
-        ErrorCode Get(SizeType key, std::istringstream *value) override  {
+        ErrorCode Get(SizeType key, std::istream **value) override  {
             return Get(Helper::Convert::Serialize<SizeType>(&key), value);
         }
 

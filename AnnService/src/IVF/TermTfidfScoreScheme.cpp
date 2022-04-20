@@ -48,6 +48,10 @@ namespace IVF{
         return std::make_unique<DocFreq>();
     }
 
+    std::unique_ptr<KeywordStatistic> TermTFIDFScoreScheme::getEmptyKeywordStatistic() {
+        return std::make_unique<TermTFIDFScoreScheme::DocFreq>();
+    }
+
     TermTFIDFScoreScheme::DocFreq::DocFreq():docFreq(0) {
     }
 

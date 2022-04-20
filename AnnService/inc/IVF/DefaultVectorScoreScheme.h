@@ -33,7 +33,7 @@ namespace IVF {
 
         void setVecLen(int len)override;
         int getVecLen()override;
-
+        std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic()override;
     private:
 
         DocId docId = -1;

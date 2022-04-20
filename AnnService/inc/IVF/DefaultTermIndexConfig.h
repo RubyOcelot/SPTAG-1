@@ -1,5 +1,5 @@
-#ifndef SPTAGLIB_TERMINDEXCONFIG_H
-#define SPTAGLIB_TERMINDEXCONFIG_H
+#ifndef SPTAGLIB_DEFAULTTERMINDEXCONFIG_H
+#define SPTAGLIB_DEFAULTTERMINDEXCONFIG_H
 
 #include <string>
 #include "inc/IVF/interfaces/IndexConfig.h"
@@ -7,9 +7,9 @@
 #include "TermIndex.h"
 
 namespace IVF {
-    class TermIndexConfig : public IndexConfig {
+    class DefaultTermIndexConfig : public IndexConfig {
     public:
-        void init(const std::string &dir, IndexSearcher &searcher) override;
+        void init(const std::string &path, IndexSearcher &searcher) override;
         std::unique_ptr<Keyword> getFactory() override;
         void close() override;
         std::unique_ptr<Term> getTermFactory();
@@ -18,4 +18,4 @@ namespace IVF {
     };
 }
 
-#endif //SPTAGLIB_TERMINDEXCONFIG_H
+#endif //SPTAGLIB_DEFAULTTERMINDEXCONFIG_H

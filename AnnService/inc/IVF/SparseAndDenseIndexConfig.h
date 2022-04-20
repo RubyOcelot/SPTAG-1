@@ -15,7 +15,7 @@ namespace IVF {
         public:
             TermAndVector(const Term &term, const KeyVector &kv);
         };
-        void init(const std::string &dir, IndexSearcher &searcher) override;
+        void init(const std::string &path, IndexSearcher &searcher) override;
         std::unique_ptr<Keyword> getFactory() override;
         void close() override;
         std::unique_ptr<TermAndVector> getTermAndVectorFactory();

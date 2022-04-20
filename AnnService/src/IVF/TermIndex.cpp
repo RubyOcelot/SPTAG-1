@@ -37,11 +37,11 @@ namespace IVF{
         return head_index->seek(term.getStr(),rt_stat);
     }
 
-    void TermIndex::getPostingList(HeadIDType headID, std::istringstream *postingItemStream) {
+    void TermIndex::getPostingList(HeadIDType headID,std::istream **value) {
         if(db == nullptr){
             //TODO error
         }
         //TODO ErrorCode;
-        db->Get(headID,postingItemStream);
+        db->Get(headID,value);
     }
 }

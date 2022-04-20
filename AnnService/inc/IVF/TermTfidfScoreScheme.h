@@ -10,6 +10,7 @@
 #include "inc/IVF/utils/DataTransform.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
 #include "inc/IVF/interfaces/CollectionStatistic.h"
+#include "inc/IVF/utils/TermSetDataHolder.h"
 
 namespace IVF {
 
@@ -65,6 +66,10 @@ namespace IVF {
         float score() override;
 
         DocId getDocId() override;
+
+        std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic() override;
+
+        static std::unique_ptr<TermSetDataHolder> getTermSetData(const std::string& path);
 
         static std::unique_ptr<KeywordStatistic> getKeywordStatistic();
     private:

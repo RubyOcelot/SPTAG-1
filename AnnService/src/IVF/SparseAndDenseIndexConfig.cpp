@@ -1,6 +1,6 @@
 #include "inc/IVF/SparseAndDenseIndexConfig.h"
 #include "inc/IVF/DefaultVectorIndexConfig.h"
-#include "inc/IVF/TermIndexConfig.h"
+#include "inc/IVF/DefaultTermIndexConfig.h"
 
 namespace IVF{
 
@@ -9,12 +9,12 @@ namespace IVF{
         vectorIndexWrapper=kv.vectorIndexWrapper;
     }
 
-    void SparseAndDenseIndexConfig::init(const std::string &dir, IndexSearcher &searcher) {
+    void SparseAndDenseIndexConfig::init(const std::string &path, IndexSearcher &searcher) {
         auto vecIndexConfig=DefaultVectorIndexConfig();
-        vecIndexConfig.init(dir,searcher);
+        vecIndexConfig.init(path, searcher);
         kv=vecIndexConfig.getVectorFactory();
-        auto termIndexConfig=TermIndexConfig();
-        termIndexConfig.init(dir,searcher);
+        auto termIndexConfig=DefaultTermIndexConfig();
+        termIndexConfig.init(path, searcher);
         term=termIndexConfig.getTermFactory();
     }
 

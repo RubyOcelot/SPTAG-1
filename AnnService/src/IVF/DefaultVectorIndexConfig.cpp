@@ -16,10 +16,10 @@ using namespace SPTAG;
 using namespace SPTAG::SSDServing;
 
 namespace IVF {
-    void DefaultVectorIndexConfig::init(const std::string &dir, IndexSearcher &searcher) {
+    void DefaultVectorIndexConfig::init(const std::string &path, IndexSearcher &searcher) {
 
         //TODO
-        std::string SPTAGConfigFilePath=dir;
+        std::string SPTAGConfigFilePath=path;
 
         std::map<std::string, std::map<std::string, std::string>> my_map;
         auto vecIndex= IVF::SetupSPTAGIndex( &my_map, SPTAGConfigFilePath.c_str());

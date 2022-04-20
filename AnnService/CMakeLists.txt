@@ -53,10 +53,6 @@ endif()
 file(GLOB_RECURSE IVF_HDR_FILES ${AnnService}/inc/IVF/*.h  ${AnnService}/inc/IVF/*/*.h)
 file(GLOB_RECURSE IVF_SRC_FILES ${AnnService}/src/IVF/*.cpp ${AnnService}/src/IVF/*/*.cpp)
 
-list(REMOVE_ITEM IVF_SRC_FILES
-        ${AnnService}/src/IVF/test.cpp
-        )
-
 add_library(IVF ${IVF_HDR_FILES} ${IVF_SRC_FILES})
 
 target_link_libraries(IVF INTERFACE RocksDB::rocksdb Boost::system Boost::thread SPTAGLib)

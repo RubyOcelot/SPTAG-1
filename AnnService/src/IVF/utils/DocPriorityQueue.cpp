@@ -114,8 +114,8 @@ namespace IVF {
             heap[1] = heap[size];
             //clear it
             heap[size] = DocWithScore();
-            updateTop();
             size--;
+            updateTop();
             return result;
         } else {
             return nullptr;

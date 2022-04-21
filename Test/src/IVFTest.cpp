@@ -208,7 +208,7 @@ namespace IVF {
         std::shared_ptr<Term> termFactory=indexConfig->getTermFactory();
 
         KeywordQuery kwQuery = KeywordQuery(termFactory->asFactory("happy"));
-        TopDocs topDocs = searcher.search(kwQuery, 3);
+        TopDocs topDocs = searcher.search(kwQuery, 5);
         topDocs.print();
 
         delete opts;

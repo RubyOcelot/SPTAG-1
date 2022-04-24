@@ -30,5 +30,9 @@ namespace IVF {
     class ScoreScheme;
     typedef ScoreScheme PostingItem;
 
+    enum SourceDataType{
+        txt
+    };
+
 }
 #endif //IVF_FORWARDDEFINE_H

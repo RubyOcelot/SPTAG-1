@@ -70,7 +70,7 @@ namespace IVF{
 
     }
 
-    std::string TermTFIDFScoreScheme::serializePostingStat(DocId docId, float termFreq) {
+    std::string TermTFIDFScoreScheme::serializePItem(DocId docId, float termFreq) {
 
         return DataToString((uint32_t)docId)+DataToString( termFreq);
     }

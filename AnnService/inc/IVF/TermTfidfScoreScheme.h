@@ -10,6 +10,7 @@
 #include "inc/IVF/utils/DataTransform.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
 #include "inc/IVF/interfaces/CollectionStatistic.h"
+#include "inc/IVF/utils/TermSetDataHolder.h"
 
 namespace IVF {
 
@@ -73,11 +74,13 @@ namespace IVF {
 
         DocId getDocId() override;
 
+        static std::unique_ptr<TermSetDataHolder> getTermSetData(const std::string& path);
+
         std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic() override;
 
         static std::unique_ptr<KeywordStatistic> getKeywordStatistic();
 
-        static std::string serializePostingStat(DocId docId,float termFreq);
+        static std::string serializePItem(DocId docId, float termFreq);
     private:
         float termFreq;
         TermStatType docFreq;

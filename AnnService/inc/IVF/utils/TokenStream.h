@@ -14,7 +14,7 @@ namespace IVF {
         Token getToken();
         virtual void close()=0;
         virtual void end()=0;
-        virtual void reset()=0;
+        virtual void reset();
         virtual ~TokenStream()=default;
     protected:
         Token token;

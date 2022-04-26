@@ -9,6 +9,7 @@ namespace IVF {
     class TokenFilter : public TokenStream {
     public:
         explicit TokenFilter(std::unique_ptr<TokenStream> inputTokenStream);
+        void end()override;
 
     protected:
         std::unique_ptr<TokenStream> inputTokenStream;

@@ -32,6 +32,7 @@ namespace IVF {
                 continue;
             }
             token=inputTokenStream->getToken();
+            return true;
         }
         return false;
     }
@@ -42,11 +43,5 @@ namespace IVF {
         stopwords.reset();
     }
 
-    void StopwordsFilter::end() {
-        inputTokenStream->end();
-    }
 
-    void StopwordsFilter::reset() {
-        token="";
-    }
 }

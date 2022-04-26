@@ -23,9 +23,9 @@ namespace IVF {
     public:
         std::unique_ptr<TermSetDataHolder> getTermSetData(const std::string &path, const SourceDataType &dataType) override;
     private:
-        void collectData(std::vector<std::unique_ptr<TermInDoc>> &termInDocData,
+        void collectData(std::vector<std::shared_ptr<TermInDoc>> &termInDocData,
                          std::unique_ptr<TokenStream> tokenStream, DocId docId);
-        std::unique_ptr<TermSetDataHolder> concat(std::vector<std::unique_ptr<TermInDoc>>& termInDocData);
+        std::unique_ptr<TermSetDataHolder> concat(std::vector<std::shared_ptr<TermInDoc>>& termInDocData);
     };
 }
 

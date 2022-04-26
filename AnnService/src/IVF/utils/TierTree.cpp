@@ -66,12 +66,18 @@ namespace IVF{
 
     HeadIDType TierTree::seek(const std::string &str, std::string* rt_stat) {
         auto node = seekInternalNoInsert(str, root, 0);
-        if(rt_stat!=nullptr){
-            *rt_stat=node->stat->getContent();
+        if(node == nullptr) {
+            return -1;
         }
-        auto hid=node->headID;
-        node->divergeLock.unlock_shared();
-        return hid;
+        else {
+            if (rt_stat != nullptr) {
+                *rt_stat = node->stat->getContent();
+            }
+            auto hid = node->headID;
+            node->divergeLock.unlock_shared();
+            return hid;
+        }
+        return -1;
     }
 
     HeadIDType TierTree::set(const std::string &str, std::string stat) {
@@ -92,10 +98,18 @@ namespace IVF{
 
     HeadIDType TierTree::del(const std::string &str, std::string inputStat) {
         auto node = seekInternalNoInsert(str, root, 0);
-        node->stat->modForDel(inputStat);
-        auto hid=node->headID;
-        node->divergeLock.unlock_shared();
-        return hid;
+        if(node == nullptr) {
+            //TODO error;
+            exit(1);
+            return -1;
+        }
+        else {
+            node->stat->modForDel(inputStat);
+            auto hid = node->headID;
+            node->divergeLock.unlock_shared();
+            return hid;
+        }
+        return -1;
     }
 
     std::shared_ptr<TierTree::Node> TierTree::seekInternalWithInsert(const std::string &str, std::shared_ptr<TierTree::Node> curNode, int curPos) {

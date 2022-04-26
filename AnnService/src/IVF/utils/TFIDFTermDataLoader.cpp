@@ -25,7 +25,7 @@ namespace IVF {
     std::unique_ptr<TermSetDataHolder>
     IVF::TFIDFTermDataLoader::getTermSetData(const std::string &path, const SourceDataType &dataType) {
         TermTFIDFScoreScheme::TermStatType docNum;
-        std::vector<std::unique_ptr<TermInDoc>> termInDocData;
+        std::vector<std::shared_ptr<TermInDoc>> termInDocData;
 
         std::fstream fs;
         auto mode=std::fstream::in;
@@ -48,9 +48,12 @@ namespace IVF {
         else{
             mode=mode|std::fstream::binary;
         }
+        for(auto iter:termInDocData){
+            std::cout<<iter->str<<" ";
+        }
 
         //TODO multi-thread sort
-        std::sort(termInDocData.begin()+1,termInDocData.end());
+        std::sort(termInDocData.begin(),termInDocData.end());
 
         auto retData= concat(termInDocData);
         retData->cstat=std::make_unique<TermTFIDFScoreScheme::DocNum>(docNum);
@@ -58,7 +61,7 @@ namespace IVF {
         return retData;
     }
 
-    void TFIDFTermDataLoader::collectData(std::vector<std::unique_ptr<TermInDoc>> &termInDocData,
+    void TFIDFTermDataLoader::collectData(std::vector<std::shared_ptr<TermInDoc>> &termInDocData,
                                      std::unique_ptr<TokenStream> tokenStream, DocId docId) {
         std::map<std::string,TermTFIDFScoreScheme::TermStatType> termFreqData;
         while (tokenStream->fetchNextToken()){
@@ -78,8 +81,8 @@ namespace IVF {
     }
 
     std::unique_ptr<TermSetDataHolder>
-    TFIDFTermDataLoader::concat(std::vector<std::unique_ptr<TermInDoc>> &termInDocData) {
-        TermTFIDFScoreScheme::TermStatType curTermNum=0;
+    TFIDFTermDataLoader::concat(std::vector<std::shared_ptr<TermInDoc>> &termInDocData) {
+        int termNum=0;
         auto retData=std::make_unique<TermSetDataHolder>();
         termInDocData.push_back(std::make_unique<TermInDoc>());
         TermTFIDFScoreScheme::TermStatType docFreq=0;
@@ -89,12 +92,12 @@ namespace IVF {
             posting_data+=termInDocData[i]->posting_data;
             if(termInDocData[i]->str!=termInDocData[i+1]->str){
                 retData->termDataVec.emplace_back(termInDocData[i]->str,std::make_unique<TermTFIDFScoreScheme::DocFreq>(docFreq),posting_data);
-                curTermNum++;
+                termNum++;
                 docFreq=0;
                 posting_data="";
             }
         }
-        retData->termNum=curTermNum;
+        retData->termNum=termNum;
         return retData;
     }
 

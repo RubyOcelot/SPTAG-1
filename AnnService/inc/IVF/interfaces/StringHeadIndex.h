@@ -16,9 +16,11 @@ namespace IVF {
 
         virtual HeadIDType del(const std::string &str, std::string inputStat)=0;
 
-        virtual void loadIndex(std::istream data)=0;
+        virtual void loadIndex(std::unique_ptr<std::istream> data)=0;
 
-        virtual void loadWarmupIndex(std::istream data)=0;
+        virtual void storeIndex(std::unique_ptr<std::istream> storeStream)=0;
+
+        virtual void loadWarmupIndex(std::unique_ptr<std::istream> data)=0;
     };
 }
 

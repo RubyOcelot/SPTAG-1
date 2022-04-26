@@ -58,8 +58,9 @@ namespace IVF{
         HeadIDType add(const std::string &str, std::string inputStat) override;
         HeadIDType del(const std::string &str, std::string inputStat) override;
         std::atomic<HeadIDType> curHeadId;
-        void loadIndex(std::istream data) override;
-        void loadWarmupIndex(std::istream data) override;
+        void loadIndex(std::unique_ptr<std::istream> data) override;
+        void storeIndex(std::unique_ptr<std::istream> storeStream)override;
+        void loadWarmupIndex(std::unique_ptr<std::istream> data) override;
     private:
         std::shared_ptr<Node> seekInternalNoInsert(const std::string& str, std::shared_ptr<Node> curNode, int curPos);
         std::shared_ptr<Node> seekInternalWithInsert(const std::string& str,std::shared_ptr<Node> curNode,int curPos);

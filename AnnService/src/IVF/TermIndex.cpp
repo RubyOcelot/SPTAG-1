@@ -11,7 +11,8 @@ namespace IVF{
 
     }
 
-    void TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder,int threadNum) {
+    void
+    TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder, int threadNum, const std::string& headIndexFile) {
         collectionStatistic=std::move(dataHolder->cstat);
         //TODO parallel;
         for(auto i=0;i<dataHolder->termNum;i++){
@@ -23,6 +24,9 @@ namespace IVF{
             }
             setPostingList(hid,data.posting_data);
         }
+        auto fs=std::make_unique<std::fstream>();
+        fs->open(headIndexFile,std::fstream::binary);
+        head_index->storeIndex(std::move(fs));
     }
 
     void TermIndex::setPostingList(HeadIDType headID, const std::string &value) {
@@ -59,11 +63,16 @@ namespace IVF{
     }
 
     void TermIndex::loadHeadIndex(const std::string& path) {
+        auto fs=std::make_unique<std::fstream>();
+        fs->open(path,std::fstream::binary);
+        head_index->loadIndex(std::move(fs));
 
     }
 
     void TermIndex::loadHeadIndexWarmup(const std::string& path) {
-
+        auto fs=std::make_unique<std::fstream>();
+        fs->open(path,std::fstream::binary);
+        head_index->loadWarmupIndex(std::move(fs));
     }
 
     void TermIndex::setScoreScheme(std::unique_ptr<ScoreScheme> scoreScheme) {

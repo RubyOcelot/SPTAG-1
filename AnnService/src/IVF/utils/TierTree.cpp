@@ -181,11 +181,15 @@ namespace IVF{
         return 0;
     }
 
-    void TierTree::loadIndex(std::istream data) {
+    void TierTree::loadIndex(std::unique_ptr<std::istream> data) {
 
     }
 
-    void TierTree::loadWarmupIndex(std::istream data) {
+    void TierTree::loadWarmupIndex(std::unique_ptr<std::istream> data) {
+
+    }
+
+    void TierTree::storeIndex(std::unique_ptr<std::istream> storeStream) {
 
     }
 }

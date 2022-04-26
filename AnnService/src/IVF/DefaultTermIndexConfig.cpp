@@ -54,7 +54,8 @@ namespace IVF {
             auto sourceFile=(*config_map)["BuildIndex"]["sourcefile"];
             auto threadNum=std::atoi((*config_map)["BuildIndex"]["numberofthreads"].c_str());
             auto termDataLoader=new TFIDFTermDataLoader();
-            termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile, SourceDataType::txt), threadNum);
+            termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile, SourceDataType::txt), threadNum,
+                                  headIndexFile);
         }
         else{
             termIndex->loadHeadIndex(headIndexFile);

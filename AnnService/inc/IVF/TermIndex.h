@@ -15,7 +15,7 @@ namespace IVF {
         HeadIDType getHeadID(const std::string &str, std::string *rt_stat);
         void getPostingList(HeadIDType headID,std::istream **value);
         void setPostingList(HeadIDType headID,  const std::string &value);
-        void buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder,int threadNum);
+        void buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder, int threadNum, const std::string& headIndexFile);
         void setHeadIndex(std::unique_ptr<StringHeadIndex> head_index);
         void setKV(std::unique_ptr<KeyValueIO> kvio);
         void setScoreScheme(std::unique_ptr<ScoreScheme> scoreScheme);

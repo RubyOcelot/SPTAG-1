@@ -2,6 +2,7 @@
 #define SPTAGLIB_TERMSETDATAHOLDER_H
 
 #include <memory>
+#include <vector>
 #include "inc/IVF/interfaces/CollectionStatistic.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
 
@@ -11,13 +12,14 @@ namespace IVF {
     public:
         class TermData {
         public:
+            explicit TermData(std::string str="",std::unique_ptr<KeywordStatistic> kwstat= nullptr,std::string posting_data="");
             std::string str;
             std::unique_ptr<KeywordStatistic> kwstat;
             std::string posting_data;
         };
         std::unique_ptr<CollectionStatistic> cstat;
         int termNum;
-        TermData* termData;
+        std::vector<TermData> termDataVec;
         ~TermSetDataHolder();
     };
 

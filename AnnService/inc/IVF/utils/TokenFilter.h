@@ -8,16 +8,13 @@
 namespace IVF {
     class TokenFilter : public TokenStream {
     public:
-        explicit TokenFilter(std::shared_ptr<TokenStream> inputTokenStream);
+        explicit TokenFilter(std::unique_ptr<TokenStream> inputTokenStream);
 
     protected:
-        std::shared_ptr<TokenStream> inputTokenStream;
+        std::unique_ptr<TokenStream> inputTokenStream;
 
     };
 
-    TokenFilter::TokenFilter(std::shared_ptr<TokenStream> inputTokenStream): inputTokenStream(std::move(inputTokenStream)) {
-
-    }
 
 }
 #endif //SPTAGLIB_TOKENFILTER_H

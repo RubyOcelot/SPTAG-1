@@ -15,13 +15,13 @@ namespace IVF{
         collectionStatistic=std::move(dataHolder->cstat);
         //TODO parallel;
         for(auto i=0;i<dataHolder->termNum;i++){
-            auto data=dataHolder->termData+i;
-            auto hid=head_index->set(data->str,data->kwstat->getContent());
+            auto &data= dataHolder->termDataVec.at(i);
+            auto hid=head_index->set(data.str,data.kwstat->getContent());
             if(hid==-1){
                 //TODO error
                 exit(1);
             }
-            setPostingList(hid,data->posting_data);
+            setPostingList(hid,data.posting_data);
         }
     }
 

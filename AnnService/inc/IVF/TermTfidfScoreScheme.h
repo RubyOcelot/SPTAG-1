@@ -10,6 +10,7 @@
 #include "inc/IVF/utils/DataTransform.h"
 #include "inc/IVF/interfaces/KeywordStatistic.h"
 #include "inc/IVF/interfaces/CollectionStatistic.h"
+#include "inc/IVF/interfaces/PostingStatistics.h"
 #include "inc/IVF/utils/TermSetDataHolder.h"
 
 namespace IVF {
@@ -29,6 +30,18 @@ namespace IVF {
         static TermStatType* StringToTermStat(const std::string& data){
             return (TermStatType*)data.c_str();
         }
+
+        class TermFreq:public PostingStatistics{
+        public:
+            TermFreq(DocId docId,float termFreq);
+            void reset()override;
+            void set(const std::string &)override;
+            std::string getContent()override;
+        private:
+            DocId docId;
+            float termFreq;
+        };
+
         class DocFreq:public KeywordStatistic{
         public:
             DocFreq();

@@ -15,13 +15,11 @@ namespace IVF {
         virtual void close()=0;
         virtual void end()=0;
         virtual void reset()=0;
+        virtual ~TokenStream()=default;
     protected:
         Token token;
     };
 
-    Token TokenStream::getToken() {
-        return token;
-    }
 }
 
 #endif //SPTAGLIB_TOKENSTREAM_H

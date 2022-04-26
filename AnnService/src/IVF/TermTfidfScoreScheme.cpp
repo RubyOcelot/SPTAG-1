@@ -142,4 +142,20 @@ namespace IVF{
     std::unique_ptr<CollectionStatistic> TermTFIDFScoreScheme::DocNum::clone() {
         return std::make_unique<DocNum>(docNum);
     }
+
+    TermTFIDFScoreScheme::TermFreq::TermFreq(DocId docId, float termFreq):docId(docId),termFreq(termFreq) {
+
+    }
+
+    void TermTFIDFScoreScheme::TermFreq::reset() {
+
+    }
+
+    void TermTFIDFScoreScheme::TermFreq::set(const std::string &) {
+
+    }
+
+    std::string TermTFIDFScoreScheme::TermFreq::getContent() {
+        return DataToString((uint32_t)docId)+DataToString( termFreq);
+    }
 }

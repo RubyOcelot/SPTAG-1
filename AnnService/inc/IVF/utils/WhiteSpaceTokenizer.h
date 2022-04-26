@@ -9,6 +9,8 @@ namespace IVF {
 
     class WhiteSpaceTokenizer: public Tokenizer {
     public:
+        using Tokenizer::Tokenizer;
+
         bool fetchNextToken() override;
 
         void close() override;

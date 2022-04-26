@@ -8,16 +8,12 @@
 namespace IVF {
     class Tokenizer : public TokenStream {
     public:
-        explicit Tokenizer(std::shared_ptr<std::istream> inputStream);
+        explicit Tokenizer(std::unique_ptr<std::istream> inputStream);
 
 
     protected:
-        std::shared_ptr<std::istream> inputStream;
+        std::unique_ptr<std::istream> inputStream;
     };
-
-    Tokenizer::Tokenizer(std::shared_ptr<std::istream> inputStream):inputStream(std::move(inputStream)) {
-
-    }
 
 }
 

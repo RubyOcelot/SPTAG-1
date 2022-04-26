@@ -6,7 +6,7 @@
 #include "inc/IVF/TermTfidfScoreScheme.h"
 #include "inc/IVF/utils/TierTree.h"
 #include "inc/IVF/utils/RocksDBIO.h"
-#include "inc/IVF/utils/LoadTermData.h"
+#include "inc/IVF/utils/TFIDFTermDataLoader.h"
 
 namespace IVF {
 
@@ -53,8 +53,8 @@ namespace IVF {
             }
             auto sourceFile=(*config_map)["BuildIndex"]["sourcefile"];
             auto threadNum=std::atoi((*config_map)["BuildIndex"]["numberofthreads"].c_str());
-            auto termDataLoader=new LoadTermData();
-            termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile, <#initializer#>), threadNum);
+            auto termDataLoader=new TFIDFTermDataLoader();
+            termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile, SourceDataType::txt), threadNum);
         }
         else{
             termIndex->loadHeadIndex(headIndexFile);

@@ -1,5 +1,7 @@
 #include "inc/IVF/utils/WhiteSpaceTokenizer.h"
 
+#include <utility>
+
 bool IVF::WhiteSpaceTokenizer::fetchNextToken() {
     char ch;
     Token nextToken;
@@ -34,4 +36,5 @@ void IVF::WhiteSpaceTokenizer::reset() {
 void IVF::WhiteSpaceTokenizer::end() {
 
 }
+
 

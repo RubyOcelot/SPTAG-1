@@ -1,11 +1,10 @@
 
-#include "inc/Test.h"
 
 #include <iostream>
 #include <memory>
 #include <new>
+#include "inc/Test.h"
 #include "inc/IVF/api.h"
-#include "inc/IVF/DefaultVectorScoreScheme.h"
 
 namespace IVF {
 
@@ -120,8 +119,8 @@ namespace IVF {
                 TruthWrap &truth, int s, int e) {
         LOG(Helper::LogLevel::LL_Info, "Start searching...\n");
 
-        ScoreScheme *vScoreScheme = new DefaultVectorScoreScheme<int8_t>(
-                std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
+//        ScoreScheme *vScoreScheme = new DefaultVectorScoreScheme<int8_t>(
+//                std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
 
         int searchThreads = opts->m_searchThreadNum;
         StopWSPFresh sw;
@@ -207,8 +206,13 @@ namespace IVF {
 
         std::shared_ptr<Term> termFactory=indexConfig->getTermFactory();
 
-        KeywordQuery kwQuery = KeywordQuery(termFactory->asFactory("mouse"));
-        TopDocs topDocs = searcher.search(kwQuery, 5);
+        std::vector<std::string> wordList={"mouse","creative"};
+        auto queryList=std::make_unique<std::vector<std::shared_ptr<Query>>>();
+        for(const auto& iter:wordList){
+            queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
+        }
+        auto boolQuery = BooleanQuery(LogicOperator::AND,std::move(queryList));
+        TopDocs topDocs = searcher.search(boolQuery, 5);
         topDocs.print();
 
         delete opts;

@@ -17,5 +17,7 @@
 #include "utils/GetSPTAGOptions.h"
 #include "utils/LoadVectors.h"
 #include "utils/LoadTruth.h"
+#include "inc/IVF/DefaultVectorScoreScheme.h"
+#include "inc/IVF/BooleanQuery.h"
 
 #endif //IVF_API_H

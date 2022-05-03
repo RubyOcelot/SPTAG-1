@@ -8,6 +8,8 @@ namespace IVF {
 
     class LetterTokenizer : public Tokenizer {
     public:
+        using Tokenizer::Tokenizer;
+
         bool fetchNextToken() override;
 
         void close() override;

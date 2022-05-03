@@ -37,7 +37,13 @@ namespace IVF {
             for(auto i=0;i<docNum;i++){
                 DocId docId;
                 fs>>docId;
+                char c;
+                fs.get(c);
+                if(c!='\n'){
+                    fs.putback(c);
+                }
                 fs.getline(buffer,buffer_size-1);
+//                auto x=fs.gcount();
                 auto analyzer=EnglishSimpleAnalyzer();
                 auto resultTokenStream=analyzer.getTokenStream(std::string(buffer));
                 collectData(termInDocData, std::move(resultTokenStream), docId);
@@ -48,12 +54,14 @@ namespace IVF {
         else{
             mode=mode|std::fstream::binary;
         }
-        for(auto iter:termInDocData){
-            std::cout<<iter->str<<" ";
-        }
 
         //TODO multi-thread sort
-        std::sort(termInDocData.begin(),termInDocData.end());
+         std::sort(termInDocData.begin(),termInDocData.end(), [] (const std::shared_ptr<TermInDoc>& a, const std::shared_ptr<TermInDoc>& b) { return a->str.compare(b->str)<0; });
+
+//        for(auto iter:termInDocData){
+//            std::cout<<iter->str<<" ";
+//        }
+//        std::cout<<std::endl;
 
         auto retData= concat(termInDocData);
         retData->cstat=std::make_unique<TermTFIDFScoreScheme::DocNum>(docNum);

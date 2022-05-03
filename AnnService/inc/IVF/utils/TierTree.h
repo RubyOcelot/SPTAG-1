@@ -17,7 +17,7 @@
 
 namespace IVF{
     class TierTree: public StringHeadIndex{
-        static bool isPrefix(const std::string& prefix,const std::string& full);
+        static bool isPrefix(const std::string &prefix, const std::string &full, int curPos);
         static int checkPrefix(const std::string& a,const std::string& b);
         class Node;
         class Children{

@@ -116,7 +116,7 @@ namespace IVF{
         if(curNode==nullptr)
             return nullptr;
         curNode->divergeLock.lock_shared();
-        auto isPref=isPrefix(curNode->identity,str);
+        auto isPref= isPrefix(curNode->identity, str, curPos);
         if(isPref){
             auto identityLen=curNode->identity.length();
             curPos+=identityLen;
@@ -125,13 +125,14 @@ namespace IVF{
             }
             auto children=curNode->children;
             curNode->divergeLock.unlock_shared();
-            return seekInternalWithInsert(str, children->getOrAddChild(str, curPos, curHeadId, curNode->stat), curPos);
+            auto child=children->getOrAddChild(str, curPos, curHeadId, curNode->stat);
+            return seekInternalWithInsert(str, child, curPos);
         }
 
         curNode->divergeLock.unlock_shared();
         //regain w lock
         curNode->divergeLock.lock();
-        isPref=isPrefix(curNode->identity,str);
+        isPref= isPrefix(curNode->identity, str, 0);
         if(isPref){
             auto identityLen=curNode->identity.length();
             curPos+=identityLen;
@@ -141,7 +142,8 @@ namespace IVF{
             }
             auto children=curNode->children;
             curNode->divergeLock.unlock();
-            return seekInternalNoInsert(str, children->getOrAddChild(str, curPos, curHeadId, curNode->stat), curPos);
+            auto child=children->getOrAddChild(str, curPos, curHeadId, curNode->stat);
+            return seekInternalNoInsert(str, child, curPos);
         }
 
         auto newPos= checkPrefix(str.substr(curPos,std::string::npos),curNode->identity);
@@ -152,7 +154,8 @@ namespace IVF{
         curNode->children.reset(new Children());
         curNode->children->addChild(newChild1);
         if(newPos!=str.length()){
-            auto newChild2=std::make_shared<Node>(str.substr(newPos,std::string::npos), curHeadId++, curNode->stat->getNew());
+            auto newIdentity=str.substr(curPos + newPos,std::string::npos);
+            auto newChild2=std::make_shared<Node>(newIdentity, curHeadId++, curNode->stat->getNew());
             newChild2->divergeLock.lock_shared();
             curNode->children->addChild(newChild2);
 
@@ -165,10 +168,10 @@ namespace IVF{
 
 
     std::shared_ptr<TierTree::Node> TierTree::seekInternalNoInsert(const std::string &str, std::shared_ptr<TierTree::Node> curNode, int curPos) {
-        if(curNode==nullptr)
+         if(curNode==nullptr)
             return nullptr;
         curNode->divergeLock.lock_shared();
-        auto isPref=isPrefix(curNode->identity,str);
+        auto isPref= isPrefix(curNode->identity, str, curPos);
         if(isPref){
             auto identityLen=curNode->identity.length();
             curPos+=identityLen;
@@ -177,13 +180,16 @@ namespace IVF{
             }
             auto children=curNode->children;
             curNode->divergeLock.unlock_shared();
-            return seekInternalNoInsert(str, children->getChild(str, curPos), curPos);
+            auto child=children->getChild(str, curPos);
+            return seekInternalNoInsert(str, child, curPos);
         }
         return nullptr;
     }
 
-    bool TierTree::isPrefix(const std::string &prefix, const std::string &full) {
-        return prefix==full.substr(0, prefix.size());
+    bool TierTree::isPrefix(const std::string &prefix, const std::string &full, int curPos) {
+        if(prefix.length()+curPos>full.length())
+            return false;
+        return prefix==full.substr(curPos, prefix.length());
     }
 
     int TierTree::checkPrefix(const std::string &a, const std::string &b) {

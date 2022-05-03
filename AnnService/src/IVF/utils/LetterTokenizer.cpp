@@ -27,14 +27,13 @@ bool IVF::LetterTokenizer::fetchNextToken() {
 
 void IVF::LetterTokenizer::close() {
     inputStream.reset();
-
 }
 
 void IVF::LetterTokenizer::end() {
-    token="";
 
 }
 
 void IVF::LetterTokenizer::reset() {
-
+    token="";
 }
+

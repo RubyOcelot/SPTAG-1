@@ -6,7 +6,8 @@ namespace IVF {
         DocId docId = scorer->getCurrentId();
         while (docId != -1) {
             if (liveDocs.get(docId)) {
-                collector->collect(docId, scorer->score());
+                auto score=scorer->score();
+                collector->collect(docId, score);
             }
             docId = scorer->next();
         }

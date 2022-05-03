@@ -7,7 +7,8 @@
 namespace IVF{
 
     void LowerCaseFilter::close() {
-
+        inputTokenStream->close();
+        inputTokenStream.reset();
     }
 
 

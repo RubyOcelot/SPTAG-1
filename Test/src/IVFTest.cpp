@@ -206,7 +206,7 @@ namespace IVF {
 
         std::shared_ptr<Term> termFactory=indexConfig->getTermFactory();
 
-        std::vector<std::string> wordList={"mouse","creative"};
+        std::vector<std::string> wordList={"mouse"};
         auto queryList=std::make_unique<std::vector<std::shared_ptr<Query>>>();
         for(const auto& iter:wordList){
             queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));

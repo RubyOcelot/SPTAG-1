@@ -15,9 +15,11 @@ namespace IVF {
 
         DocId skipTo(DocId targetId) override;
 
+        DocId getCurrentId() override;
     private:
         LogicOperator op;
         std::unique_ptr<SubScorerSet> subScorers;
+        DocId curId;
     };
 }
 

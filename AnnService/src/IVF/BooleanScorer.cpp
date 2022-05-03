@@ -5,20 +5,19 @@ namespace IVF {
     BooleanScorer::BooleanScorer(const LogicOperator &op, std::unique_ptr<SubScorerSet> in_subScorers) : op(op),
                                                                                                          subScorers(
                                                                                                                  std::move(
-                                                                                                                         in_subScorers)) {
+                                                                                                                         in_subScorers)), curId(-1) {
         if (op == LogicOperator::OR) {
             DocId minDocId = MAX_DOCID;
             for (const auto &iter: (subScorers)->value) {
                 DocId id = iter->getCurrentId();
                 if (id != -1 && id < minDocId) {
                     minDocId = id;
-                    currentItem = iter->getCurrentItem();
                 }
             }
             if (minDocId == MAX_DOCID) {
-//            minDocId = -1;
-                currentItem = nullptr;
+                minDocId = -1;
             }
+            curId=minDocId;
         } else {
             //TODO AND
 
@@ -26,14 +25,22 @@ namespace IVF {
     }
 
     float BooleanScorer::score() {
-        if (currentItem != nullptr)
-            return currentItem->score();
-        else return -1.0;//TODO
+        if(curId==-1)
+            return -1.0;//TODO error
+        float retScore=0;
+        for (const auto &iter: (subScorers)->value) {
+            DocId id = iter->getCurrentId();
+            if(id==curId){
+                retScore+=iter->score();
+            }
+        }
+        return retScore;
     }
 
     DocId BooleanScorer::next() {
+
+        DocId curDocId = getCurrentId();
         if (op == LogicOperator::OR) {
-            DocId curDocId = getCurrentId();
             DocId minDocId = MAX_DOCID;
             for (const auto &iter: (subScorers)->value) {
                 DocId id = iter->getCurrentId();
@@ -43,14 +50,13 @@ namespace IVF {
                     }
                     if (id != -1 && id < minDocId) {
                         minDocId = id;
-                        currentItem = iter->getCurrentItem();
                     }
                 }
             }
             if (minDocId == MAX_DOCID) {
                 minDocId = -1;
-                currentItem = nullptr;
             }
+            curId=minDocId;
             return minDocId;
         } else {
             //TODO AND
@@ -82,6 +88,10 @@ namespace IVF {
 
         }
         return -1;
+    }
+
+    DocId BooleanScorer::getCurrentId() {
+        return curId;
     }
 
 ////TODO impl

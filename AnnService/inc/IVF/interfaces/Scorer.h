@@ -15,7 +15,7 @@ namespace IVF {
 
         PostingItem *getCurrentItem();
 
-        DocId getCurrentId();
+        virtual DocId getCurrentId();
 
     protected:
         //Or name it posting item?

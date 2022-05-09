@@ -14,7 +14,8 @@ namespace IVF {
 
     class TermInDoc{
     public:
-        explicit TermInDoc(std::string str="",std::string posting_data="");
+        explicit TermInDoc(std::string str="",std::string posting_data="",DocId docId=-1);
+        DocId docId;
         std::string str;
         std::string posting_data;
     };

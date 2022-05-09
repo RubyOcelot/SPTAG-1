@@ -37,8 +37,8 @@ namespace IVF {
         return retScore;
     }
 
-    DocId BooleanScorer::next() {
 
+    DocId BooleanScorer::next() {
         DocId curDocId = getCurrentId();
         if (op == LogicOperator::OR) {
             DocId minDocId = MAX_DOCID;

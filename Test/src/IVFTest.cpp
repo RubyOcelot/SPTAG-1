@@ -238,8 +238,8 @@ BOOST_AUTO_TEST_SUITE(IVFTest)
 BOOST_AUTO_TEST_CASE(IVFUpdateSearch)
         {
             std::string test_path = "IVFtest.ini";
-//            IVF::test_int8(test_path);
-            IVF::test_term(test_path);
+            IVF::test_int8(test_path);
+//            IVF::test_term(test_path);
 //    utils_test(test_dir);
         }
 

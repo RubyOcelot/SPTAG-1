@@ -17,7 +17,7 @@
 namespace IVF {
 
 
-    TermInDoc::TermInDoc(std::string str,std::string posting_data):str(std::move(str)),posting_data(std::move(posting_data)) {
+    TermInDoc::TermInDoc(std::string str,std::string posting_data,DocId docId):str(std::move(str)),posting_data(std::move(posting_data)),docId(docId) {
 
     }
 
@@ -56,7 +56,9 @@ namespace IVF {
         }
 
         //TODO multi-thread sort
-         std::sort(termInDocData.begin(),termInDocData.end(), [] (const std::shared_ptr<TermInDoc>& a, const std::shared_ptr<TermInDoc>& b) { return a->str.compare(b->str)<0; });
+         std::sort(termInDocData.begin(),termInDocData.end(), [] (const std::shared_ptr<TermInDoc>& a, const std::shared_ptr<TermInDoc>& b) {
+             int condition=a->str.compare(b->str);
+             return (condition==0)?(a->docId<b->docId):(condition<0); });
 
 //        for(auto iter:termInDocData){
 //            std::cout<<iter->str<<" ";
@@ -72,7 +74,9 @@ namespace IVF {
     void TFIDFTermDataLoader::collectData(std::vector<std::shared_ptr<TermInDoc>> &termInDocData,
                                      std::unique_ptr<TokenStream> tokenStream, DocId docId) {
         std::map<std::string,TermTFIDFScoreScheme::TermStatType> termFreqData;
+        int tokenCount=0;
         while (tokenStream->fetchNextToken()){
+            tokenCount++;
             if(termFreqData.find(tokenStream->getToken())==termFreqData.end()){
                 termFreqData.insert(std::pair<std::string,TermTFIDFScoreScheme::TermStatType>(tokenStream->getToken(),1));
             }
@@ -84,7 +88,7 @@ namespace IVF {
         tokenStream->close();
 
         for ( const auto &iter : termFreqData ) {
-            termInDocData.push_back(std::make_unique<TermInDoc>(iter.first,TermTFIDFScoreScheme::TermFreq(docId,iter.second).getContent()));
+            termInDocData.push_back(std::make_unique<TermInDoc>(iter.first,TermTFIDFScoreScheme::TermFreq(docId,(float)iter.second/(float)tokenCount).getContent(),docId));
         }
     }
 

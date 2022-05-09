@@ -9,7 +9,7 @@ namespace IVF {
     class Collector {
     private:
         //collects the results of a search. maintaining a priority queue for top docs.
-        DocPriorityQueue &pq;
+        std::unique_ptr<DocPriorityQueue<DocWithScore>> pq;
 
     public:
         Collector(int n);
@@ -20,7 +20,7 @@ namespace IVF {
         TopDocs topDocs();
 
         void debug_print(){
-            pq.debug_print();
+            pq->debug_print();
         }
     };
 }

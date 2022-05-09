@@ -2,7 +2,8 @@
 
 
 namespace IVF {
-    DocPriorityQueue::DocPriorityQueue(int maxSize) : maxSize(maxSize) {
+    template<class T>
+    DocPriorityQueue<T>::DocPriorityQueue(int maxSize,bool (*lessThanFunc)(const std::shared_ptr<T> &a,const std::shared_ptr<T> &b)) : maxSize(maxSize),lessThanFunc(lessThanFunc) {
         int heapSize;
 
         if (maxSize == 0) {
@@ -16,19 +17,23 @@ namespace IVF {
             //start from 1
             heapSize = maxSize + 1;
         }
-        heap = new DocWithScore[heapSize];
+        heap = std::make_unique<std::shared_ptr<T>[]>(heapSize) ;
     }
 
-    float DocPriorityQueue::getMinScore() {
-        return top()->score;
+//    template<class T>
+//    float DocPriorityQueue<T>::getMinScore() {
+//        return top()->score;
+//    }
+
+    template<class T>
+    std::shared_ptr<T> DocPriorityQueue<T>::top() {
+        //TODO isEmpty?
+        //TODO return copy?
+        return heap[1];
     }
 
-    DocWithScore *DocPriorityQueue::top() {
-        //TBD isEmpty?
-        return new DocWithScore(heap[1]);
-    }
-
-    DocWithScore DocPriorityQueue::add(const DocWithScore &element) {
+    template<class T>
+    std::shared_ptr<T> DocPriorityQueue<T>::add(const std::shared_ptr<T> &element) {
         int index = size + 1;
         heap[index] = element;
         size = index;
@@ -36,33 +41,38 @@ namespace IVF {
         return heap[1];
     }
 
-    bool DocPriorityQueue::lessThan(const DocWithScore &a, const DocWithScore &b) {
-        return a.score < b.score;
+
+    template<class T>
+    bool DocPriorityQueue<T>::lessThan(const std::shared_ptr<T> &a, const std::shared_ptr<T> &b) {
+        return (*lessThanFunc)(a,b);
     }
 
 // return dropped element if heap is full
-    DocWithScore *DocPriorityQueue::insertWithOverflow(const DocWithScore &element) {
+    template<class T>
+    std::shared_ptr<T> DocPriorityQueue<T>::insertWithOverflow(const std::shared_ptr<T> &element) {
         if (size < maxSize) {
             add(element);
             return nullptr;
         } else {
             if (size > 0 && lessThan(heap[1], element)) {
-                auto *ret = new DocWithScore(heap[1]);
+                auto ret = heap[1];
                 heap[1] = element;
                 updateTop();
                 return ret;
             } else {
-                return new DocWithScore(element);
+                return element;
             }
         }
     }
 
-    DocWithScore DocPriorityQueue::updateTop() {
+    template<class T>
+    std::shared_ptr<T> DocPriorityQueue<T>::updateTop() {
         downHeap(1);
         return heap[1];
     }
 
-    bool DocPriorityQueue::upHeap(int origPos) {
+    template<class T>
+    bool DocPriorityQueue<T>::upHeap(int origPos) {
         int cur = origPos;
         auto origNode = heap[origPos];
         int up = cur >> 1;
@@ -75,7 +85,8 @@ namespace IVF {
         return cur != origPos;
     }
 
-    bool DocPriorityQueue::downHeap(int origPos) {
+    template<class T>
+    bool DocPriorityQueue<T>::downHeap(int origPos) {
         int cur = origPos;
         auto node = heap[origPos];
         int downLeft = cur << 1;
@@ -96,24 +107,27 @@ namespace IVF {
         return true;
     }
 
-    int DocPriorityQueue::getSize() {
+    template<class T>
+    int DocPriorityQueue<T>::getSize() {
         return size;
     }
 
-    int DocPriorityQueue::getMaxSize() {
+    template<class T>
+    int DocPriorityQueue<T>::getMaxSize() {
         return maxSize;
     }
 
-    bool DocPriorityQueue::isEmpty() {
+    template<class T>
+    bool DocPriorityQueue<T>::isEmpty() {
         return size == 0;
     }
 
-    DocWithScore *DocPriorityQueue::pop() {
+    template<class T>
+    std::shared_ptr<T> DocPriorityQueue<T>::pop() {
         if (size > 0) {
-            auto result = new DocWithScore(heap[1]);
+            auto result = heap[1];
             heap[1] = heap[size];
-            //clear it
-            heap[size] = DocWithScore();
+            heap[size] = nullptr;
             size--;
             updateTop();
             return result;
@@ -122,22 +136,21 @@ namespace IVF {
         }
     }
 
-    DocPriorityQueue::~DocPriorityQueue() {
-        delete[] heap;
-    }
 
-    void DocPriorityQueue::clear() {
+    template<class T>
+    void DocPriorityQueue<T>::clear() {
         size = 0;
         maxSize = 0;
-        delete[] heap;
+        heap.reset();
     }
 
-    bool DocPriorityQueue::remove(const DocWithScore &element) {
+    template<class T>
+    bool DocPriorityQueue<T>::remove(const std::shared_ptr<T> &element) {
         for (int i = 1; i <= size; i++) {
             if (heap[i] == element) {
                 heap[i] = heap[size];
                 //clear it
-                heap[size] = DocWithScore();
+                heap[size] = nullptr;
                 size--;
                 if (i <= size) {
                     if (!upHeap(i)) {
@@ -150,11 +163,14 @@ namespace IVF {
         return false;
     }
 
-    void DocPriorityQueue::debug_print() {
+    template<class T>
+    void DocPriorityQueue<T>::debug_print() {
 
         for (int i = 1; i <= size; i++) {
-            heap[i].print();
+            heap[i]->print();
         }
         std::cout<<std::endl;
     }
 }
+
+template class IVF::DocPriorityQueue<IVF::DocWithScore>;

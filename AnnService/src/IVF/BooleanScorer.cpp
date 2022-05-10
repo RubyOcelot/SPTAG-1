@@ -28,11 +28,19 @@ namespace IVF {
         if(curId==-1)
             return -1.0;//TODO error
         float retScore=0;
-        for (const auto &iter: (subScorers)->value) {
-            DocId id = iter->getCurrentId();
-            if(id==curId){
-                retScore+=iter->score();
+
+        if (op == LogicOperator::OR) {
+            for (const auto &iter: (subScorers)->value) {
+                DocId id = iter->getCurrentId();
+                if(id==curId){
+                    retScore=iter->score();
+                    break;
+                }
             }
+        }
+        else{
+            //TODO AND
+
         }
         return retScore;
     }

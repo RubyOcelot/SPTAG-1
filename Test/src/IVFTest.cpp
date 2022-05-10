@@ -211,7 +211,7 @@ namespace IVF {
         for(const auto& iter:wordList){
             queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
         }
-        auto boolQuery = BooleanQuery(LogicOperator::OR,std::move(queryList));
+        auto boolQuery = BooleanQuery(LogicOperator::AND,std::move(queryList));
         TopDocs topDocs = searcher.search(boolQuery, 5);
         topDocs.print();
 
@@ -239,7 +239,6 @@ BOOST_AUTO_TEST_CASE(IVFUpdateSearch)
         {
             std::string test_path = "IVFtest.ini";
             IVF::test_int8(test_path);
-//            IVF::test_term(test_path);
 //    utils_test(test_dir);
         }
 

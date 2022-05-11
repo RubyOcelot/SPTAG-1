@@ -19,7 +19,11 @@ namespace IVF {
 
         void add(const DocWithScore &element);
 
-        std::list<DocWithScore> value;
+        int getDocNum();
+
+        void reverse();
+
+        std::shared_ptr<std::vector<DocWithScore>> value;
     };
 }
 

@@ -108,7 +108,10 @@ namespace IVF {
         return std::unique_ptr<KeywordStatistic>();
     }
 
-
+    template<class T>
+    SPTAG::DistCalcMethod DefaultVectorScoreScheme<T>::getDefaultDistCalcFunc() {
+        return defaultDistCalcFunc;
+    }
 
 }
 

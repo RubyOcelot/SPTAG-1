@@ -38,10 +38,10 @@ namespace IVF {
         for (auto headID: headIDs) {
             //TODO load kwStat
             auto kwStatHolder = vScoreScheme->smart_clone();
-            auto *postingItemStream=new std::istringstream;
+            auto postingItemStream=new std::istringstream;
             vectorIndexWrapper->getPostingList(headID, postingItemStream);
             //consume pointer
-            auto *pIter = new PostingItemIter(std::move(kwStatHolder), postingItemStream);
+            auto pIter = new PostingItemIter(std::move(kwStatHolder), postingItemStream);
             //consume pointer
             std::unique_ptr<Scorer> clusterScorer = std::make_unique<SimpleScorer>(*pIter);
             subScorers->add(std::move(clusterScorer));

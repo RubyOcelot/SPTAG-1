@@ -14,7 +14,9 @@ namespace IVF {
         virtual void setVecLen(int len)=0;
         virtual int getVecLen()=0;
 
+        virtual SPTAG::DistCalcMethod getDefaultDistCalcFunc() = 0;
     };
+
 
 }
 

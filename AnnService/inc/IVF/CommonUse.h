@@ -12,6 +12,8 @@
 #include <cstring>
 #include <memory>
 
+#include "inc/Core/Common.h"
+
 namespace IVF {
 
     //TODO replace macro

@@ -12,6 +12,7 @@ namespace IVF {
         std::unique_ptr<Keyword> getFactory() override;
         void close() override;
         std::unique_ptr<KeyVector> getVectorFactory();
+        SPTAG::DistCalcMethod vectorDistCalcMethod;
     private:
         std::shared_ptr<VectorIndexWrapper> vectorIndexWrapper;
     };

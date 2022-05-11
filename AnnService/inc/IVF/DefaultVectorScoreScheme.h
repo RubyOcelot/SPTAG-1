@@ -18,7 +18,9 @@ namespace IVF {
 
         std::unique_ptr<ScoreScheme> smart_clone() override;
 
-        explicit DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction> distFunc=std::make_unique<DistanceUtilsWrap<T>>(SPTAG::DistCalcMethod::L2), void* queryVector=nullptr, DocId docId=-1, void* docVector=nullptr, int vecLen=-1);
+        SPTAG::DistCalcMethod getDefaultDistCalcFunc() override;
+
+        explicit DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction> distFunc=std::make_unique<DistanceUtilsWrap<T>>(defaultDistCalcFunc), void* queryVector=nullptr, DocId docId=-1, void* docVector=nullptr, int vecLen=-1);
 
         bool postingStatisticsLoader(std::istream *rawStream) override;
 
@@ -37,6 +39,8 @@ namespace IVF {
         std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic()override;
     private:
 
+        static const SPTAG::DistCalcMethod defaultDistCalcFunc;
+
         DocId docId = -1;
         void* docVector;
         void* queryVector;
@@ -46,6 +50,8 @@ namespace IVF {
         //int docNum;
 
     };
+    template <class T> const SPTAG::DistCalcMethod DefaultVectorScoreScheme<T>::defaultDistCalcFunc=SPTAG::DistCalcMethod::L2;
+
 }
 
 #endif //IVF_DEFAULTVECTORSCORESCHEME_H

@@ -1,5 +1,6 @@
 
 
+#include <cmath>
 #include <iostream>
 #include <memory>
 #include <new>
@@ -53,7 +54,7 @@ namespace IVF {
 
     int compare_result(TopDocs &td, std::set<SizeType> truth) {
         int miss = 0;
-        for (auto iter: td.value) {
+        for (auto iter: *td.value) {
             if (truth.find(iter.docId) == truth.end()) {
                 miss++;
             }
@@ -115,8 +116,67 @@ namespace IVF {
         LOG(Helper::LogLevel::LL_Info, "Total Vector num %d \n", curCount);
     }
 
-    void test_search(Options *opts, IndexSearcher searcher, std::shared_ptr<KeyVector> kvFactory, VectorReaderWrap &querys,
-                TruthWrap &truth, int s, int e) {
+    template<class Type>
+    float CalculateRecallIVF(const std::shared_ptr<std::vector<TopDocs>>& results, TruthWrap &truth, SPTAG::DistCalcMethod distCalcMethod, VectorReaderWrap& vectorSet, VectorReaderWrap &querys, Options *opts){
+
+
+        auto NumQuerys=results->size();
+        auto K=truth.truthK;
+
+        float meanrecall = 0, minrecall = MaxDist, maxrecall = 0, stdrecall = 0;
+        std::vector<float> thisrecall(NumQuerys, 0);
+        std::unique_ptr<bool[]> visited(new bool[K]);
+        for (SizeType i = 0; i < NumQuerys; i++)
+        {
+            memset(visited.get(), 0, K * sizeof(bool));
+            for (SizeType id : truth.truth[i])
+            {
+                for (int j = 0; j < results->at(i).getDocNum(); j++)
+                {
+                    if (visited[j] ) continue;
+
+                    //TODO may change later
+                    float dist = results->at(i).value->at(j).score*(-1);
+                    float truthDist;
+
+                    truthDist = COMMON::DistanceUtils::ComputeDistance((const Type*)querys.p_vectorSet->GetVector(i), (const Type*)vectorSet.p_vectorSet->GetVector(id), vectorSet.p_vectorSet->Dimension(), distCalcMethod);
+
+
+                    if ((distCalcMethod == SPTAG::DistCalcMethod::Cosine) && (std::fabs(dist - truthDist) < Epsilon)) {
+                        thisrecall[i] += 1;
+                        visited[j] = true;
+                        break;
+                    }
+                    else if ((distCalcMethod == SPTAG::DistCalcMethod::L2) && (std::fabs(dist - truthDist) < Epsilon * (dist + Epsilon))) {
+                        thisrecall[i] += 1;
+                        visited[j] = true;
+                        break;
+                    }
+
+                }
+            }
+            thisrecall[i] /= (float)truth.truthK;
+            meanrecall += thisrecall[i];
+            if (thisrecall[i] < minrecall) minrecall = thisrecall[i];
+            if (thisrecall[i] > maxrecall) maxrecall = thisrecall[i];
+
+        }
+        meanrecall /= (float)NumQuerys;
+        for (SizeType i = 0; i < NumQuerys; i++)
+        {
+            stdrecall += (thisrecall[i] - meanrecall) * (thisrecall[i] - meanrecall);
+        }
+        stdrecall = std::sqrt(stdrecall / NumQuerys);
+
+        //TODO debug
+        std::cout << meanrecall << " " << stdrecall << " " << minrecall << " " << maxrecall << std::endl;
+
+        return meanrecall;
+    }
+
+    void
+    test_search(Options *opts, IndexSearcher searcher, std::shared_ptr<KeyVector> kvFactory, VectorReaderWrap &querys,
+                TruthWrap &truth, int s, int e, SPTAG::DistCalcMethod distCalcMethod) {
         LOG(Helper::LogLevel::LL_Info, "Start searching...\n");
 
 //        ScoreScheme *vScoreScheme = new DefaultVectorScoreScheme<int8_t>(
@@ -128,7 +188,9 @@ namespace IVF {
         std::vector<std::thread> search_threads;
 
         std::atomic_size_t querysSent(s);
-        std::atomic_size_t miss_sum(0);
+
+        std::shared_ptr<std::vector<TopDocs>> results=std::make_shared<std::vector<TopDocs>>();
+        results->resize(e-s);
 
         auto func2 = [&]() {
             size_t index = 0;
@@ -143,8 +205,8 @@ namespace IVF {
                     TopDocs topDocs = searcher.search(kwQuery, truth.truthK);
 //                topDocs.print_id_sort();
 //                truth->print_truth_by_id(index);
-                    int miss = compare_result(topDocs, truth.truth.at(index));
-                    miss_sum.fetch_add(miss);
+                    results->at(index) = (topDocs);
+
                 } else {
                     return;
                 }
@@ -152,6 +214,24 @@ namespace IVF {
         };
         for (int j = 0; j < searchThreads; j++) { search_threads.emplace_back(func2); }
         for (auto &thread: search_threads) { thread.join(); }
+
+
+        VectorReaderWrap vectorSet;
+        if (opts->m_update) {
+            vectorSet.loadFullVectorData(opts);
+        } else{
+            vectorSet.loadVectorData(opts);
+        }
+
+        float mean_recall;
+
+#define DefineVectorValueType(Name, Type) \
+	if (opts->m_valueType == VectorValueType::Name) { \
+        mean_recall=CalculateRecallIVF<Type>(results, truth, distCalcMethod, vectorSet, querys, opts); \
+	} \
+
+#include "inc/Core/DefinitionList.h"
+#undef DefineVectorValueType
 
         double searchingCost = sw.getElapsedSec();
         LOG(Helper::LogLevel::LL_Info,
@@ -161,7 +241,7 @@ namespace IVF {
             static_cast<uint32_t>(e - s));
 
         //TODO calc true recall
-        std::cout << "recall rate: " << 1 - ((float) miss_sum / truth.truthK) / (e - s) << std::endl;
+        std::cout << "recall rate: " << mean_recall << std::endl;
     }
 
     void test_combine(const std::string &test_dir){
@@ -183,6 +263,8 @@ namespace IVF {
 
         std::shared_ptr<KeyVector> kvFactory=indexConfig->getVectorFactory();
 
+        SPTAG::DistCalcMethod distCalcMethod=indexConfig->vectorDistCalcMethod;
+
         if (opts->m_update) {
             test_update(opts, searcher,kvFactory);
         }
@@ -193,7 +275,7 @@ namespace IVF {
         auto truth = TruthWrap();
         truth.loadData(opts, querys.numVectors);
 
-        test_search(opts, searcher, kvFactory, querys, truth, 0, querys.numVectors);
+        test_search(opts, searcher, kvFactory, querys, truth, 0, querys.numVectors, distCalcMethod);
         delete opts;
     }
 

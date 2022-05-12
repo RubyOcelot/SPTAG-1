@@ -23,11 +23,15 @@ if (NOT LIBRARYONLY)
 
     file(GLOB TEST_HDR_FILES ${PROJECT_SOURCE_DIR}/Test/inc/Test.h)
     file(GLOB TEST_MAIN_FILES ${PROJECT_SOURCE_DIR}/Test/src/main.cpp)
-    file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/Test/src/IVFTest.cpp)
-    add_executable(SPTAGTest ${TEST_MAIN_FILES} ${TEST_SRC_FILES} ${TEST_HDR_FILES})
-    target_link_libraries(SPTAGTest SPTAGLibStatic ssdservingLib ${Boost_LIBRARIES} IVF)
+    file(GLOB TEST_SRC_FILES_VEC ${PROJECT_SOURCE_DIR}/Test/src/IVFTestVec.cpp)
+    add_executable(IVFTestVec ${TEST_MAIN_FILES} ${TEST_SRC_FILES_VEC} ${TEST_HDR_FILES})
+    target_link_libraries(IVFTestVec SPTAGLibStatic ssdservingLib ${Boost_LIBRARIES} IVF)
 
-    install(TARGETS SPTAGTest
+    file(GLOB TEST_SRC_FILES_TERM ${PROJECT_SOURCE_DIR}/Test/src/IVFTestTerm.cpp)
+    add_executable(IVFTestTerm ${TEST_MAIN_FILES} ${TEST_SRC_FILES_TERM} ${TEST_HDR_FILES})
+    target_link_libraries(IVFTestTerm SPTAGLibStatic ssdservingLib ${Boost_LIBRARIES} IVF)
+
+    install(TARGETS IVFTestVec IVFTestTerm
       RUNTIME DESTINATION bin  
       ARCHIVE DESTINATION lib
       LIBRARY DESTINATION lib)

@@ -52,15 +52,6 @@ namespace IVF {
         }
     };
 
-    int compare_result(TopDocs &td, std::set<SizeType> truth) {
-        int miss = 0;
-        for (auto iter: *td.value) {
-            if (truth.find(iter.docId) == truth.end()) {
-                miss++;
-            }
-        }
-        return miss;
-    }
 
     void test_update(Options *opts, IndexSearcher &searcher, std::shared_ptr<KeyVector> kvFactory) {
         auto fullVectors = VectorReaderWrap();
@@ -279,27 +270,6 @@ namespace IVF {
         delete opts;
     }
 
-    void test_term(const std::string &test_dir) {
-        auto opts = getSPTAGOptions(test_dir.c_str());
-
-        auto indexConfig=std::make_shared<DefaultTermIndexConfig>();
-
-        auto searcher = IndexSearcher(test_dir, indexConfig);
-
-        std::shared_ptr<Term> termFactory=indexConfig->getTermFactory();
-
-        std::vector<std::string> wordList={"mouse"};
-        auto queryList=std::make_unique<std::vector<std::shared_ptr<Query>>>();
-        for(const auto& iter:wordList){
-            queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
-        }
-        auto boolQuery = BooleanQuery(LogicOperator::AND,std::move(queryList));
-        TopDocs topDocs = searcher.search(boolQuery, 5);
-        topDocs.print();
-
-        delete opts;
-    }
-
     void utils_test(const std::string &test_dir) {
         auto opts = getSPTAGOptions(test_dir.c_str());
         auto baseVectors = VectorReaderWrap();
@@ -317,7 +287,7 @@ namespace IVF {
 
 BOOST_AUTO_TEST_SUITE(IVFTest)
 
-BOOST_AUTO_TEST_CASE(IVFUpdateSearch)
+BOOST_AUTO_TEST_CASE(IVFVecUpdateSearch)
         {
             std::string test_path = "IVFtest.ini";
             IVF::test_int8(test_path);

@@ -6,9 +6,9 @@
 
 namespace IVF {
     template<class T>
-    class DocPriorityQueue {
+    class SizedPriorityQueue {
     public:
-        DocPriorityQueue(int maxSize,bool (*lessThanFunc)(const std::shared_ptr<T> &a,const std::shared_ptr<T> &ab));
+        SizedPriorityQueue(int maxSize, bool (*lessThanFunc)(const std::shared_ptr<T> &a, const std::shared_ptr<T> &ab));
 
 //        float getMinScore();
 
@@ -23,6 +23,8 @@ namespace IVF {
         // linear time cost
         bool remove(const std::shared_ptr<T> &element);
 
+        bool removeTop();
+
         void clear();
 
         int getSize();
@@ -30,6 +32,8 @@ namespace IVF {
         int getMaxSize();
 
         void debug_print();
+
+        std::shared_ptr<T> updateTop();
 
     private:
         int maxSize;
@@ -40,14 +44,14 @@ namespace IVF {
 
         bool downHeap(int origPos);
 
-        std::shared_ptr<T> updateTop();
-
         bool lessThan(const std::shared_ptr<T> &a, const std::shared_ptr<T> &b);
 
         bool (*lessThanFunc)(const std::shared_ptr<T> &a,const std::shared_ptr<T> &b);
 
 // add element to bottom of heap when heap is no full
         std::shared_ptr<T> add(const std::shared_ptr<T> &element);
+
+        bool removeAt(int i);
     };
 }
 

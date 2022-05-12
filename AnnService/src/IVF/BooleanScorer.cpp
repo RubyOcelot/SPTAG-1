@@ -2,22 +2,23 @@
 
 
 namespace IVF {
-    BooleanScorer::BooleanScorer(const LogicOperator &op, std::unique_ptr<SubScorerSet> in_subScorers) : op(op),
-                                                                                                         subScorers(
-                                                                                                                 std::move(
-                                                                                                                         in_subScorers)), curId(-1) {
+    bool BooleanScorerLessThanFunc(const std::shared_ptr<Scorer> &a, const std::shared_ptr<Scorer> &b){
+        return a->getCurrentId()<b->getCurrentId();
+    }
+    BooleanScorer::BooleanScorer(const LogicOperator &op, std::unique_ptr<SubScorerSet> in_subScorers) :
+        op(op), subScorers(std::move(in_subScorers)), curId(-1),
+        pq(std::make_unique<SizedPriorityQueue<Scorer>>(subScorers->value.size(),BooleanScorerLessThanFunc)) {
+
+        for(const auto& iter:subScorers->value){
+            if(iter->getCurrentId()!=-1)
+                pq->insertWithOverflow(iter);
+        }
+
         if (op == LogicOperator::OR) {
-            DocId minDocId = MAX_DOCID;
-            for (const auto &iter: (subScorers)->value) {
-                DocId id = iter->getCurrentId();
-                if (id != -1 && id < minDocId) {
-                    minDocId = id;
-                }
-            }
-            if (minDocId == MAX_DOCID) {
-                minDocId = -1;
-            }
-            curId=minDocId;
+            if(pq->isEmpty())
+                curId=-1;
+            else
+                curId=pq->top()->getCurrentId();
         } else {
             //TODO AND
 
@@ -30,13 +31,7 @@ namespace IVF {
         float retScore=0;
 
         if (op == LogicOperator::OR) {
-            for (const auto &iter: (subScorers)->value) {
-                DocId id = iter->getCurrentId();
-                if(id==curId){
-                    retScore=iter->score();
-                    break;
-                }
-            }
+            retScore=pq->top()->score();
         }
         else{
             //TODO AND
@@ -47,50 +42,43 @@ namespace IVF {
 
 
     DocId BooleanScorer::next() {
-        DocId curDocId = getCurrentId();
         if (op == LogicOperator::OR) {
-            DocId minDocId = MAX_DOCID;
-            for (const auto &iter: (subScorers)->value) {
-                DocId id = iter->getCurrentId();
-                if (id != -1) {
-                    if (id == curDocId) {
-                        id = iter->next();
-                    }
-                    if (id != -1 && id < minDocId) {
-                        minDocId = id;
-                    }
+            if(pq->isEmpty())
+                curId=-1;
+            else{
+                if(pq->top()->next()==-1){
+                    pq->removeTop();
+                    if(pq->isEmpty())
+                        curId=-1;
+                    else
+                        curId=pq->top()->getCurrentId();
+                }
+                else{
+                    curId=pq->updateTop()->getCurrentId();
                 }
             }
-            if (minDocId == MAX_DOCID) {
-                minDocId = -1;
-            }
-            curId=minDocId;
-            return minDocId;
         } else {
             //TODO AND
 
         }
-        return -1;
+        return curId;
     }
 
     DocId BooleanScorer::skipTo(DocId targetId) {
         if (op == LogicOperator::OR) {
-            DocId minDocId = MAX_DOCID;
-            for (const auto &iter: (subScorers)->value) {
-                DocId id = iter->getCurrentId();
-                while (id != -1 && id < targetId) {
-                    id = iter->next();
+            while (!pq->isEmpty()&& (pq->top()->getCurrentId()<targetId)){
+                if(pq->top()->skipTo(targetId)==-1){
+                    pq->removeTop();
                 }
-                if (id != -1 && id < minDocId) {
-                    minDocId = id;
-                    currentItem = iter->getCurrentItem();
+                else{
+                    pq->updateTop();
                 }
             }
-            if (minDocId == MAX_DOCID) {
-                minDocId = -1;
-                currentItem = nullptr;
+            if(pq->isEmpty())
+                curId=-1;
+            else{
+                curId=pq->top()->getCurrentId();
             }
-            return minDocId;
         } else {
             //TODO AND
 

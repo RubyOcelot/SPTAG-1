@@ -15,8 +15,6 @@ namespace IVF {
 
         void print_id_sort();
 
-        int compare(TruthWrap& truth);
-
         void add(const DocWithScore &element);
 
         int getDocNum();

@@ -2,17 +2,17 @@
 #define IVF_COLLECTOR_H
 
 #include "CommonUse.h"
-#include "utils/DocPriorityQueue.h"
+#include "utils/SizedPriorityQueue.h"
 #include "inc/IVF/utils/TopDocs.h"
 
 namespace IVF {
     class Collector {
     private:
         //collects the results of a search. maintaining a priority queue for top docs.
-        std::unique_ptr<DocPriorityQueue<DocWithScore>> pq;
+        std::unique_ptr<SizedPriorityQueue<DocWithScore>> pq;
 
     public:
-        Collector(int n);
+        explicit Collector(int n);
 
         void collect(DocId docId, float score);
 

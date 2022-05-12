@@ -3,6 +3,7 @@
 
 #include "interfaces/Scorer.h"
 #include "utils/SubScorerSet.h"
+#include "utils/SizedPriorityQueue.h"
 
 namespace IVF {
     class BooleanScorer : public Scorer {
@@ -19,6 +20,7 @@ namespace IVF {
     private:
         LogicOperator op;
         std::unique_ptr<SubScorerSet> subScorers;
+        std::unique_ptr<SizedPriorityQueue<Scorer>> pq;
         DocId curId;
     };
 }

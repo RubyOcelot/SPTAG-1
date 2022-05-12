@@ -11,4 +11,8 @@ namespace IVF {
             return currentItem->getDocId();
         else return -1;
     }
+
+    void Scorer::print() {
+        std::cout<<getCurrentItem()<<" "<<score()<<std::endl;
+    }
 }

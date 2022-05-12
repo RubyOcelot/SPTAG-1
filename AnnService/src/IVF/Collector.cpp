@@ -7,7 +7,7 @@ namespace IVF {
         return a->score<b->score;
     }
 
-    Collector::Collector(int n) : pq(std::make_unique<DocPriorityQueue<DocWithScore>>(n,&DocWithScoreLessThanFunc)) {
+    Collector::Collector(int n) : pq(std::make_unique<SizedPriorityQueue<DocWithScore>>(n, &DocWithScoreLessThanFunc)) {
     }
 
     void Collector::collect(DocId docId, float score) {

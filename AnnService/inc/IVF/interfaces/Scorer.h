@@ -17,6 +17,8 @@ namespace IVF {
 
         virtual DocId getCurrentId();
 
+        virtual void print();
+
     protected:
         //Or name it posting item?
         ScoreScheme *currentItem = nullptr;//TBM

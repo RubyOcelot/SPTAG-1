@@ -78,7 +78,7 @@ namespace IVF {
         for(const auto& iter:wordList){
             queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
         }
-        auto boolQuery = BooleanQuery(LogicOperator::AND,std::move(queryList));
+        auto boolQuery = BooleanQuery(LogicOperator::OR,std::move(queryList));
         TopDocs topDocs = searcher.search(boolQuery, 5);
         topDocs.print();
 

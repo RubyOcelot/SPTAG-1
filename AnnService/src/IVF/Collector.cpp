@@ -19,6 +19,7 @@ namespace IVF {
         while (!pq->isEmpty()) {
             td.add(*(pq->pop()));
         }
+        td.reverse();
         return td;
     }
 

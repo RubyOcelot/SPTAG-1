@@ -43,19 +43,18 @@ namespace IVF {
 
     DocId BooleanScorer::next() {
         if (op == LogicOperator::OR) {
+            while(!pq->isEmpty()&&pq->top()->getCurrentId()==curId){
+                if(pq->top()->next()==-1){
+                    pq->removeTop();
+                }
+                else{
+                    pq->updateTop();
+                }
+            }
             if(pq->isEmpty())
                 curId=-1;
             else{
-                if(pq->top()->next()==-1){
-                    pq->removeTop();
-                    if(pq->isEmpty())
-                        curId=-1;
-                    else
-                        curId=pq->top()->getCurrentId();
-                }
-                else{
-                    curId=pq->updateTop()->getCurrentId();
-                }
+                curId=pq->top()->getCurrentId();
             }
         } else {
             //TODO AND

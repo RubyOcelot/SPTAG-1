@@ -13,6 +13,7 @@
 #include "inc/IVF/utils/WhiteSpaceTokenizer.h"
 #include "inc/IVF/utils/StopwordsFilter.h"
 #include "inc/IVF/utils/EnglishSimpleAnalyzer.h"
+#include "inc/IVF/utils/DataTransform.h"
 
 
 namespace IVF {
@@ -22,16 +23,6 @@ namespace IVF {
 
     }
 
-    class inputData{
-    public:
-        inputData(DocId docId, char* buffer);
-        DocId docId;
-        std::string docStr;
-    };
-
-    inputData::inputData(DocId docId, char *buffer): docId(docId),docStr(std::string(buffer)) {
-
-    }
 
 
     std::unique_ptr<TermSetDataHolder>

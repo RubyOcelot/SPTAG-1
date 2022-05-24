@@ -64,25 +64,139 @@ namespace IVF {
     }
 
 
+
+
+    std::shared_ptr<std::vector<std::vector<std::string>>> getQuery(const std::string &path, const SourceDataType &dataType,
+                                                               const int threadNum){
+
+        int queryNum;
+        std::shared_ptr<std::vector<inputData>> inputDataVec=std::make_shared<std::vector<inputData>>();
+
+        std::fstream fs;
+
+        auto mode=std::fstream::in;
+        if(dataType==SourceDataType::txt){
+            const int buffer_size=100000;
+            char *buffer=new char[buffer_size];
+            fs.open (path, mode);
+
+            fs >> queryNum;
+            for(auto i=0; i < queryNum; i++){
+                DocId docId;
+                fs>>docId;
+                char c;
+                fs.get(c);
+                if(fs.gcount()>0 && c!='\n'){
+                    fs.putback(c);
+                }
+                fs.getline(buffer,buffer_size-1);
+//                auto x=fs.gcount();
+                inputDataVec->push_back(inputData(docId,buffer));
+                fs.get(c);
+                if(fs.gcount()>0 && c!='\n'){
+                    fs.putback(c);
+                }
+            }
+            fs.close();
+            delete[] buffer;
+        }
+        else if(dataType==SourceDataType::tsv){
+            const int buffer_size=100000;
+            char *buffer=new char[buffer_size];
+            fs.open (path, mode);
+
+            queryNum=0;
+            while(!fs.eof()){
+                DocId docId;
+                fs>>docId;
+                fs.getline(buffer,buffer_size-1);
+//                auto x=fs.gcount();
+                inputDataVec->push_back(inputData(docId,buffer));
+                queryNum++;
+                char c;
+                fs.get(c);
+                if(fs.gcount()>0 && c!='\n'){
+                    fs.putback(c);
+                }
+            }
+            fs.close();
+            delete[] buffer;
+        }
+
+        std::shared_ptr<std::vector<std::vector<std::string>>> ret(new std::vector<std::vector<std::string>>);
+
+        ret->resize(inputDataVec->size());
+        auto analyzer=EnglishSimpleAnalyzer();
+        for(auto i=0;i<inputDataVec->size();i++){
+            auto resultTokenStream=analyzer.getTokenStream(inputDataVec->at(i).docStr);
+            while(resultTokenStream->fetchNextToken()) {
+                ret->at(i).push_back(resultTokenStream->getToken());
+            }
+            resultTokenStream->close();
+        }
+
+        return ret;
+
+
+    }
+
     void test_term(const std::string &test_dir) {
-        auto opts = getSPTAGOptions(test_dir.c_str());
+        StopWSPFresh sw1;
 
         auto indexConfig=std::make_shared<DefaultTermIndexConfig>();
 
         auto searcher = IndexSearcher(test_dir, indexConfig);
 
+        double setupCost = sw1.getElapsedSec();
+        LOG(Helper::LogLevel::LL_Info,
+            "Finish index setup in %.3lf seconds\n",
+            setupCost);
+
         std::shared_ptr<Term> termFactory=indexConfig->getTermFactory();
 
-        std::vector<std::string> wordList={"mouse","creative"};
-        auto queryList=std::make_unique<std::vector<std::shared_ptr<Query>>>();
-        for(const auto& iter:wordList){
-            queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
-        }
-        auto boolQuery = BooleanQuery(LogicOperator::OR,std::move(queryList));
-        TopDocs topDocs = searcher.search(boolQuery, 5);
-        topDocs.print();
 
-        delete opts;
+        Helper::IniReader iniReader;
+        iniReader.LoadIniFile(test_dir);
+        auto config_map=new std::map<std::string, std::map<std::string, std::string>>;
+        (*config_map)["SearchIndex"] = iniReader.GetParameters("SearchIndex");
+
+        if((*config_map)["SearchIndex"]["searchindex"]=="true") {
+
+            auto sourceFile=(*config_map)["SearchIndex"]["sourcefile"];
+            auto sourceFileType=(*config_map)["SearchIndex"]["sourcefiletype"];
+            SourceDataType sourceDataType;
+            if(sourceFileType=="txt")
+                sourceDataType=SourceDataType::txt;
+            else if(sourceFileType=="tsv")
+                sourceDataType=SourceDataType::tsv;
+            else if(sourceFileType=="bin")
+                sourceDataType=SourceDataType::bin;
+            auto threadNum=std::atoi((*config_map)["SearchIndex"]["numberofthreads"].c_str());
+
+            auto query_data = getQuery(sourceFile,sourceDataType,threadNum);
+
+            auto query_num=query_data->size();
+            StopWSPFresh sw2;
+
+//            std::vector<std::string> wordList = {"mouse", "creative"};
+            for(auto i=0;i<query_data->size();i++){
+
+                auto queryList = std::make_unique<std::vector<std::shared_ptr<Query>>>();
+                for (const auto &iter: query_data->at(i)) {
+                    queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
+                }
+                auto boolQuery = BooleanQuery(LogicOperator::AND, std::move(queryList));
+                TopDocs topDocs = searcher.search(boolQuery, 10);
+//                topDocs.print();
+
+
+            }
+            double searchCostS = sw2.getElapsedSec();
+            double searchCostMs = sw2.getElapsedMs();
+            LOG(Helper::LogLevel::LL_Info,
+                "Finish searching in %.6lf s, query number=%d, mean latency=%.6lf ms\n",
+                searchCostS,query_num, searchCostMs/query_num);
+        }
     }
 
 }

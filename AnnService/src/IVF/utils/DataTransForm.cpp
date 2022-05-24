@@ -15,5 +15,7 @@ namespace IVF{
 //        }
 //        return s;
 //    }
+    inputData::inputData(DocId docId, char *buffer): docId(docId),docStr(std::string(buffer)) {
 
+    }
 }

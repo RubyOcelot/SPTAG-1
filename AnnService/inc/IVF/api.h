@@ -19,5 +19,7 @@
 #include "utils/LoadTruth.h"
 #include "inc/IVF/DefaultVectorScoreScheme.h"
 #include "inc/IVF/BooleanQuery.h"
+#include "inc/IVF/utils/EnglishSimpleAnalyzer.h"
+#include "inc/IVF/utils/DataTransform.h"
 
 #endif //IVF_API_H

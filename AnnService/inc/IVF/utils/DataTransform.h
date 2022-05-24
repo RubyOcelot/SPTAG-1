@@ -16,6 +16,15 @@ namespace IVF{
         return s;
     }
 
+
+    class inputData{
+    public:
+        inputData(DocId docId, char* buffer);
+        DocId docId;
+        std::string docStr;
+    };
+
+
 }
 
 #endif //SPTAGLIB_DATATRANSFORM_H

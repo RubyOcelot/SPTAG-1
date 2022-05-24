@@ -22,10 +22,11 @@ namespace IVF {
 
     class TFIDFTermDataLoader:public TermDataLoader {
     public:
-        std::unique_ptr<TermSetDataHolder> getTermSetData(const std::string &path, const SourceDataType &dataType) override;
+        std::unique_ptr<TermSetDataHolder>
+        getTermSetData(const std::string &path, const SourceDataType &dataType, const int threadNum) override;
     private:
-        void collectData(std::vector<std::shared_ptr<TermInDoc>> &termInDocData,
-                         std::unique_ptr<TokenStream> tokenStream, DocId docId);
+        void collectData(const std::shared_ptr<std::vector<std::shared_ptr<TermInDoc>>> &termInDocData,
+                        std::unique_ptr<TokenStream> tokenStream, DocId docId);
         std::unique_ptr<TermSetDataHolder> concat(std::vector<std::shared_ptr<TermInDoc>>& termInDocData);
     };
 }

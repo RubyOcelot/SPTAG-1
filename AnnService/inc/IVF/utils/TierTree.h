@@ -28,8 +28,8 @@ namespace IVF{
             std::shared_ptr<Node> getOrAddChild(const std::string& str, int curPos, std::atomic<HeadIDType>& curHeadId_ref,
                                                 const std::unique_ptr<KeywordStatistic> &stat);
             void addChild(const std::shared_ptr<Node>& child);
-            std::shared_ptr<Node>* charIndex;
-            std::shared_mutex* charRWLock;
+            std::shared_ptr<std::shared_ptr<Node>[]> charIndex;
+            std::shared_ptr<std::shared_mutex[]> charRWLock;
         };
         class Node{
         public:

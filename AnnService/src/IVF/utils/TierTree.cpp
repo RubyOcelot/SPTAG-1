@@ -4,16 +4,14 @@
 
 namespace IVF{
     TierTree::Children::Children() {
-        charIndex=new std::shared_ptr<Node>[sizeof(char)*0x100];
+        charIndex=std::shared_ptr<std::shared_ptr<Node>[]>(new std::shared_ptr<Node>[sizeof(char)*0x100]);
         for(auto i=0;i<sizeof(char)*0x100;i++){
             charIndex[i]=nullptr;
         }
-        charRWLock=new std::shared_mutex[sizeof(char)*0x100];
+        charRWLock=std::shared_ptr<std::shared_mutex[]>(new std::shared_mutex[sizeof(char)*0x100]);
     }
 
     TierTree::Children::~Children() {
-        delete[] charIndex;
-        delete[] charRWLock;
     }
 
     std::shared_ptr<TierTree::Node> TierTree::Children::getChild(const std::string &str, int curPos) const {
@@ -132,7 +130,7 @@ namespace IVF{
         curNode->divergeLock.unlock_shared();
         //regain w lock
         curNode->divergeLock.lock();
-        isPref= isPrefix(curNode->identity, str, 0);
+        isPref= isPrefix(curNode->identity, str, curPos);
         if(isPref){
             auto identityLen=curNode->identity.length();
             curPos+=identityLen;

@@ -33,7 +33,7 @@ namespace IVF {
     typedef ScoreScheme PostingItem;
 
     enum SourceDataType{
-        txt
+        txt, tsv, bin
     };
 
 }

@@ -13,6 +13,7 @@ namespace IVF{
 
     void
     TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder, int threadNum, const std::string& headIndexFile) {
+        SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: start building index\n");
         collectionStatistic=std::move(dataHolder->cstat);
         //TODO parallel;
         for(auto i=0;i<dataHolder->termNum;i++){
@@ -27,6 +28,7 @@ namespace IVF{
         auto fs=std::make_unique<std::fstream>();
         fs->open(headIndexFile,std::fstream::binary);
         head_index->storeIndex(std::move(fs));
+        SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: head index saved at %s\n",headIndexFile.c_str());
     }
 
     void TermIndex::setPostingList(HeadIDType headID, const std::string &value) {

@@ -7,7 +7,8 @@
 namespace IVF {
     class TermDataLoader {
     public:
-        virtual std::unique_ptr<TermSetDataHolder> getTermSetData(const std::string &path, const SourceDataType &dataType)=0;
+        virtual std::unique_ptr<TermSetDataHolder>
+        getTermSetData(const std::string &path, const SourceDataType &dataType, const int threadNum) =0;
     };
 }
 

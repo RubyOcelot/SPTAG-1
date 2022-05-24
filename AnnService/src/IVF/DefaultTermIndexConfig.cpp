@@ -52,9 +52,17 @@ namespace IVF {
                 termIndex->loadHeadIndexWarmup(warmUpHeadIndexFile);
             }
             auto sourceFile=(*config_map)["BuildIndex"]["sourcefile"];
+            auto sourceFileType=(*config_map)["BuildIndex"]["sourcefiletype"];
+            SourceDataType sourceDataType;
+            if(sourceFileType=="txt")
+                sourceDataType=SourceDataType::txt;
+            else if(sourceFileType=="tsv")
+                sourceDataType=SourceDataType::tsv;
+            else if(sourceFileType=="bin")
+                sourceDataType=SourceDataType::bin;
             auto threadNum=std::atoi((*config_map)["BuildIndex"]["numberofthreads"].c_str());
             auto termDataLoader=new TFIDFTermDataLoader();
-            termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile, SourceDataType::txt), threadNum,
+            termIndex->buildIndex(termDataLoader->getTermSetData(sourceFile, sourceDataType, threadNum), threadNum,
                                   headIndexFile);
         }
         else{

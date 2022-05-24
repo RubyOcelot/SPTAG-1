@@ -1,5 +1,7 @@
+#include <thread>
 #include "inc/IVF/TermIndex.h"
 #include "inc/IVF/utils/TierTree.h"
+#include "inc/IVF/utils/TFIDFTermDataLoader.h"
 
 namespace IVF{
 
@@ -15,16 +17,35 @@ namespace IVF{
     TermIndex::buildIndex(std::unique_ptr<TermSetDataHolder> dataHolder, int threadNum, const std::string& headIndexFile) {
         SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: start building index\n");
         collectionStatistic=std::move(dataHolder->cstat);
-        //TODO parallel;
-        for(auto i=0;i<dataHolder->termNum;i++){
-            auto &data= dataHolder->termDataVec.at(i);
-            auto hid=head_index->set(data.str,data.kwstat->getContent());
-            if(hid==-1){
-                //TODO error
-                exit(1);
+
+
+        std::vector<std::thread> task_threads;
+        std::atomic_size_t task_sent(0);
+        std::atomic_size_t itemNum(0);
+
+        auto taskNum=dataHolder->termNum;
+
+        auto func = [&]() {
+            size_t index = 0;
+            while (true) {
+                index = task_sent.fetch_add(1);
+                if (index < taskNum) {
+                    auto i=index;
+                    auto &data= dataHolder->termDataVec.at(i);
+                    auto hid=head_index->set(data.str,data.kwstat->getContent());
+                    if(hid==-1){
+                        //TODO error
+                        exit(1);
+                    }
+                    setPostingList(hid,data.posting_data);
+                } else {
+                    return;
+                }
             }
-            setPostingList(hid,data.posting_data);
-        }
+        };
+        for (int j = 0; j < threadNum; j++) { task_threads.emplace_back(func); }
+        for (auto &thread: task_threads) { thread.join(); }
+
         auto fs=std::make_unique<std::fstream>();
         fs->open(headIndexFile,std::fstream::binary);
         head_index->storeIndex(std::move(fs));

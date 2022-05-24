@@ -132,7 +132,9 @@ namespace IVF{
             auto children=curNode->children;
             curNode->divergeLock.unlock_shared();
             auto child=children->getOrAddChild(str, curPos, curHeadId, curNode->stat);
-            return seekInternalWithInsert(str, child, curPos);
+            auto ret_val=seekInternalWithInsert(str, child, curPos);
+            bool isNull=(ret_val==nullptr);
+            return ret_val;
         }
 
         curNode->divergeLock.unlock_shared();

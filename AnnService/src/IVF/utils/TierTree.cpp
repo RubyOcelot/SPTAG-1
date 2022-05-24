@@ -1,6 +1,7 @@
-#include "inc/IVF/utils/TierTree.h"
-
 #include <utility>
+
+#include "inc/IVF/utils/TierTree.h"
+#include "inc/IVF/utils/DataTransform.h"
 
 namespace IVF{
     TierTree::Children::Children() {
@@ -56,12 +57,14 @@ namespace IVF{
         charRWLock[fc].unlock();
     }
 
-    TierTree::TierTree(std::unique_ptr<KeywordStatistic> emptyStat, std::string filePath) : curHeadId(0),filePath(std::move(filePath)),
-                                                                                                   root(std::make_shared<Node>("", 0, std::move(emptyStat))){
-        curHeadId++;
+    TierTree::TierTree(std::unique_ptr<KeywordStatistic> emptyStat, std::string filePath) : curHeadId(0),filePath(std::move(filePath)){
+
+        kwStatTemplate=emptyStat->getNew();
+        root=(std::make_shared<Node>("", 0, std::move(emptyStat)));
         if(root->stat== nullptr){
             //TODO error
         }
+        curHeadId++;
     }
 
 
@@ -212,14 +215,84 @@ namespace IVF{
     }
 
     void TierTree::loadIndex(std::unique_ptr<std::istream> data) {
-
+        root=LoadNode(std::move(data),false);
     }
 
     void TierTree::loadWarmupIndex(std::unique_ptr<std::istream> data) {
+        root=LoadNode(std::move(data),true);
+    }
+
+
+    std::shared_ptr<TierTree::Node> TierTree::LoadNode(const std::shared_ptr<std::istream>& loadStream, bool warmUp) {
+        auto curNode=Node::deserialize(loadStream,kwStatTemplate->getNew(),warmUp);
+        int buffer_size=10;
+        char buffer[buffer_size+1];
+        loadStream->read((char*)(buffer), 2);
+        u_int16_t child_len=*((u_int16_t*)buffer);
+        for(auto i=0;i<child_len;i++){
+            auto childNode= LoadNode(loadStream,warmUp);
+            curNode->children->addChild(childNode);
+        }
+        return curNode;
+    }
+
+    void TierTree::storeIndex(std::unique_ptr<std::ostream> storeStream) {
+        storeNode(std::move(storeStream),root);
 
     }
 
-    void TierTree::storeIndex(std::unique_ptr<std::istream> storeStream) {
+    void TierTree::storeNode(const std::shared_ptr<std::ostream>& storeStream, const std::shared_ptr<TierTree::Node>& curNode) {
+        auto nodeData=curNode->serialize();
+        (*storeStream)<<nodeData;
+        u_int16_t child_count=0;
+        for(auto i=0;i<sizeof(char)*0x100;i++){
+            if(curNode->children->charIndex[i]!= nullptr){
+                child_count++;
+            }
+        }
+        (*storeStream)<<DataToString(child_count);
+        for(auto i=0;i<sizeof(char)*0x100;i++){
+            if(curNode->children->charIndex[i]!= nullptr){
+                storeNode(storeStream,curNode->children->charIndex[i]);
+            }
+        }
 
     }
+
+
+
+    std::string TierTree::Node::serialize() {
+        auto statData=stat->getContent();
+        return DataToString(headID)+DataToString(identity.length())+identity+DataToString(statData.length())+statData;
+    }
+
+    std::shared_ptr<TierTree::Node>
+    TierTree::Node::deserialize(const std::shared_ptr<std::istream>& data, std::unique_ptr<KeywordStatistic> kwStatTemplate, bool warmUp) {
+        int buffer_size=1000;
+        char buffer[buffer_size+1];
+
+        auto node=std::make_shared<Node>();
+
+        data->read((char*)(buffer), sizeof(HeadIDType));
+        node->headID=*((HeadIDType*)buffer);
+
+        data->read((char*)(buffer), 4);
+        int id_len=*((u_int32_t*)buffer);
+        data->read((char*)(buffer), id_len);
+        buffer[id_len]='\0';
+        node->identity=std::string(buffer);
+
+            data->read((char *) (buffer), 4);
+            int stat_len = *((u_int32_t *) buffer);
+            data->read((char *) (buffer), stat_len);
+            buffer[stat_len] = '\0';
+            node->stat = kwStatTemplate->getNew();
+        if(!warmUp) {
+            node->stat->set(std::string(buffer));
+        }
+
+        return node;
+    }
+
+
 }

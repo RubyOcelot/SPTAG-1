@@ -33,6 +33,9 @@ namespace IVF{
         };
         class Node{
         public:
+            Node():headID(-1){
+                this->children=std::make_shared<Children>();
+            }
             Node(std::string ident, HeadIDType hid, std::unique_ptr<KeywordStatistic> stat, const std::shared_ptr<Children>& children=nullptr): identity(std::move(ident)),headID(hid),stat(std::move(stat)){
                 if(this->stat == nullptr){
                     //TODO error
@@ -49,6 +52,9 @@ namespace IVF{
             std::unique_ptr<KeywordStatistic> stat;
             std::shared_ptr<Children> children;
             mutable boost::shared_mutex divergeLock;
+            std::string serialize();
+            static std::shared_ptr<TierTree::Node>
+            deserialize(const std::shared_ptr<std::istream>& data, std::unique_ptr<KeywordStatistic> kwStatTemplate, bool warmUp);
         };
     public:
         explicit TierTree(std::unique_ptr<KeywordStatistic> emptyStat, std::string filePath);
@@ -59,12 +65,15 @@ namespace IVF{
         HeadIDType del(const std::string &str, std::string inputStat) override;
         std::atomic<HeadIDType> curHeadId;
         void loadIndex(std::unique_ptr<std::istream> data) override;
-        void storeIndex(std::unique_ptr<std::istream> storeStream)override;
         void loadWarmupIndex(std::unique_ptr<std::istream> data) override;
+        std::shared_ptr<TierTree::Node> LoadNode(const std::shared_ptr<std::istream>& loadStream, bool warmUp);
+        void storeIndex(std::unique_ptr<std::ostream> storeStream)override;
+        void storeNode(const std::shared_ptr<std::ostream>& storeStream, const std::shared_ptr<TierTree::Node> &curNode);
     private:
         std::shared_ptr<Node> seekInternalNoInsert(const std::string& str, std::shared_ptr<Node> curNode, int curPos);
         std::shared_ptr<Node> seekInternalWithInsert(const std::string& str,std::shared_ptr<Node> curNode,int curPos);
         std::string filePath;
+        std::unique_ptr<KeywordStatistic> kwStatTemplate;
     };
 
 

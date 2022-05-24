@@ -18,7 +18,7 @@ namespace IVF {
 
         virtual void loadIndex(std::unique_ptr<std::istream> data)=0;
 
-        virtual void storeIndex(std::unique_ptr<std::istream> storeStream)=0;
+        virtual void storeIndex(std::unique_ptr<std::ostream> storeStream)=0;
 
         virtual void loadWarmupIndex(std::unique_ptr<std::istream> data)=0;
     };

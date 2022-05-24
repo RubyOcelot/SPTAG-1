@@ -87,11 +87,19 @@ namespace IVF{
     }
 
     HeadIDType TierTree::add(const std::string &str, std::string inputStat) {
-        auto node = seekInternalWithInsert(str, root, 0);
-        node->stat->modForAdd(inputStat);
-        auto hid=node->headID;
-        node->divergeLock.unlock_shared();
-        return hid;
+        auto node = seekInternalNoInsert(str, root, 0);
+        if(node == nullptr) {
+            //TODO error;
+            exit(1);
+            return -1;
+        }
+        else {
+            node->stat->modForAdd(inputStat);
+            auto hid = node->headID;
+            node->divergeLock.unlock_shared();
+            return hid;
+        }
+        return -1;
     }
 
     HeadIDType TierTree::del(const std::string &str, std::string inputStat) {
@@ -141,7 +149,7 @@ namespace IVF{
             auto children=curNode->children;
             curNode->divergeLock.unlock();
             auto child=children->getOrAddChild(str, curPos, curHeadId, curNode->stat);
-            return seekInternalNoInsert(str, child, curPos);
+            return seekInternalWithInsert(str, child, curPos);
         }
 
         auto newPos= checkPrefix(str.substr(curPos,std::string::npos),curNode->identity);

@@ -34,7 +34,10 @@ namespace IVF{
         charRWLock[fc].lock();
         node=charIndex[fc];
         if(node==nullptr) {
-            node=std::make_shared<Node>(str.substr(curPos,std::string::npos), curHeadId_ref++, stat->getNew());
+            auto new_str=str.substr(curPos,std::string::npos);
+            auto newStat= stat->getNew();
+            node=std::make_shared<Node>(new_str, curHeadId_ref,std::move(newStat));
+            curHeadId_ref++;
             charIndex[fc]=node;
         }
         charRWLock[fc].unlock();
@@ -130,10 +133,9 @@ namespace IVF{
                 return curNode;
             }
             auto children=curNode->children;
-            curNode->divergeLock.unlock_shared();
             auto child=children->getOrAddChild(str, curPos, curHeadId, curNode->stat);
+            curNode->divergeLock.unlock_shared();
             auto ret_val=seekInternalWithInsert(str, child, curPos);
-            bool isNull=(ret_val==nullptr);
             return ret_val;
         }
 
@@ -149,8 +151,8 @@ namespace IVF{
                 return curNode;
             }
             auto children=curNode->children;
-            curNode->divergeLock.unlock();
             auto child=children->getOrAddChild(str, curPos, curHeadId, curNode->stat);
+            curNode->divergeLock.unlock();
             return seekInternalWithInsert(str, child, curPos);
         }
 

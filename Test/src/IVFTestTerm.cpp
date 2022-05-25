@@ -178,7 +178,6 @@ namespace IVF {
             auto query_num=query_data->size();
             StopWSPFresh sw2;
 
-//            std::vector<std::string> wordList = {"mouse", "creative"};
             for(auto i=0;i<query_data->size();i++){
 
                 auto queryList = std::make_unique<std::vector<std::shared_ptr<Query>>>();
@@ -187,7 +186,7 @@ namespace IVF {
                 }
                 auto boolQuery = BooleanQuery(LogicOperator::OR, std::move(queryList));
                 TopDocs topDocs = searcher.search(boolQuery, 10);
-                if(i<5){
+                if(query_num<5){
                     for (const auto &iter: query_data->at(i)) {
                         std::cout<<iter<<" ";
                     }

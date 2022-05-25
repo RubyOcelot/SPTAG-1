@@ -160,7 +160,7 @@ namespace IVF {
         stdrecall = std::sqrt(stdrecall / NumQuerys);
 
         //TODO debug
-        std::cout << meanrecall << " " << stdrecall << " " << minrecall << " " << maxrecall << std::endl;
+//        std::cout << meanrecall << " " << stdrecall << " " << minrecall << " " << maxrecall << std::endl;
 
         return meanrecall;
     }
@@ -174,7 +174,6 @@ namespace IVF {
 //                std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
 
         int searchThreads = opts->m_searchThreadNum;
-        StopWSPFresh sw;
 
         std::vector<std::thread> search_threads;
 
@@ -203,18 +202,27 @@ namespace IVF {
                 }
             }
         };
+
+        StopWSPFresh sw;
+
         for (int j = 0; j < searchThreads; j++) { search_threads.emplace_back(func2); }
         for (auto &thread: search_threads) { thread.join(); }
 
+        double searchingCost = sw.getElapsedSec();
 
-        VectorReaderWrap vectorSet;
-        if (opts->m_update) {
-            vectorSet.loadFullVectorData(opts);
-        } else{
-            vectorSet.loadVectorData(opts);
-        }
 
-        float mean_recall;
+        if(!opts->m_truthPath.empty()){
+
+            StopWSPFresh calc_recall_sw;
+
+            VectorReaderWrap vectorSet;
+            if (opts->m_update) {
+                vectorSet.loadFullVectorData(opts);
+            } else{
+                vectorSet.loadVectorData(opts);
+            }
+
+            float mean_recall;
 
 #define DefineVectorValueType(Name, Type) \
 	if (opts->m_valueType == VectorValueType::Name) { \
@@ -224,15 +232,22 @@ namespace IVF {
 #include "inc/Core/DefinitionList.h"
 #undef DefineVectorValueType
 
-        double searchingCost = sw.getElapsedSec();
+            double calcRecallCost = calc_recall_sw.getElapsedSec();
+
+
+            LOG(Helper::LogLevel::LL_Info,
+                "Finish calc recall in %.3lf seconds, mean recall rate is %.3lf.\n",
+                calcRecallCost,
+                mean_recall);
+        }
+
+
         LOG(Helper::LogLevel::LL_Info,
             "Finish searching in %.3lf seconds, searching throughput is %.2lf, searching count %u.\n",
             searchingCost,
             (e - s) / searchingCost,
             static_cast<uint32_t>(e - s));
 
-        //TODO calc true recall
-        std::cout << "recall rate: " << mean_recall << std::endl;
     }
 
     void test_combine(const std::string &test_dir){

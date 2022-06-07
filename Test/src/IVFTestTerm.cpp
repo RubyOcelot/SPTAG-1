@@ -187,7 +187,7 @@ namespace IVF {
                 for (const auto &iter: query_data->at(i)) {
                     queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
                 }
-                auto boolQuery = BooleanQuery(LogicOperator::OR, std::move(queryList));
+                auto boolQuery = BooleanQuery(LogicOperator::WAND, std::move(queryList));
                 TopDocs topDocs = searcher.search(boolQuery, 10);
                 results->at(i) = topDocs;
 
@@ -198,7 +198,7 @@ namespace IVF {
                 "Finish searching in %.6lf s, query number=%d, mean latency=%.6lf ms\n",
                 searchCostS,query_num, searchCostMs/query_num);
 
-            for(auto i=0;i<std::min(query_num,3);i++) {
+            for(auto i=0;i<std::min(query_num,6);i++) {
                 for (const auto &iter: query_data->at(i)) {
                     std::cout << iter << " ";
                 }

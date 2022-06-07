@@ -23,7 +23,7 @@ namespace IVF {
     typedef int32_t HeadIDType;
 
     enum LogicOperator {
-        AND, OR
+        AND, OR, WAND
     };
 
     class IndexConfig;

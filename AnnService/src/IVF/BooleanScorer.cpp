@@ -14,7 +14,7 @@ namespace IVF {
                 pq->insertWithOverflow(iter);
         }
 
-        if (op == LogicOperator::OR) {
+        if (op == LogicOperator::OR || op == LogicOperator::WAND ) {
             if(pq->isEmpty())
                 curId=-1;
             else
@@ -33,6 +33,12 @@ namespace IVF {
         if (op == LogicOperator::OR) {
             retScore=pq->top()->score();
         }
+        else if (op == LogicOperator::WAND) {
+            for(const auto& iter:subScorers->value){
+                if(iter->getCurrentId()==pq->top()->getCurrentId())
+                    retScore+=iter->score();
+            }
+        }
         else{
             //TODO AND
 
@@ -42,7 +48,7 @@ namespace IVF {
 
 
     DocId BooleanScorer::next() {
-        if (op == LogicOperator::OR) {
+        if (op == LogicOperator::OR || op == LogicOperator::WAND ) {
             while(!pq->isEmpty()&&pq->top()->getCurrentId()==curId){
                 if(pq->top()->next()==-1){
                     pq->removeTop();
@@ -64,7 +70,7 @@ namespace IVF {
     }
 
     DocId BooleanScorer::skipTo(DocId targetId) {
-        if (op == LogicOperator::OR) {
+        if (op == LogicOperator::OR || op == LogicOperator::WAND ) {
             while (!pq->isEmpty()&& (pq->top()->getCurrentId()<targetId)){
                 if(pq->top()->skipTo(targetId)==-1){
                     pq->removeTop();

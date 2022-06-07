@@ -244,6 +244,8 @@ namespace IVF{
     void TierTree::storeNode(const std::shared_ptr<std::ostream>& storeStream, const std::shared_ptr<TierTree::Node>& curNode) {
         auto nodeData=curNode->serialize();
         (*storeStream)<<nodeData;
+        auto ident=curNode->identity;
+        auto hid=curNode->headID;
         u_int16_t child_count=0;
         for(auto i=0;i<sizeof(char)*0x100;i++){
             if(curNode->children->charIndex[i]!= nullptr){

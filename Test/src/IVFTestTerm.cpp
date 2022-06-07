@@ -175,7 +175,10 @@ namespace IVF {
 
             auto query_data = getQuery(sourceFile,sourceDataType,threadNum);
 
-            auto query_num=query_data->size();
+            int query_num=query_data->size();
+
+            std::shared_ptr<std::vector<TopDocs>> results=std::make_shared<std::vector<TopDocs>>();
+            results->resize(query_num);
             StopWSPFresh sw2;
 
             for(auto i=0;i<query_data->size();i++){
@@ -186,14 +189,7 @@ namespace IVF {
                 }
                 auto boolQuery = BooleanQuery(LogicOperator::OR, std::move(queryList));
                 TopDocs topDocs = searcher.search(boolQuery, 10);
-                if(query_num<5){
-                    for (const auto &iter: query_data->at(i)) {
-                        std::cout<<iter<<" ";
-                    }
-                    std::cout<<std::endl;
-                    topDocs.print();
-                }
-
+                results->at(i) = topDocs;
 
             }
             double searchCostS = sw2.getElapsedSec();
@@ -201,6 +197,14 @@ namespace IVF {
             LOG(Helper::LogLevel::LL_Info,
                 "Finish searching in %.6lf s, query number=%d, mean latency=%.6lf ms\n",
                 searchCostS,query_num, searchCostMs/query_num);
+
+            for(auto i=0;i<std::min(query_num,3);i++) {
+                for (const auto &iter: query_data->at(i)) {
+                    std::cout << iter << " ";
+                }
+                std::cout << std::endl;
+                results->at(i).print();
+            }
         }
     }
 

@@ -16,6 +16,14 @@ namespace IVF{
         return s;
     }
 
+    static std::string BufferToString(char* buffer,int size){
+        std::string s;
+        for(auto i=0;i<size;i++){
+            s+=buffer[i];
+        }
+        return s;
+    }
+
 
     class inputData{
     public:

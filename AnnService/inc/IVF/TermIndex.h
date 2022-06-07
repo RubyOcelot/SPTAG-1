@@ -19,7 +19,7 @@ namespace IVF {
         void setHeadIndex(std::unique_ptr<StringHeadIndex> head_index);
         void setKV(std::unique_ptr<KeyValueIO> kvio);
         void setScoreScheme(std::unique_ptr<ScoreScheme> scoreScheme);
-        void loadHeadIndex(const std::string& path);
+        void loadIndex(const std::string &path);
         void loadHeadIndexWarmup(const std::string& path);
         std::unique_ptr<ScoreScheme> getCollectionStatHolder();
     private:

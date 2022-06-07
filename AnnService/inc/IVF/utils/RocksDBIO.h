@@ -35,7 +35,7 @@ namespace IVF {
             dbOptions.merge_operator.reset(new AppendMergeOperator);
 
             auto s = rocksdb::DB::Open(dbOptions, dbPath, &db);
-            LOG(Helper::LogLevel::LL_Info, "Inverted Index: New Rocksdb: %s\n", filePath);
+            LOG(Helper::LogLevel::LL_Info, "Inverted Index: Open or Create Rocksdb: %s\n", filePath);
             return s == rocksdb::Status::OK();
         }
 
@@ -43,6 +43,15 @@ namespace IVF {
             db->Close();
             DestroyDB(dbPath, dbOptions);
             delete db;
+        }
+
+        ErrorCode Get(const std::string &key, std::string* strValue) override {
+            auto s = db->Get(rocksdb::ReadOptions(), key, strValue);
+            if (s == rocksdb::Status::OK()) {
+                return ErrorCode::Success;
+            } else {
+                return ErrorCode::Fail;
+            }
         }
 
         ErrorCode Get(const std::string &key, std::istream **value) override  {

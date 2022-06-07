@@ -18,6 +18,7 @@ namespace IVF{
         SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: start building index\n");
         collectionStatistic=std::move(dataHolder->cstat);
 
+        db->Put("cstat",collectionStatistic->getContent());
 
         std::vector<std::thread> task_threads;
         std::atomic_size_t task_sent(0);
@@ -47,7 +48,7 @@ namespace IVF{
         for (auto &thread: task_threads) { thread.join(); }
 
         auto fs=std::make_unique<std::fstream>();
-        fs->open(headIndexFile,std::fstream::binary);
+        fs->open(headIndexFile,std::fstream::binary | std::fstream::out);
         head_index->storeIndex(std::move(fs));
         SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: head index saved at %s\n",headIndexFile.c_str());
     }
@@ -55,7 +56,7 @@ namespace IVF{
     void TermIndex::setPostingList(HeadIDType headID, const std::string &value) {
         if(db == nullptr){
             //TODO error
-            std::cout<<"db=null!"<<std::endl;
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: db = null! \n");
             exit(1);
         }
         //TODO ErrorCode;
@@ -85,17 +86,23 @@ namespace IVF{
         this->db=std::move(kvio);
     }
 
-    void TermIndex::loadHeadIndex(const std::string& path) {
+    void TermIndex::loadIndex(const std::string &path) {
         auto fs=std::make_unique<std::fstream>();
-        fs->open(path,std::fstream::binary);
+        fs->open(path,std::fstream::binary | std::fstream::in);
         head_index->loadIndex(std::move(fs));
+        SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: head index loaded: %s\n", path.c_str());
+        collectionStatistic=scoreScheme->getEmptyCollectionStatistic();
 
+        std::string retValue;
+        db->Get("cstat",&retValue);
+        collectionStatistic->set(retValue);
     }
 
     void TermIndex::loadHeadIndexWarmup(const std::string& path) {
         auto fs=std::make_unique<std::fstream>();
         fs->open(path,std::fstream::binary);
         head_index->loadWarmupIndex(std::move(fs));
+        SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Info, "Inverted Index Build: warmup head index loaded: %s\n", path.c_str());
     }
 
     void TermIndex::setScoreScheme(std::unique_ptr<ScoreScheme> scoreScheme) {

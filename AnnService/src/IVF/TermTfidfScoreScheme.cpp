@@ -33,7 +33,12 @@ namespace IVF{
     }
 
     void TermTFIDFScoreScheme::collectionStatisticsLoader(std::string rawData) {
-        docNum=*((TermStatType*)rawData.c_str());
+
+        if(rawData.length()==sizeof(TermStatType))
+            docNum=*StringToTermStat(rawData);
+        else{
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Error, "Inverted Index Build: tfidf collection stat have wrong data \n");
+        }
     }
 
     float TermTFIDFScoreScheme::score() {
@@ -51,6 +56,10 @@ namespace IVF{
 
     std::unique_ptr<KeywordStatistic> TermTFIDFScoreScheme::getEmptyKeywordStatistic() {
         return std::make_unique<TermTFIDFScoreScheme::DocFreq>();
+    }
+
+    std::unique_ptr<CollectionStatistic> TermTFIDFScoreScheme::getEmptyCollectionStatistic() {
+        return std::make_unique<TermTFIDFScoreScheme::DocNum>();
     }
 
     TermTFIDFScoreScheme::TermTFIDFScoreScheme():docId(-1),docFreq(0),docNum(0),termFreq(0) {
@@ -87,7 +96,8 @@ namespace IVF{
     }
 
     std::string TermTFIDFScoreScheme::DocFreq::getContent() {
-        return TermTFIDFScoreScheme::TermStatToString(docFreq);
+        TermStatType docFreq2=docFreq;
+        return DataToString(docFreq2);
     }
 
     std::unique_ptr<KeywordStatistic> TermTFIDFScoreScheme::DocFreq::clone() {
@@ -99,7 +109,11 @@ namespace IVF{
     }
 
     void TermTFIDFScoreScheme::DocFreq::set(const std::string &data) {
-        docFreq=*StringToTermStat(data);
+        if(data.length()==sizeof(TermStatType))
+            docFreq=*StringToTermStat(data);
+        else{
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Error, "Inverted Index Build: tfidf docFreq have wrong data \n");
+        }
     }
 
     void TermTFIDFScoreScheme::DocFreq::modForAdd(const std::string &data) {
@@ -136,7 +150,7 @@ namespace IVF{
     }
 
     std::string TermTFIDFScoreScheme::DocNum::getContent() {
-        return TermTFIDFScoreScheme::TermStatToString(docNum);
+        return DataToString(docNum);
     }
 
     std::unique_ptr<CollectionStatistic> TermTFIDFScoreScheme::DocNum::clone() {

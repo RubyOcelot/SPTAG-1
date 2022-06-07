@@ -37,6 +37,7 @@ namespace IVF {
         void setVecLen(int len)override;
         int getVecLen()override;
         std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic()override;
+        std::unique_ptr<CollectionStatistic> getEmptyCollectionStatistic() override;
     private:
 
         static const SPTAG::DistCalcMethod defaultDistCalcFunc;

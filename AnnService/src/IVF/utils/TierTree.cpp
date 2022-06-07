@@ -263,7 +263,11 @@ namespace IVF{
 
     std::string TierTree::Node::serialize() {
         auto statData=stat->getContent();
-        return DataToString(headID)+DataToString(identity.length())+identity+DataToString(statData.length())+statData;
+        auto headIDData=DataToString(headID);
+        auto identLenData=DataToString((uint32_t)identity.length());
+        auto statLenData=DataToString((uint32_t)statData.length());
+        std::string resultData=headIDData+identLenData+identity+statLenData+statData;
+        return resultData;
     }
 
     std::shared_ptr<TierTree::Node>
@@ -274,21 +278,42 @@ namespace IVF{
         auto node=std::make_shared<Node>();
 
         data->read((char*)(buffer), sizeof(HeadIDType));
+        if(data->gcount()!=sizeof(HeadIDType)){
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Error, "TierTree cannot read HeadID!");
+            exit(1);
+        }
         node->headID=*((HeadIDType*)buffer);
 
         data->read((char*)(buffer), 4);
+        if(data->gcount()!=4){
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Error, "TierTree cannot read identity length!");
+            exit(1);
+        }
         int id_len=*((u_int32_t*)buffer);
-        data->read((char*)(buffer), id_len);
-        buffer[id_len]='\0';
-        node->identity=std::string(buffer);
 
-            data->read((char *) (buffer), 4);
-            int stat_len = *((u_int32_t *) buffer);
-            data->read((char *) (buffer), stat_len);
-            buffer[stat_len] = '\0';
-            node->stat = kwStatTemplate->getNew();
+        data->read((char*)(buffer), id_len);
+        if(data->gcount()!=id_len){
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Error, "TierTree cannot read identity data!");
+            exit(1);
+        }
+        node->identity=BufferToString(buffer,id_len);
+
+
+        data->read((char*) (buffer), 4);
+        if(data->gcount()!=4){
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Error, "TierTree cannot read stat length!");
+            exit(1);
+        }
+        int stat_len = *((u_int32_t *) buffer);
+
+        data->read((char *) (buffer), stat_len);
+        if(data->gcount()!=stat_len){
+            SPTAG::LOG(SPTAG::Helper::LogLevel::LL_Error, "TierTree cannot read stat data!");
+            exit(1);
+        }
+        node->stat = kwStatTemplate->getNew();
         if(!warmUp) {
-            node->stat->set(std::string(buffer));
+            node->stat->set(BufferToString(buffer,stat_len));
         }
 
         return node;

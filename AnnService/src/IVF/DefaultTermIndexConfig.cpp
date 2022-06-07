@@ -66,7 +66,8 @@ namespace IVF {
                                   headIndexFile);
         }
         else{
-            termIndex->loadHeadIndex(headIndexFile);
+            termIndex->loadIndex(headIndexFile);
+
         }
 
 

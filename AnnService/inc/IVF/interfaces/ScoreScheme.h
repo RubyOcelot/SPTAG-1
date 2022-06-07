@@ -3,6 +3,7 @@
 
 #include "../CommonUse.h"
 #include "KeywordStatistic.h"
+#include "CollectionStatistic.h"
 
 namespace IVF {
     class ScoreScheme {
@@ -24,6 +25,7 @@ namespace IVF {
         virtual ~ScoreScheme() = default;
 
         virtual std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic()=0;
+        virtual std::unique_ptr<CollectionStatistic> getEmptyCollectionStatistic()=0;
     };
 
 }

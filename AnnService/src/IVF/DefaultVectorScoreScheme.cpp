@@ -113,6 +113,11 @@ namespace IVF {
         return defaultDistCalcFunc;
     }
 
+    template<class T>
+    std::unique_ptr<CollectionStatistic> DefaultVectorScoreScheme<T>::getEmptyCollectionStatistic() {
+        return nullptr;
+    }
+
 }
 
 #define DefineVectorValueType(Name, Type) \

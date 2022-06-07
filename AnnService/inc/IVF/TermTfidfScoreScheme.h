@@ -91,6 +91,8 @@ namespace IVF {
 
         std::unique_ptr<KeywordStatistic> getEmptyKeywordStatistic() override;
 
+        std::unique_ptr<CollectionStatistic> getEmptyCollectionStatistic() override;
+
         static std::unique_ptr<KeywordStatistic> getKeywordStatistic();
 
         static std::string serializePItem(DocId docId, float termFreq);

@@ -31,6 +31,10 @@ if (NOT LIBRARYONLY)
     add_executable(IVFTestTerm ${TEST_MAIN_FILES} ${TEST_SRC_FILES_TERM} ${TEST_HDR_FILES})
     target_link_libraries(IVFTestTerm SPTAGLibStatic ssdservingLib ${Boost_LIBRARIES} IVF)
 
+    file(GLOB TEST_SRC_FILES_HYBRID ${PROJECT_SOURCE_DIR}/Test/src/IVFTestHybrid.cpp)
+    add_executable(IVFTestHybrid ${TEST_MAIN_FILES} ${TEST_SRC_FILES_HYBRID} ${TEST_HDR_FILES})
+    target_link_libraries(IVFTestHybrid SPTAGLibStatic ssdservingLib ${Boost_LIBRARIES} IVF)
+
     install(TARGETS IVFTestVec IVFTestTerm
       RUNTIME DESTINATION bin  
       ARCHIVE DESTINATION lib

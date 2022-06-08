@@ -324,7 +324,7 @@ namespace IVF {
 
         Helper::IniReader iniReader;
         iniReader.LoadIniFile(test_dir);
-        auto config_map=new std::map<std::string, std::map<std::string, std::string>>;
+        auto config_map=std::make_unique<std::map<std::string, std::map<std::string, std::string>>>();
         (*config_map)["SearchIndex"] = iniReader.GetParameters("SearchIndex");
 
         if((*config_map)["SearchIndex"]["searchindex"]=="true") {

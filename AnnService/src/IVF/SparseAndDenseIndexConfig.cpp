@@ -10,11 +10,16 @@ namespace IVF{
     }
 
     void SparseAndDenseIndexConfig::init(const std::string &path, IndexSearcher &searcher) {
+        Helper::IniReader iniReader;
+        iniReader.LoadIniFile(path);
+        auto config_map=std::make_unique<std::map<std::string, std::map<std::string, std::string>>>();
+        (*config_map)["Base"] = iniReader.GetParameters("Base");
+
         auto vecIndexConfig=DefaultVectorIndexConfig();
-        vecIndexConfig.init(path, searcher);
+        vecIndexConfig.init((*config_map)["Base"]["vecconfigfile"], searcher);
         kv=vecIndexConfig.getVectorFactory();
         auto termIndexConfig=DefaultTermIndexConfig();
-        termIndexConfig.init(path, searcher);
+        termIndexConfig.init((*config_map)["Base"]["termconfigfile"], searcher);
         term=termIndexConfig.getTermFactory();
     }
 

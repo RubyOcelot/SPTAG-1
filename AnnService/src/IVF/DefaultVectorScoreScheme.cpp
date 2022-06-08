@@ -7,21 +7,23 @@ namespace IVF {
 
     template<class T>
     VectorScoreScheme *DefaultVectorScoreScheme<T>::clone() {
-        return new DefaultVectorScoreScheme( distFunc, queryVector, docId, docVector, vecLen);
+        return new DefaultVectorScoreScheme(*this);
     }
 
     template<class T>
     std::unique_ptr<ScoreScheme> DefaultVectorScoreScheme<T>::smart_clone() {
-        return std::make_unique<DefaultVectorScoreScheme>( distFunc, queryVector, docId, docVector, vecLen);
+        return std::make_unique<DefaultVectorScoreScheme>(*this);
     }
 
     template<class T>
     DefaultVectorScoreScheme<T>::DefaultVectorScoreScheme(const DefaultVectorScoreScheme& d):
-            distFunc(d.distFunc),
-            queryVector(d.queryVector),
             docId(d.docId),
             docVector(d.docVector),
-            vecLen(d.vecLen){}
+            queryVector(d.queryVector),
+            vecLen(d.vecLen),
+            distCalcMethod(d.distCalcMethod),
+            distFunc(d.distFunc)
+            {}
 
     template<class T>
     DocId DefaultVectorScoreScheme<T>::getDocId() {
@@ -29,8 +31,9 @@ namespace IVF {
     }
 
     template<class T>
-    DefaultVectorScoreScheme<T>::DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction> distFunc, void* queryVector, DocId docId, void* docVector,  int vecLen)
-            : docId(docId), docVector(docVector), queryVector(queryVector), distFunc(std::move(distFunc)), vecLen(vecLen) {
+    DefaultVectorScoreScheme<T>::DefaultVectorScoreScheme(SPTAG::DistCalcMethod distCalcMethod, void* queryVector, DocId docId, void* docVector, int vecLen)
+            : docId(docId), docVector(docVector), queryVector(queryVector),  vecLen(vecLen), distCalcMethod(distCalcMethod) {
+        distFunc=std::make_unique<DistanceUtilsWrap<T>>(distCalcMethod);
 
     }
 
@@ -109,8 +112,8 @@ namespace IVF {
     }
 
     template<class T>
-    SPTAG::DistCalcMethod DefaultVectorScoreScheme<T>::getDefaultDistCalcFunc() {
-        return defaultDistCalcFunc;
+    SPTAG::DistCalcMethod DefaultVectorScoreScheme<T>::getDefaultDistCalcMethod() {
+        return defaultDistCalcMethod;
     }
 
     template<class T>
@@ -118,6 +121,10 @@ namespace IVF {
         return nullptr;
     }
 
+    template<class T>
+    SPTAG::DistCalcMethod DefaultVectorScoreScheme<T>::getDistCalcMethod() {
+        return distCalcMethod;
+    }
 }
 
 #define DefineVectorValueType(Name, Type) \

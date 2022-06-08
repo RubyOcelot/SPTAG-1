@@ -18,9 +18,12 @@ namespace IVF {
 
         std::unique_ptr<ScoreScheme> smart_clone() override;
 
-        SPTAG::DistCalcMethod getDefaultDistCalcFunc() override;
+        SPTAG::DistCalcMethod getDefaultDistCalcMethod() override;
+        SPTAG::DistCalcMethod getDistCalcMethod() override;
 
-        explicit DefaultVectorScoreScheme(std::shared_ptr<DistanceFunction> distFunc=std::make_unique<DistanceUtilsWrap<T>>(defaultDistCalcFunc), void* queryVector=nullptr, DocId docId=-1, void* docVector=nullptr, int vecLen=-1);
+        explicit DefaultVectorScoreScheme(
+                SPTAG::DistCalcMethod distCalcMethod= defaultDistCalcMethod, void* queryVector= nullptr,
+                DocId docId= -1, void* docVector= nullptr, int vecLen= -1);
 
         bool postingStatisticsLoader(std::istream *rawStream) override;
 
@@ -40,18 +43,19 @@ namespace IVF {
         std::unique_ptr<CollectionStatistic> getEmptyCollectionStatistic() override;
     private:
 
-        static const SPTAG::DistCalcMethod defaultDistCalcFunc;
+        static const SPTAG::DistCalcMethod defaultDistCalcMethod;
 
         DocId docId = -1;
         void* docVector;
         void* queryVector;
         //default DistanceUtilsWrap
         std::shared_ptr<DistanceFunction> distFunc;
+        SPTAG::DistCalcMethod distCalcMethod;
         int vecLen=-1;
         //int docNum;
 
     };
-    template <class T> const SPTAG::DistCalcMethod DefaultVectorScoreScheme<T>::defaultDistCalcFunc=SPTAG::DistCalcMethod::L2;
+    template <class T> const SPTAG::DistCalcMethod DefaultVectorScoreScheme<T>::defaultDistCalcMethod=SPTAG::DistCalcMethod::L2;
 
 }
 

@@ -26,11 +26,14 @@ namespace IVF {
 
         vectorIndexWrapper=std::make_shared<VectorIndexWrapper>(vecIndex);
 
+        vectorDistCalcMethod=vectorIndexWrapper->getDistCalcMethod();
+
         int dim=vectorIndexWrapper->getVecLen();
+
         VectorScoreScheme* collectionStatHolder;
 #define DefineVectorValueType(Name, Type) \
                 if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
-                    collectionStatHolder = new DefaultVectorScoreScheme<Type>();\
+                    collectionStatHolder = new DefaultVectorScoreScheme<Type>(vectorIndexWrapper->getDistCalcMethod());\
                     collectionStatHolder->collectionStatisticsLoader(std::to_string(dim));\
                     KeyVector::setCollectionStatHolder(collectionStatHolder);\
                 } \
@@ -41,8 +44,6 @@ namespace IVF {
 #undef DefineVectorValueType
         searcher.indexCollection.push_back(vectorIndexWrapper);
 
-        //TODO
-        vectorDistCalcMethod=collectionStatHolder->getDefaultDistCalcFunc();
     }
 
     void DefaultVectorIndexConfig::close() {

@@ -25,6 +25,8 @@ namespace IVF {
 
         int getVecLen();
 
+        SPTAG::DistCalcMethod getDistCalcMethod();
+
         int addVector(const void *p_data, SizeType p_vectorNum);
 
         void deleteVector(void *target_vector);

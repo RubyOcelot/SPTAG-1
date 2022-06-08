@@ -80,6 +80,19 @@ namespace IVF{
         return -1;
     }
 
+
+    SPTAG::DistCalcMethod VectorIndexWrapper::getDistCalcMethod() {
+#define DefineVectorValueType(Name, Type) \
+                if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
+                     return ((SPANN::Index<Type>*)vecIndex.get())->GetOptions()->m_distCalcMethod; \
+                } \
+
+
+#include "inc/Core/DefinitionList.h"
+
+#undef DefineVectorValueType
+    }
+
     int VectorIndexWrapper::addVector(const void *p_data, SizeType p_vectorNum) {
 #define DefineVectorValueType(Name, Type) \
                 if (vecIndex->GetVectorValueType() == VectorValueType::Name) { \
@@ -114,5 +127,7 @@ namespace IVF{
     void VectorIndexWrapper::close() {
         vecIndex.reset();
     }
+
+
 
 }

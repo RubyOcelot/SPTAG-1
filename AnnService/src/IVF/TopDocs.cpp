@@ -36,5 +36,9 @@ namespace IVF {
         std::reverse(value->begin(), value->end());
     }
 
+    DocId TopDocs::getIdAt(int index) {
+        return value->at(index).docId;
+    }
+
 
 }

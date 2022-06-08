@@ -161,7 +161,7 @@ namespace IVF {
         (*config_map)["SearchIndex"] = iniReader.GetParameters("SearchIndex");
 
         if((*config_map)["SearchIndex"]["searchindex"]=="true") {
-
+            int K=10;
             auto sourceFile=(*config_map)["SearchIndex"]["sourcefile"];
             auto sourceFileType=(*config_map)["SearchIndex"]["sourcefiletype"];
             SourceDataType sourceDataType;
@@ -188,7 +188,7 @@ namespace IVF {
                     queryList->push_back(std::make_shared<KeywordQuery>(termFactory->asFactory(iter)));
                 }
                 auto boolQuery = BooleanQuery(LogicOperator::WAND, std::move(queryList));
-                TopDocs topDocs = searcher.search(boolQuery, 10);
+                TopDocs topDocs = searcher.search(boolQuery, K);
                 results->at(i) = topDocs;
 
             }
@@ -205,6 +205,43 @@ namespace IVF {
                 std::cout << std::endl;
                 results->at(i).print();
             }
+            if((*config_map)["SearchIndex"]["checktruth"]=="true"){
+                float meanmrr=0;
+                auto fs=open((*config_map)["SearchIndex"]["truthfile"].c_str(),std::fstream::in);
+                auto truth=std::make_unique<std::vector<std::vector<DocId>>>();
+                truth->resize(query_num);
+                for(auto i=0;i<query_num;i++){
+                    for(auto j=0;j<4;j++){
+                        DocId x;
+                        fs>>x;
+                        truth->at(i).push_back(x);
+                    }
+                }
+
+                for(auto i=0;i<query_num;i++){
+                    int minpos = K;
+                    for(auto j=0;j<4;j++){
+                        DocId x=truth->at(i).at(j);
+                        for(auto l=0;l<results->at(i).getDocNum();l++){
+                            if(results->at(i).getIdAt(l)==x){
+                                if(l<minpos){
+                                    minpos=l;
+//                                    std::cout<<"1"<<std::endl;
+                                }
+//                                std::cout<<"2"<<std::endl;
+                                break;
+                            }
+                        }
+                    }
+                    if (minpos < K) meanmrr += 1.0f / (minpos + 1);
+                }
+                meanmrr/=query_num;
+                LOG(Helper::LogLevel::LL_Info,
+                    "mean mrr=%.6lf \n",
+                    meanmrr);
+            }
+
+
         }
     }
 

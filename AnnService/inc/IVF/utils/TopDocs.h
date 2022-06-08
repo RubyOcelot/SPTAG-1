@@ -21,6 +21,8 @@ namespace IVF {
 
         void reverse();
 
+        DocId getIdAt(int index);
+
         std::shared_ptr<std::vector<DocWithScore>> value;
     };
 }

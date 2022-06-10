@@ -212,24 +212,28 @@ namespace IVF {
                 truth->resize(query_num);
                 for(auto i=0;i<query_num;i++){
                     for(auto j=0;j<4;j++){
-                        DocId x;
-                        fs>>x;
-                        truth->at(i).push_back(x);
+                        DocId trueId;
+                        fs >> trueId;
+                        truth->at(i).push_back(trueId);
                     }
                 }
 
+//                std::cout<<truth->at(0).size()<<std::endl;
+
                 for(auto i=0;i<query_num;i++){
                     int minpos = K;
-                    for(auto j=0;j<4;j++){
-                        DocId x=truth->at(i).at(j);
-                        for(auto l=0;l<results->at(i).getDocNum();l++){
-                            if(results->at(i).getIdAt(l)==x){
-                                if(l<minpos){
-                                    minpos=l;
+                    for(auto j=0;j<truth->at(i).size();j++){
+                        DocId trueId=truth->at(i).at(j);
+                        if(trueId != -1) {
+                            for (auto l = 0; l < results->at(i).getDocNum(); l++) {
+                                if (results->at(i).getIdAt(l) == trueId) {
+                                    if (l < minpos) {
+                                        minpos = l;
 //                                    std::cout<<"1"<<std::endl;
-                                }
+                                    }
 //                                std::cout<<"2"<<std::endl;
-                                break;
+                                    break;
+                                }
                             }
                         }
                     }

@@ -173,7 +173,8 @@ namespace IVF {
 //        ScoreScheme *vScoreScheme = new DefaultVectorScoreScheme<int8_t>(
 //                std::make_shared<DistanceUtilsWrap<int8_t>>(SPTAG::DistCalcMethod::L2));
 
-        int searchThreads = opts->m_searchThreadNum;
+//        int searchThreads = opts->m_searchThreadNum;
+        int searchThreads = 1;
 
         std::vector<std::thread> search_threads;
 
